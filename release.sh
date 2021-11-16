@@ -17,13 +17,12 @@
 # fi
 # tag=$1
 
-# check this is the develop branch
-branch=`git status | awk '/On branch/ {print $3}'`
+# check if ssh-agent already knows the ssh key
+output=`ssh-add -l 2>&1`
 
-if [ $branch != "develop" ]
-    then   
-        echo "Current branch is $branch while it should be develop"
-        echo "Aborting"
+if [[ "$output" == "The agent has no identities." || "$output" == "Could not open a connection to your authentication agent." ]]
+    then
+        echo "please first load your key with sshagent"
         exit
 fi
 
