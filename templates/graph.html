@@ -30,5 +30,27 @@
             }
         });
     </script>
+    <canvas id="lineChart2" width="900" height="400"></canvas>
+    <script>
+        var ctx = document.getElementById("lineChart2").getContext("2d");
+        var lineChart2 = new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: {{ labels2 | safe }},
+                datasets:[
+                    {
+                        label: "Data points",
+                        data: {{ values2 | safe }},
+                        fill: false,
+                        borderColor: "rgb(75, 192, 192)",
+                        lineTension: 0.1
+                    }
+                ]
+            },
+            options: {
+                responsive: true
+            }
+        });
+    </script>
 </body>
 </html>

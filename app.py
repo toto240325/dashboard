@@ -22,10 +22,17 @@ class Todo(db.Model):
 def index():
     #return "hello world !! (hello !)"
 
-    data = test_read.eventRead("")
+    data = test_read.eventRead("",60)
     labels = [row[0] for row in data]
     values = [row[1] for row in data]
-    return render_template("graph.html",labels=labels, values=values)
+
+    data = test_read.eventRead("ps4",60*48)
+    labels2 = [row[0] for row in data]
+    values2 = [row[1] for row in data]
+
+
+
+    return render_template("graph.html",labels=labels, values=values,labels2=labels2, values2=values2)
 
     return
     if request.method == 'POST':
