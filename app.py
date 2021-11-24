@@ -1,9 +1,14 @@
 # https://www.youtube.com/watch?v=Z1RJmh_OqeA&ab_channel=freeCodeCamp.org
+# run with :
+# python app.py
+
 
 from flask import Flask, render_template, url_for, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-import test_read
+#import test_read
+from log_event import read_events
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
@@ -22,16 +27,25 @@ class Todo(db.Model):
 def index():
     #return "hello world !! (hello !)"
 
-    data = test_read.eventRead("",60)
-    labels = [row[0] for row in data]
-    values = [row[1] for row in data]
+    #data = test_read.eventRead("",60)
+    # labels = [row[0] for row in data]
+    # values = [row[1] for row in data]
 
-    data = test_read.eventRead("ps4",60*48)
-    labels2 = [row[0] for row in data]
-    values2 = [row[1] for row in data]
-
-
-
+    data = read_events("temperature",60)
+    events = data["events"]
+    labels = [event["time"] for event in events]
+    values = [float(event["text"]) for event in events]
+    
+    # data = read_events("temperature",60*10)
+    # events = data["events"]
+    # labels2 = [event["time"] for event in events]
+    # values2 = [float(event["text"]) for event in events]
+    
+    data = read_events("ps4",60*10)
+    events = data["events"]
+    labels2 = [event["time"] for event in events]
+    values2 = [1 for event in events]
+    
     return render_template("graph.html",labels=labels, values=values,labels2=labels2, values2=values2)
 
     return

@@ -1,5 +1,5 @@
 __pycache__/
-.vscode/
+#.vscode/
 test.db
 params.py
 workspace.code*

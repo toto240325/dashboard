@@ -4,7 +4,7 @@ import json
 
 requestTimeout = 1000 	# timeout for requests
 
-def eventRead(eventType,min):
+def eventRead(eventType,minutes):
     url = 'http://192.168.0.73/event/api/event/read_where.php?type='+eventType
     #print(url)
     r = requests.get(url, timeout=requestTimeout)
@@ -29,9 +29,10 @@ def eventRead(eventType,min):
             except:
                 pass
     results.sort(key=lambda tup: tup[0])
-    nb_min = min
-    return results[-nb_min:]
+    nb_minutes = minutes
+    return results[-nb_minutes:]
 
 if __name__ == "__main__":
-    temps=eventRead("toto")
+    temps=eventRead("toto",10)
+
 
