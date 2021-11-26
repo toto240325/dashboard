@@ -4,3 +4,5 @@ test.db
 params.py
 workspace.code*
 params.ini
+obsolete/
+

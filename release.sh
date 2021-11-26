@@ -1,4 +1,5 @@
-# Usage : 
+#!/bin/bash
+Usage : 
 # bash release.sh
 # this will 
 # - check that this is the develop branch
@@ -18,7 +19,7 @@
 # tag=$1
 
 # check if ssh-agent already knows the ssh key
-output=`ssh-add -l 2>&1`
+output=$(ssh-add -l 2>&1)
 
 if [[ "$output" == "The agent has no identities." || "$output" == "Could not open a connection to your authentication agent." ]]
     then
@@ -27,12 +28,11 @@ if [[ "$output" == "The agent has no identities." || "$output" == "Could not ope
 fi
 
 # check this is the develop branch
-branch=`git status | awk '/On branch/ {print $3}'`
+branch=$(git status | awk '/On branch/ {print $3}')
 
-if [ $branch != "develop" ]
-    then   
-        echo "Current branch is $branch while it should be develop"
-        echo "Aborting"
+if [[ "$output" == "The agent has no identities." || "$output" == "Could not open a connection to your authentication agent." ]]
+    then
+        echo "please first load your key with sshagent"
         exit
 fi
 
@@ -44,7 +44,7 @@ git tag
 echo "Releasing this new version from current branch : $branch"
 echo "I am going to commit all, tag it with the new tag, merge into master and push to origin"
 echo "Enter a new tag to continue or 'n' to abort"
-read tag
+read -r tag
 
 if [[ "$tag" == [nN] ]]
     then
@@ -52,10 +52,10 @@ if [[ "$tag" == [nN] ]]
         exit
 fi
 echo "Tagging new version with $tag"
-echo $tag > version.txt
+echo "$tag" > version.txt
 # pushing current branch to origin
 git commit -a -m "$tag"
-git push --set-upstream origin $branch
+git push --set-upstream origin "$branch"
 git pull
 git push
 
@@ -79,7 +79,7 @@ git checkout develop
 
 echo ""
 echo "Host on which you'd like to deploy the latest version ? (return for none)"
-read host
+read -r host
 
 if [ "$host" == "" ]
     then
