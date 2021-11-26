@@ -1,7 +1,8 @@
 # https://www.youtube.com/watch?v=Z1RJmh_OqeA&ab_channel=freeCodeCamp.org
 # run with :
 # python app.py
-
+# or 
+# FLASK_APP=app2.py python -m flask run
 
 from flask import Flask, render_template, url_for, request, redirect
 from flask_sqlalchemy import SQLAlchemy
@@ -36,15 +37,15 @@ def index():
     labels = [event["time"] for event in events]
     values = [float(event["text"]) for event in events]
     
-    # data = read_events("temperature",60*10)
-    # events = data["events"]
-    # labels2 = [event["time"] for event in events]
-    # values2 = [float(event["text"]) for event in events]
-    
-    data = read_events("ps4",60*10)
+    data = read_events("temperature",60*10)
     events = data["events"]
     labels2 = [event["time"] for event in events]
-    values2 = [1 for event in events]
+    values2 = [float(event["text"]) for event in events]
+    
+    # data = read_events("ps4",60*10)
+    # events = data["events"]
+    # labels2 = [event["time"] for event in events]
+    # values2 = [1 for event in events]
     
     return render_template("graph.html",labels=labels, values=values,labels2=labels2, values2=values2)
 
@@ -63,6 +64,25 @@ def index():
     else:
         tasks = Todo.query.order_by(Todo.date_created).all()
         return render_template('index.html', tasks=tasks)
+
+
+@app.route("/hello/<name>")
+def hello_there(name):
+    now = datetime.now()
+    formatted_now = now.strftime("%A, %d %B, %Y at %X")
+
+    # Filter the name argument to letters only using regular expressions. URL arguments
+    # can contain arbitrary text, so we restrict to safe characters only.
+    match_object = re.match("[a-zA-Z]+", name)
+
+    if match_object:
+        clean_name = match_object.group(0)
+    else:
+        clean_name = "Friend"
+
+    content = "Hello there, " + clean_name + "! It's " + formatted_now
+    return content
+
 
 
 @app.route('/delete/<int:id>')
@@ -93,6 +113,8 @@ def update(id):
         return render_template('update.html', task=task)
 
 
+#app.run(host='0.0.0.0' , port=5001)
+
 if __name__ == "__main__":
     # app.run(debug=True)
 
@@ -105,5 +127,6 @@ if __name__ == "__main__":
     # then
     # http://192.168.0.52:5000/
 
-    app.run(host='0.0.0.0' , port=5000)
+    #app.run(host='0.0.0.0' , port=5000)
+    app.run(host='192.168.0.52' , port=5000)
     
