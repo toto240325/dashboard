@@ -14,6 +14,7 @@
     </style>
 </head>
 <body>
+    
     <!-- <div class="chartBox">
         <canvas id="myChart"</canvas>
     </div>
@@ -23,15 +24,16 @@
         //labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
         datasets: [{
             label: 'nb of Votes',
-            data: [
-            { x: '2021-06-25', y: 20 },
-            { x: '2021-06-26', y: 40 },
-            { x: '2021-06-27', y: 30 },
-            { x: '2021-06-28', y: 20 },
-            { x: '2021-06-29', y: 50 },
-            { x: '2021-06-30', y: 50 },
-            { x: '2021-07-01', y: 20 }
-            ],
+            data: [2, 3, 4, 2],
+            // data: [
+            // { x: '2021-06-25', y: 20 },
+            // { x: '2021-06-26', y: 40 },
+            // { x: '2021-06-27', y: 30 },
+            // { x: '2021-06-28', y: 20 },
+            // { x: '2021-06-29', y: 50 },
+            // { x: '2021-06-30', y: 50 },
+            // { x: '2021-07-01', y: 20 }
+            // ],
             // //data: [12, 19, 3, 5, 2, 3],
             // backgroundColor: [
             //     'rgba(255, 99, 132, 0.2)',
@@ -56,20 +58,20 @@
     // config
     const config = {
         type: 'bar',
-        data,
-        options: {
-            scales: {
-                x: {
-                    type: 'time',
-                    time: {
-                        unit: 'day'
-                    }
-                },
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
+        data: data,
+        // options: {
+        //     scales: {
+        //         x: {
+        //             type: 'time',
+        //             time: {
+        //                 unit: 'day'
+        //             }
+        //         },
+        //         y: {
+        //             beginAtZero: true
+        //         }
+        //     }
+        // }
     };
 
     // render/init
@@ -77,12 +79,14 @@
             document.getElementById('myChart'),
             config
     );
-    </script> -->
-    
-    <canvas id="lineChart" width="900" height="400"></canvas>
+    </script>
+     -->
+
+    <div style="width:75%;">
+
+    <canvas id="canvas1" width="900" height="400"></canvas>
     <script>
-        var ctx = document.getElementById("lineChart").getContext("2d");
-        var lineChart = new Chart(ctx, {
+        var config1 = {
             type: "line",
             data: {
                 labels: {{ labels | safe }},
@@ -99,12 +103,14 @@
             options: {
                 responsive: true
             }
-        });
+        };
+        var ctx = document.getElementById("canvas1").getContext("2d");
+        var lineChart = new Chart(ctx, config1);
     </script>
-    <canvas id="lineChart2" width="900" height="400"></canvas>
+
+    <canvas id="canvas2" width="900" height="400"></canvas>
     <script>
-        var ctx = document.getElementById("lineChart2").getContext("2d");
-        var lineChart2 = new Chart(ctx, {
+        var config2 = {
             type: "line",
             data: {
                 labels: {{ labels2 | safe }},
@@ -121,7 +127,141 @@
             options: {
                 responsive: true
             }
-        });
+        };
+        var ctx = document.getElementById("canvas2").getContext("2d");
+        var lineChart2 = new Chart(ctx, config2);
     </script>
+
+    <canvas id="canvas3"></canvas>
+    </div>
+    <script>
+        var timeFormat = 'dd/MM/yyyy';
+        var data3 = {
+                datasets: [
+                    {
+                        label: "US Dates",
+                        data: [{
+                            x: "04/01/2014", y: 175
+                        }, {
+                            x: "10/01/2014", y: 175
+                        }, {
+                            x: "04/01/2015", y: 178
+                        }, {
+                            x: "10/01/2015", y: 178
+                        }],
+                        fill: false,
+                        borderColor: 'red'
+                    },
+                    {
+                        label: "UK Dates",
+                        data:  [{
+                            x: "01/04/2014", y: 175
+                        }, {
+                            x: "01/10/2014", y: 175
+                        }, {
+                            x: "01/04/2015", y: 178
+                        }, {
+                            x: "01/10/2015", y: 178
+                        }],
+                        fill:  false,
+                        borderColor: 'blue'
+                    }
+                ]
+            };
+            console.log(data3);
+            var options3 = {
+                responsive: true,
+                title:      {
+                    display: true,
+                    text:    "Chart.js Time Scale"
+                },
+                scales:     {
+                    xAxes: [{
+                        type:       "time",
+                        time:       {
+                            format: timeFormat,
+                            tooltipFormat: 'll'
+                        },
+                        scaleLabel: {
+                            display:     true,
+                            labelString: 'Date'
+                        }
+                    }],
+                    yAxes: [{
+                        scaleLabel: {
+                            display:     true,
+                            labelString: 'value'
+                        }
+                    }]
+                }
+            };
+            var config3 = {
+            type: 'line',
+            data: data3,
+            options: options3
+            // options: {}
+            };
+
+// -------------------------
+//         const labels3 = [
+//             'January',
+//             'February',
+//             'March',
+//             'April',
+//             'May',
+//             'June',
+//             ];
+//         const data3 = {
+//             labels: labels3,
+//             datasets: [{
+//                 label: 'My First dataset',
+//                 backgroundColor: 'rgb(255, 99, 132)',
+//                 borderColor: 'rgb(255, 99, 132)',
+//                 data: [0, 10, 5, 2, 20, 30, 45],
+//             }]
+//         };
+//         const config3 = {
+//             type: 'line',
+//             data: data3,
+//             options: {}
+//             };
+    const myChart3 = new Chart(
+        document.getElementById('canvas3'),
+        config3
+    );
+    </script>
+
+     <div style="width:75%;">
+        <canvas id="canvas4"></canvas>
+    </div>
+    <script>
+        const labels4 = [
+            'January',
+            'February',
+            'March',
+            'April',
+            'May',
+            'June',
+            ];
+        const data4 = {
+            labels: labels4,
+            datasets: [{
+                label: 'My second dataset',
+                backgroundColor: 'rgb(255, 99, 132)',
+                borderColor: 'rgb(255, 99, 132)',
+                data: [0, 10, 5, 2, 20, 30, 45],
+            }]
+        };
+        const config4 = {
+            type: 'line',
+            data: data4,
+            options: {}
+            };
+    const myChart4 = new Chart(
+        document.getElementById('canvas4'),
+        config4
+    );
+    </script>
+
 </body>
 </html>

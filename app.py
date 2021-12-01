@@ -8,7 +8,12 @@ from flask import Flask, render_template, url_for, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 #import test_read
-from log_event import read_events
+
+import sys
+sys.path.insert(0, "/home/toto/utils")
+from event import read_events_where
+#Add the following line to your ~/.profile file.
+#export PYTHONPATH=$PYTHONPATH:/path/you/want/to/add
 
 
 app = Flask(__name__)
@@ -32,17 +37,17 @@ def index():
     # labels = [row[0] for row in data]
     # values = [row[1] for row in data]
 
-    data = read_events("temperature",60)
+    data = read_events_where("temperature",60)
     events = data["events"]
     labels = [event["time"] for event in events]
     values = [float(event["text"]) for event in events]
     
-    data = read_events("temperature",60*10)
+    data = read_events_where("temperature",60*10)
     events = data["events"]
     labels2 = [event["time"] for event in events]
     values2 = [float(event["text"]) for event in events]
     
-    # data = read_events("ps4",60*10)
+    # data = read_events_where("ps4",60*10)
     # events = data["events"]
     # labels2 = [event["time"] for event in events]
     # values2 = [1 for event in events]
@@ -127,6 +132,6 @@ if __name__ == "__main__":
     # then
     # http://192.168.0.52:5000/
 
-    #app.run(host='0.0.0.0' , port=5000)
-    app.run(host='192.168.0.52' , port=5000)
+    app.run(host='0.0.0.0' , port=5000)
+    #app.run(host='192.168.0.52' , port=5000)
     
