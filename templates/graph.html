@@ -84,63 +84,115 @@
 
     <div style="width:75%;">
 
-    <canvas id="canvas1" width="900" height="400"></canvas>
     <script>
-        var config1 = {
-            type: "line",
-            data: {
-                labels: {{ labels | safe }},
-                datasets:[
-                    {
-                        label: "Data points",
-                        data: {{ values | safe }},
-                        fill: false,
-                        borderColor: "rgb(75, 192, 192)",
-                        lineTension: 0.1
-                    }
-                ]
-            },
-            options: {
-                responsive: true
+        function myConfig(labels, values, chart_type) {
+            // var timeFormat = 'yyyy/MM/dd H:mm:ss';
+            var timeFormat = 'yyyy/MM/dd';
+
+            var a = [];
+            for (i=0; i<labels.length; i++) {
+                b = { x : labels[i], y : values[i] };
+                a.push(b);
             }
-        };
-        var ctx = document.getElementById("canvas1").getContext("2d");
-        var lineChart = new Chart(ctx, config1);
+            data_array_1a = a;
+
+            var xA = [{
+                            type:       "time",
+                            time:       {
+                            //     format: timeFormat,
+                            //     // unit: 'day',
+                            parser: 'yyyy-MM-dd H:m:s'
+                            //     tooltipFormat: 'll'
+                            },
+                            scaleLabel: {
+                                display:     true,
+                                labelString: 'Date'
+                            }
+                        }];
+            var yA = [{
+                            scaleLabel: {
+                                display:     true,
+                                labelString: 'value'
+                            }
+                        }];
+            var scales1 = {
+                        xAxes: xA,
+                        yAxes: yA
+                    };
+
+            var options1 = {
+                    responsive: true,
+                    title:      {
+                        display: true,
+                        text:    "Chart.js Time Scale"
+                    },
+                    scales:     scales1
+                };
+            var config1 = {
+                //type: "line",
+                //type: "bar",
+                type: chart_type,
+                data: {
+                    labels: labels,    //{{ labels | safe }},
+                    datasets:[
+                        {
+                            label: "temperature",
+                            data: data_array_1a,
+                            fill: false,
+                            borderColor: "rgb(75, 192, 192)",
+                            lineTension: 0.1
+                        }
+                    ]
+                },
+                options: options1
+            };
+        return config1;
+        }
     </script>
 
-    <canvas id="canvas2" width="900" height="400"></canvas>
-    <script>
-        var config2 = {
-            type: "line",
-            data: {
-                labels: {{ labels2 | safe }},
-                datasets:[
-                    {
-                        label: "Data points",
-                        data: {{ values2 | safe }},
-                        fill: false,
-                        borderColor: "rgb(75, 192, 192)",
-                        lineTension: 0.1
-                    }
-                ]
-            },
-            options: {
-                responsive: true
-            }
-        };
-        var ctx = document.getElementById("canvas2").getContext("2d");
-        var lineChart2 = new Chart(ctx, config2);
-    </script>
+<canvas id="canvas_frigo_1h" width="900" height="400"></canvas>
+<script>
+    values = {{ frigo_1h_chart.values|safe }}
+    labels = {{ frigo_1h_chart.labels|safe }}
+    //chart_type = {{ frigo_1h_chart.chart_type|safe }}
+    chart_type = "line";
+    
+    config = myConfig(labels, values, "line");
 
-    <canvas id="canvas3"></canvas>
+    var ctx = document.getElementById("canvas_frigo_1h").getContext("2d");
+    var lineChart = new Chart(ctx, config);
+</script>
+
+<canvas id="canvas_frigo_10h" width="900" height="400"></canvas>
+<script>
+    values = {{ frigo_10h_chart.values|safe }}
+    labels = {{ frigo_10h_chart.labels|safe }}
+    //chart_type = {{ frigo_10h_chart.chart_type|safe }}
+    chart_type = "line";
+    
+    config = myConfig(labels, values, "line");
+    var ctx = document.getElementById("canvas_frigo_10h").getContext("2d");
+    var lineChart = new Chart(ctx, config);
+</script>
+
+<canvas id="canvas_ps4" width="900" height="400"></canvas>
+<script>
+    values = {{ ps4_chart.values|safe }}
+    labels = {{ ps4_chart.labels|safe }}
+    // chart_type = {{ ps4_chart.chart_type|safe }} 
+    chart_type = "bubble";
+    
+    config = myConfig(labels, values, chart_type);
+
+    var ctx = document.getElementById("canvas_ps4").getContext("2d");
+    var lineChart = new Chart(ctx, config);
+</script>
+
+<canvas id="canvas3"></canvas>
     </div>
     <script>
         var timeFormat = 'dd/MM/yyyy';
-        var data3 = {
-                datasets: [
-                    {
-                        label: "US Dates",
-                        data: [{
+        var data31 = [{
                             x: "04/01/2014", y: 175
                         }, {
                             x: "10/01/2014", y: 175
@@ -148,7 +200,12 @@
                             x: "04/01/2015", y: 178
                         }, {
                             x: "10/01/2015", y: 178
-                        }],
+                        }];
+        var data3 = {
+                datasets: [
+                    {
+                        label: "US Dates",
+                        data: data31,
                         fill: false,
                         borderColor: 'red'
                     },
@@ -168,7 +225,7 @@
                     }
                 ]
             };
-            console.log(data3);
+            // console.log(data3);
             var options3 = {
                 responsive: true,
                 title:      {

@@ -39,20 +39,52 @@ def index():
 
     data = read_events_where("temperature",60)
     events = data["events"]
-    labels = [event["time"] for event in events]
-    values = [float(event["text"]) for event in events]
+    frigo_1h_labels = [event["time"] for event in events]
+    
+    frigo_1h_values = []
+    for event in events:
+        host = event["host"]
+        text = event["text"]
+        id = event["id"]
+        time = event["time"]
+        # print(f"{id} - {text} - {time} - {host}")
+        temp = float(text)
+        frigo_1h_values.append(temp)
+
+    data = read_events_where("temperature",60*10)
+    events = data["events"]
+    frigo_10h_values = [float(event["text"]) for event in events]
+    frigo_10h_labels = [event["time"] for event in events]
     
     data = read_events_where("temperature",60*10)
     events = data["events"]
-    labels2 = [event["time"] for event in events]
-    values2 = [float(event["text"]) for event in events]
+    labels10 = [event["time"] for event in events]
+    values10 = [float(event["text"]) for event in events]
     
-    # data = read_events_where("ps4",60*10)
-    # events = data["events"]
-    # labels2 = [event["time"] for event in events]
-    # values2 = [1 for event in events]
+    data = read_events_where("ps4",100)
+
+    events = data["events"]
+    labels_ps4 = [event["time"] for event in events]
+    values_ps4 = [1 for event in events]
     
-    return render_template("graph.html",labels=labels, values=values,labels2=labels2, values2=values2)
+    class MyChart:
+        def __init__(self, values, labels, chart_type):
+            self.values = values
+            self.labels = labels
+            self.chart_type = chart_type
+
+    ps4_chart = MyChart(values_ps4,labels_ps4,"bubble") 
+    frigo_1h_chart = MyChart(frigo_1h_values,frigo_1h_labels,"line") 
+    frigo_10h_chart = MyChart(frigo_10h_values,frigo_10h_labels,"line") 
+
+    return render_template("graph.html",
+        # labels=labels, values=values,
+        # labels2=labels2, values2=values2,
+        # labels_ps4=labels_ps4, values_ps4=values_ps4,
+        labels10=labels10, values10=values10,
+        ps4_chart=ps4_chart,
+        frigo_1h_chart=frigo_1h_chart,
+        frigo_10h_chart=frigo_10h_chart)
 
     return
     if request.method == 'POST':

@@ -5,4 +5,4 @@ params.py
 workspace.code*
 params.ini
 obsolete/
-
+templates/test_zip.py
