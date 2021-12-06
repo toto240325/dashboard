@@ -148,16 +148,81 @@
             };
         return config1;
         }
-    </script>
+
+        function myConfig2(labels, values, chart_type,unit) {
+            // var timeFormat = 'yyyy/MM/dd H:mm:ss';
+            var timeFormat = 'yyyy/MM/dd';
+
+            var a = [];
+            for (i=0; i<labels.length; i++) {
+                b = { x : labels[i], y : values[i] };
+                a.push(b);
+            }
+            data_array_1a = a;
+
+            var xA = [{
+                            type:       "time",
+                            time:       {
+                            //     format: timeFormat,
+                            unit: unit,
+                            parser: 'yyyy-MM-dd H:m:s'
+                            //     tooltipFormat: 'll'
+                            },
+                            scaleLabel: {
+                                display:     true,
+                                labelString: 'Date'
+                            }
+                        }];
+            var yA = [{
+                            scaleLabel: {
+                                display:     true,
+                                labelString: 'value'
+                            }
+                        }];
+            var scales1 = {
+                        xAxes: xA,
+                        yAxes: yA
+                    };
+
+            var options1 = {
+                    responsive: true,
+                    title:      {
+                        display: true,
+                        text:    "Chart.js Time Scale"
+                    },
+                    scales:     scales1
+                };
+            var config1 = {
+                //type: "line",
+                //type: "bar",
+                type: chart_type,
+                data: {
+                    labels: labels,    //{{ labels | safe }},
+                    datasets:[
+                        {
+                            label: "temperature",
+                            data: data_array_1a,
+                            fill: false,
+                            borderColor: "rgb(75, 192, 192)",
+                            lineTension: 0.1
+                        }
+                    ]
+                },
+                options: options1
+            };
+        return config1;
+        }
+
+</script>
 
 <canvas id="canvas_frigo_1h" width="900" height="400"></canvas>
 <script>
     values = {{ frigo_1h_chart.values|safe }}
     labels = {{ frigo_1h_chart.labels|safe }}
-    //chart_type = {{ frigo_1h_chart.chart_type|safe }}
-    chart_type = "line";
+    chart_type = "{{ frigo_1h_chart.chart_type|safe }}"
+    unit = "{{ frigo_1h_chart.unit|safe }}"
     
-    config = myConfig(labels, values, "line");
+    config = myConfig2(labels, values, chart_type, unit);
 
     var ctx = document.getElementById("canvas_frigo_1h").getContext("2d");
     var lineChart = new Chart(ctx, config);
@@ -167,10 +232,11 @@
 <script>
     values = {{ frigo_10h_chart.values|safe }}
     labels = {{ frigo_10h_chart.labels|safe }}
-    //chart_type = {{ frigo_10h_chart.chart_type|safe }}
-    chart_type = "line";
+    chart_type = "{{ frigo_10h_chart.chart_type|safe }}"
+    unit = "{{ frigo_10h_chart.unit|safe }}"
     
-    config = myConfig(labels, values, "line");
+    config = myConfig2(labels, values, chart_type, unit);
+
     var ctx = document.getElementById("canvas_frigo_10h").getContext("2d");
     var lineChart = new Chart(ctx, config);
 </script>
@@ -179,10 +245,10 @@
 <script>
     values = {{ ps4_chart.values|safe }}
     labels = {{ ps4_chart.labels|safe }}
-    // chart_type = {{ ps4_chart.chart_type|safe }} 
-    chart_type = "bubble";
+    chart_type = "{{ ps4_chart.chart_type|safe }}"
+    unit = "{{ ps4_chart.unit|safe }}"
     
-    config = myConfig(labels, values, chart_type);
+    config = myConfig2(labels, values, chart_type, unit);
 
     var ctx = document.getElementById("canvas_ps4").getContext("2d");
     var lineChart = new Chart(ctx, config);
