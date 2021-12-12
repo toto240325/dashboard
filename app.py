@@ -10,7 +10,7 @@ from datetime import datetime
 #import test_read
 
 import sys
-sys.path.insert(0, "/home/toto/utils")
+# sys.path.insert(0, "/home/toto/utils")
 from event import read_events_where
 from event import read_ps4
 #Add the following line to your ~/.profile file.
