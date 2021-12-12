@@ -12,6 +12,7 @@ from datetime import datetime
 import sys
 sys.path.insert(0, "/home/toto/utils")
 from event import read_events_where
+from event import read_ps4
 #Add the following line to your ~/.profile file.
 #export PYTHONPATH=$PYTHONPATH:/path/you/want/to/add
 
@@ -61,21 +62,49 @@ def index():
     labels_ps4 = [event["time"] for event in events]
     values_ps4 = [1 for event in events]
     
+    data = read_ps4("2021/12/01")
+    records = data["records"]
+    labels_ps4_2 = [rec["date"].replace("01:00:00","12:00:00") for rec in records]
+    values_ps4_2 = [rec["count"] for rec in records]
+    
     class MyChart:
-        def __init__(self, values, labels, chart_type, unit):
+        def __init__(self, title, values, labels, chart_type, unit):
+            self.title = title
             self.values = values
             self.labels = labels
             self.chart_type = chart_type
             self.unit = unit
 
-    frigo_1h_chart = MyChart(frigo_1h_values,frigo_1h_labels,"line","minute") 
-    frigo_10h_chart = MyChart(frigo_10h_values,frigo_10h_labels,"line","hour") 
-    ps4_chart = MyChart(values_ps4,labels_ps4,"bubble","day") 
+    class MyChart_2_datasets:
+        def __init__(self, title, 
+                    values1, labels1, chart_type1, 
+                    values2, labels2, chart_type2, 
+                    unit):
+            self.title = title
+            self.values1 = values1
+            self.labels1 = labels1
+            self.chart_type1 = chart_type1
+            self.values2 = values2
+            self.labels2 = labels2
+            self.chart_type2 = chart_type2
+            self.unit = unit
+
+    frigo_1h_chart = MyChart("frigo_1h", frigo_1h_values,frigo_1h_labels,"line","minute") 
+    frigo_10h_chart = MyChart("frigo_10h", frigo_10h_values,frigo_10h_labels,"line","hour") 
+    ps4_chart = MyChart("ps4", values_ps4,labels_ps4,"bubble","day") 
+    ps4_2_chart = MyChart("ps4_2", values_ps4_2,labels_ps4_2,"bar","day") 
+    ps4_2_datasets_chart = MyChart_2_datasets(
+        "ps4_2_datasets", 
+        values_ps4,labels_ps4, "bubble",
+        values_ps4_2,labels_ps4_2,"bar",
+        "day") 
 
     return render_template("graph.html",
         frigo_1h_chart=frigo_1h_chart,
         frigo_10h_chart=frigo_10h_chart,
-        ps4_chart=ps4_chart
+        ps4_chart=ps4_chart,
+        ps4_2_chart=ps4_2_chart,
+        ps4_2_datasets_chart=ps4_2_datasets_chart
         )
 
     return
@@ -156,6 +185,7 @@ if __name__ == "__main__":
     # then
     # http://192.168.0.52:5000/
 
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True #doesn't seem to work
     app.run(host='0.0.0.0' , port=5000)
     #app.run(host='192.168.0.52' , port=5000)
     

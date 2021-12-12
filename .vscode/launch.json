@@ -11,7 +11,8 @@
             "module": "flask",
             "env": {
                 "FLASK_APP": "app.py",
-                "FLASK_ENV": "development"
+                "FLASK_ENV": "development",
+                "SQLALCHEMY_TRACK_MODIFICATIONS": "True"
             },
             "args": [
                 // "--port", "8000",
