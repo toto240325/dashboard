@@ -65,7 +65,8 @@ def index():
     data = read_ps4("2021/12/01")
     records = data["records"]
     labels_ps4_2 = [rec["date"].replace("01:00:00","12:00:00") for rec in records]
-    values_ps4_2 = [rec["count"] for rec in records]
+    values_ps4_2a = [rec["count"] for rec in records]
+    values_ps4_2 = [rec*5 for rec in values_ps4_2a]
     
     class MyChart:
         def __init__(self, title, values, labels, chart_type, unit):
