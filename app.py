@@ -6,12 +6,13 @@
 
 from flask import Flask, render_template, url_for, request, redirect
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
+# from datetime import datetime
+import datetime
 #import test_read
 
 import sys
 # sys.path.insert(0, "/home/toto/utils")
-from event import read_events_where
+from event import read_where
 from event import read_ps4
 #Add the following line to your ~/.profile file.
 #export PYTHONPATH=$PYTHONPATH:/path/you/want/to/add
@@ -21,14 +22,21 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 db = SQLAlchemy(app)
 
+
 class Todo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(200), nullable=False)
-    date_created = db.Column(db.DateTime, default=datetime.utcnow)
+    date_created = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
     def __repr__(self):
         return '<Task %r>' % self.id
 
+
+def today_delta_str(delta):
+    dt = datetime.date.today()
+    dt = dt + datetime.timedelta(days=delta)  
+    dt_str = dt.strftime("%Y-%m-%d")
+    return dt_str
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
@@ -38,7 +46,7 @@ def index():
     # labels = [row[0] for row in data]
     # values = [row[1] for row in data]
 
-    data = read_events_where("temperature",60)
+    data = read_where("temperature",60,"1900-01-01")
     events = data["events"]
     frigo_1h_labels = [event["time"] for event in events]
     
@@ -52,26 +60,28 @@ def index():
         temp = float(text)
         frigo_1h_values.append(temp)
 
-    data = read_events_where("temperature",60*10)
+    data = read_where("temperature",60*10,"1900-01-01")
     events = data["events"]
     frigo_10h_values = [float(event["text"]) for event in events]
     frigo_10h_labels = [event["time"] for event in events]
     
-    data = read_events_where("ps4",100)
+    delta = -2
+    data = read_where("ps4",100,today_delta_str(delta))
     events = data["events"]
     labels_ps4 = [event["time"] for event in events]
     values_ps4 = [1 for event in events]
     
-    data = read_ps4("2021/12/01")
+    data = read_ps4(today_delta_str(delta))
     records = data["records"]
     labels_ps4_2 = [rec["date"].replace("01:00:00","12:00:00") for rec in records]
     values_ps4_2a = [rec["count"] for rec in records]
     values_ps4_2 = [rec*5 for rec in values_ps4_2a]
     
     class MyChart:
-        def __init__(self, title, values, labels, chart_type, unit):
+        def __init__(self, title, values, values_unit, labels, chart_type, unit):
             self.title = title
             self.values = values
+            self.values_unit = values_unit
             self.labels = labels
             self.chart_type = chart_type
             self.unit = unit
@@ -90,13 +100,13 @@ def index():
             self.chart_type2 = chart_type2
             self.unit = unit
 
-    frigo_1h_chart = MyChart("frigo_1h", frigo_1h_values,frigo_1h_labels,"line","minute") 
-    frigo_10h_chart = MyChart("frigo_10h", frigo_10h_values,frigo_10h_labels,"line","hour") 
-    ps4_chart = MyChart("ps4", values_ps4,labels_ps4,"bubble","day") 
-    ps4_2_chart = MyChart("ps4_2", values_ps4_2,labels_ps4_2,"bar","day") 
+    frigo_1h_chart = MyChart("frigo_1h", frigo_1h_values, "°C", frigo_1h_labels,"line","minute") 
+    frigo_10h_chart = MyChart("frigo_10h", frigo_10h_values, "°C", frigo_10h_labels,"line","hour") 
+    ps4_chart = MyChart("ps4", values_ps4, "ps4 on/off", labels_ps4,"bubble","day") 
+    ps4_2_chart = MyChart("ps4_2", values_ps4_2, "minutes", labels_ps4_2,"bar","day") 
     ps4_2_datasets_chart = MyChart_2_datasets(
         "ps4_2_datasets", 
-        values_ps4,labels_ps4, "bubble",
+        values_ps4, labels_ps4, "bubble",
         values_ps4_2,labels_ps4_2,"bar",
         "day") 
 
