@@ -8,6 +8,7 @@ from flask import Flask, render_template, url_for, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 # from datetime import datetime
 import datetime
+import logging
 #import test_read
 
 import sys
@@ -16,12 +17,11 @@ from event import read_where
 from event import read_ps4
 #Add the following line to your ~/.profile file.
 #export PYTHONPATH=$PYTHONPATH:/path/you/want/to/add
-
+import time
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 db = SQLAlchemy(app)
-
 
 class Todo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -31,12 +31,27 @@ class Todo(db.Model):
     def __repr__(self):
         return '<Task %r>' % self.id
 
+def timenow():
+    return time.time()
 
 def today_delta_str(delta):
     dt = datetime.date.today()
     dt = dt + datetime.timedelta(days=delta)  
     dt_str = dt.strftime("%Y-%m-%d")
     return dt_str
+
+
+class Elapsed_time:
+    def __init__(self):
+        self.mytimes = []
+        self.mytimes.append(timenow())
+
+    def elapsed_time(self, point):
+        self.mytimes.append(timenow())
+        i = len(self.mytimes)
+        diff_secs = self.mytimes[i-1] - self.mytimes[i-2]
+        print(f'delta{i-1} {point} : {round(diff_secs,2)}')
+
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
@@ -46,10 +61,12 @@ def index():
     # labels = [row[0] for row in data]
     # values = [row[1] for row in data]
 
+    elaps = Elapsed_time()
+
     data = read_where("temperature",60,"1900-01-01")
     events = data["events"]
     frigo_1h_labels = [event["time"] for event in events]
-    
+
     frigo_1h_values = []
     for event in events:
         host = event["host"]
@@ -60,16 +77,22 @@ def index():
         temp = float(text)
         frigo_1h_values.append(temp)
 
+    elaps.elapsed_time("frigo_1h")
+
     data = read_where("temperature",60*10,"1900-01-01")
     events = data["events"]
     frigo_10h_values = [float(event["text"]) for event in events]
     frigo_10h_labels = [event["time"] for event in events]
+    
+    elaps.elapsed_time("frigo_10h")
     
     delta = -2
     data = read_where("ps4",100,today_delta_str(delta))
     events = data["events"]
     labels_ps4 = [event["time"] for event in events]
     values_ps4 = [1 for event in events]
+    
+    elaps.elapsed_time("ps4")
     
     data = read_ps4(today_delta_str(delta))
     records = data["records"]
