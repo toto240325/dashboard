@@ -23,6 +23,55 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 db = SQLAlchemy(app)
 
+def init_logger(s_level):
+    """
+    Usage : (in main())
+    init_logger('INFO')
+    logging.info("Starting main")
+    """
+    #logging.basicConfig(filename="logs.log", filemode="w", level=logging.DEBUG)
+    # logging.basicConfig(filename="logs.log", filemode="a", \
+    #     stream=sys.stdout, \
+    #     format='%(asctime)s.%(msecs)03d %(levelname)s {%(module)s} [%(funcName)s] %(message)s', \
+    #     datefmt='%Y-%m-%d,%H:%M:%S', level=logging.INFO)
+
+    file_handler = logging.FileHandler(filename='logs.log')
+    stdout_handler = logging.StreamHandler(sys.stdout)
+    handlers = [file_handler, stdout_handler]
+
+    levels = {
+        "DEBUG": logging.DEBUG,
+        "INFO": logging.INFO,
+        "WARNING": logging.WARNING,
+        "ERROR": logging.ERROR,
+        "CRITICAL": logging.CRITICAL
+    }
+    logging.basicConfig(        
+        level=levels.get(s_level,logging.INFO),
+        #level=logging.INFO, 
+        format='[%(asctime)s] {%(filename)s:%(lineno)d} %(levelname)s {%(module)s} [%(funcName)s]- %(message)s',
+        handlers=handlers
+    )
+
+def shutdown_logger():
+    """
+    properly shutdown the logger and closes files
+    """
+
+    # handlers = logging.handlers.copy()
+    # for handler in handlers:
+    #     # Copied from `logging.shutdown`.
+    #     try:
+    #         handler.acquire()
+    #         handler.flush()
+    #         handler.close()
+    #     except (OSError, ValueError):
+    #         pass
+    #     finally:
+    #         handler.release()
+    #     logging.removeHandler(handler) 
+
+
 class Todo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(200), nullable=False)
@@ -50,7 +99,9 @@ class Elapsed_time:
         self.mytimes.append(timenow())
         i = len(self.mytimes)
         diff_secs = self.mytimes[i-1] - self.mytimes[i-2]
-        print(f'delta{i-1} {point} : {round(diff_secs,2)}')
+        msg = f'delta{i-1} {point} : {round(diff_secs,2)}'
+        #print(msg)
+        logging.info(msg)
 
 
 @app.route('/', methods=['POST', 'GET'])
@@ -228,7 +279,12 @@ if __name__ == "__main__":
     # then
     # http://192.168.0.52:5000/
 
+    init_logger('INFO')
+    logging.info("-----------------------------------------------------------------------------------")
+    logging.info("Starting Dashboard")
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True #doesn't seem to work
     app.run(host='0.0.0.0' , port=5000)
-    #app.run(host='192.168.0.52' , port=5000)
+    logging.info("Ending watchdog")
+    shutdown_logger()
+#app.run(host='192.168.0.52' , port=5000)
     
