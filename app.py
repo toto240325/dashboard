@@ -86,6 +86,13 @@ def index():
     
     elaps.elapsed_time("frigo_10h")
     
+    data = read_where("temperature",60*24,"1900-01-01")
+    events = data["events"]
+    frigo_24h_values = [float(event["text"]) for event in events]
+    frigo_24h_labels = [event["time"] for event in events]
+    
+    elaps.elapsed_time("frigo_24h")
+    
     delta = -2
     data = read_where("ps4",100,today_delta_str(delta))
     events = data["events"]
@@ -125,6 +132,7 @@ def index():
 
     frigo_1h_chart = MyChart("frigo_1h", frigo_1h_values, "°C", frigo_1h_labels,"line","minute") 
     frigo_10h_chart = MyChart("frigo_10h", frigo_10h_values, "°C", frigo_10h_labels,"line","hour") 
+    frigo_24h_chart = MyChart("frigo_24h", frigo_24h_values, "°C", frigo_24h_labels,"line","hour") 
     ps4_chart = MyChart("ps4", values_ps4, "ps4 on/off", labels_ps4,"bubble","day") 
     ps4_2_chart = MyChart("ps4_2", values_ps4_2, "minutes", labels_ps4_2,"bar","day") 
     ps4_2_datasets_chart = MyChart_2_datasets(
@@ -136,6 +144,7 @@ def index():
     return render_template("graph.html",
         frigo_1h_chart=frigo_1h_chart,
         frigo_10h_chart=frigo_10h_chart,
+        frigo_24h_chart=frigo_24h_chart,
         ps4_chart=ps4_chart,
         ps4_2_chart=ps4_2_chart,
         ps4_2_datasets_chart=ps4_2_datasets_chart
