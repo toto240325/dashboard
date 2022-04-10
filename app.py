@@ -23,6 +23,7 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 db = SQLAlchemy(app)
 
+
 def init_logger(s_level):
     """
     Usage : (in main())
@@ -116,17 +117,15 @@ def index():
 
     data = read_where("temperature",60,"1900-01-01")
     events = data["events"]
+    frigo_1h_values = [float(event["text"]) for event in events]
     frigo_1h_labels = [event["time"] for event in events]
 
-    frigo_1h_values = []
-    for event in events:
-        host = event["host"]
-        text = event["text"]
-        id = event["id"]
-        time = event["time"]
-        # print(f"{id} - {text} - {time} - {host}")
-        temp = float(text)
-        frigo_1h_values.append(temp)
+    elaps.elapsed_time("frigo_1h")
+
+    data = read_where("smart_temperature",60,"1900-01-01")
+    events = data["events"]
+    frigo_1h_smart_values = [float(event["text"]) for event in events]
+    frigo_1h_smart_labels = [event["time"] for event in events]
 
     elaps.elapsed_time("frigo_1h")
 
@@ -182,6 +181,7 @@ def index():
             self.unit = unit
 
     frigo_1h_chart = MyChart("frigo_1h", frigo_1h_values, "°C", frigo_1h_labels,"line","minute") 
+    frigo_1h_smart_chart = MyChart("frigo_1h_smart", frigo_1h_smart_values, "°C", frigo_1h_smart_labels,"line","minute") 
     frigo_10h_chart = MyChart("frigo_10h", frigo_10h_values, "°C", frigo_10h_labels,"line","hour") 
     frigo_24h_chart = MyChart("frigo_24h", frigo_24h_values, "°C", frigo_24h_labels,"line","hour") 
     ps4_chart = MyChart("ps4", values_ps4, "ps4 on/off", labels_ps4,"bubble","day") 
@@ -194,6 +194,7 @@ def index():
 
     return render_template("graph.html",
         frigo_1h_chart=frigo_1h_chart,
+        frigo_1h_smart_chart=frigo_1h_smart_chart,
         frigo_10h_chart=frigo_10h_chart,
         frigo_24h_chart=frigo_24h_chart,
         ps4_chart=ps4_chart,
@@ -201,27 +202,27 @@ def index():
         ps4_2_datasets_chart=ps4_2_datasets_chart
         )
 
-    return
-    if request.method == 'POST':
-        task_content = request.form['content']
-        new_task = Todo(content=task_content)
+    # return
+    # if request.method == 'POST':
+    #     task_content = request.form['content']
+    #     new_task = Todo(content=task_content)
 
-        try:
-            db.session.add(new_task)
-            db.session.commit()
-            return redirect('/')
-        except:
-            return 'There was an issue adding your task'
+    #     try:
+    #         db.session.add(new_task)
+    #         db.session.commit()
+    #         return redirect('/')
+    #     except:
+    #         return 'There was an issue adding your task'
 
-    else:
-        tasks = Todo.query.order_by(Todo.date_created).all()
-        return render_template('index.html', tasks=tasks)
+    # else:
+    #     tasks = Todo.query.order_by(Todo.date_created).all()
+    #     return render_template('index.html', tasks=tasks)
 
 
 @app.route("/hello/<name>")
 def hello_there(name):
-    now = datetime.now()
-    formatted_now = now.strftime("%A, %d %B, %Y at %X")
+    # now = datetime.now()
+    # formatted_now = now.strftime("%A, %d %B, %Y at %X")
 
     # Filter the name argument to letters only using regular expressions. URL arguments
     # can contain arbitrary text, so we restrict to safe characters only.
