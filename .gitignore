@@ -6,3 +6,5 @@ workspace.code*
 params.ini
 obsolete/
 templates/test_zip.py
+logs.logs
+tmp_unit_tests.txt

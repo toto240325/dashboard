@@ -355,22 +355,38 @@
         var lineChart = new Chart(ctx, config);
     </script>
 
-    <canvas id="canvas_frigo_24h" width="900" height="400"></canvas>
-    <script>
-        values = {{ frigo_24h_chart.values|safe }}
-        labels = {{ frigo_24h_chart.labels|safe }}
-        labels_unit = {{ frigo_24h_chart.labels_unit|safe }}
-        title = "{{ frigo_24h_chart.title|safe }}"
-        chart_type = "{{ frigo_24h_chart.chart_type|safe }}"
-        unit = "{{ frigo_24h_chart.unit|safe }}"
-        
-        config = myConfig2(title, values, values_unit, labels, chart_type, unit);
+<canvas id="canvas_frigo_24h" width="900" height="400"></canvas>
+<script>
+    values = {{ frigo_24h_chart.values|safe }}
+    labels = {{ frigo_24h_chart.labels|safe }}
+    labels_unit = {{ frigo_24h_chart.labels_unit|safe }}
+    title = "{{ frigo_24h_chart.title|safe }}"
+    chart_type = "{{ frigo_24h_chart.chart_type|safe }}"
+    unit = "{{ frigo_24h_chart.unit|safe }}"
+    
+    config = myConfig2(title, values, values_unit, labels, chart_type, unit);
 
-        var ctx = document.getElementById("canvas_frigo_24h").getContext("2d");
-        var lineChart = new Chart(ctx, config);
-    </script>
+    var ctx = document.getElementById("canvas_frigo_24h").getContext("2d");
+    var lineChart = new Chart(ctx, config);
+</script>
 
-    <canvas id="canvas_ps4" width="900" height="400"></canvas>
+<canvas id="canvas_pool1" width="900" height="400"></canvas>
+<script>
+    values = {{ pool1_chart.values|safe }}
+    labels = {{ pool1_chart.labels|safe }}
+    labels_unit = {{ pool1_chart.labels_unit|safe }}
+    title = "{{ pool1_chart.title|safe }}"
+    chart_type = "{{ pool1_chart.chart_type|safe }}"
+    unit = "{{ pool1_chart.unit|safe }}"
+    
+    config = myConfig2(title, values, values_unit, labels, chart_type, unit);
+
+    var ctx = document.getElementById("canvas_pool1").getContext("2d");
+    var lineChart = new Chart(ctx, config);
+</script>
+
+
+<canvas id="canvas_ps4" width="900" height="400"></canvas>
         <script>
             values = {{ ps4_chart.values|safe }}
             values_unit = "{{ ps4_chart.values_unit|safe }}"
