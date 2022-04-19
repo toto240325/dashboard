@@ -145,10 +145,17 @@ def index():
     
     data = read_where("pool_Cl",60*24,"1900-01-01")
     events = data["events"]
-    pool1_values = [float(event["text"]) for event in events]
-    pool1_labels = [event["time"] for event in events]
+    pool_Cl_values = [float(event["text"]) for event in events]
+    pool_Cl_labels = [event["time"] for event in events]
     
-    elaps.elapsed_time("pool1")
+    elaps.elapsed_time("pool_Cl")
+    
+    data = read_where("pool_pH",60*24,"1900-01-01")
+    events = data["events"]
+    pool_pH_values = [float(event["text"]) for event in events]
+    pool_pH_labels = [event["time"] for event in events]
+    
+    elaps.elapsed_time("pool_pH")
     
     delta = -2
     data = read_where("ps4",100,today_delta_str(delta))
@@ -191,7 +198,8 @@ def index():
     frigo_1h_smart_chart = MyChart("frigo_1h_smart", frigo_1h_smart_values, "°C", frigo_1h_smart_labels,"line","minute") 
     frigo_10h_chart = MyChart("frigo_10h", frigo_10h_values, "°C", frigo_10h_labels,"line","hour") 
     frigo_24h_chart = MyChart("frigo_24h", frigo_24h_values, "°C", frigo_24h_labels,"line","hour") 
-    pool1_chart = MyChart("pool1", pool1_values, "Cl", pool1_labels,"line","hour") 
+    pool_Cl_chart = MyChart("pool_Cl", pool_Cl_values, "Cl", pool_Cl_labels,"line","hour") 
+    pool_pH_chart = MyChart("pool_pH", pool_pH_values, "Cl", pool_pH_labels,"line","hour") 
     ps4_chart = MyChart("ps4", values_ps4, "ps4 on/off", labels_ps4,"bubble","day") 
     ps4_2_chart = MyChart("ps4_2", values_ps4_2, "minutes", labels_ps4_2,"bar","day") 
     ps4_2_datasets_chart = MyChart_2_datasets(
@@ -205,7 +213,8 @@ def index():
         frigo_1h_smart_chart=frigo_1h_smart_chart,
         frigo_10h_chart=frigo_10h_chart,
         frigo_24h_chart=frigo_24h_chart,
-        pool1_chart=pool1_chart,
+        pool_Cl_chart=pool_Cl_chart,
+        pool_pH_chart=pool_pH_chart,
         ps4_chart=ps4_chart,
         ps4_2_chart=ps4_2_chart,
         ps4_2_datasets_chart=ps4_2_datasets_chart

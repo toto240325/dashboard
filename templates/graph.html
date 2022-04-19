@@ -370,18 +370,33 @@
     var lineChart = new Chart(ctx, config);
 </script>
 
-<canvas id="canvas_pool1" width="900" height="400"></canvas>
+<canvas id="canvas_pool_Cl" width="900" height="400"></canvas>
 <script>
-    values = {{ pool1_chart.values|safe }}
-    labels = {{ pool1_chart.labels|safe }}
-    labels_unit = {{ pool1_chart.labels_unit|safe }}
-    title = "{{ pool1_chart.title|safe }}"
-    chart_type = "{{ pool1_chart.chart_type|safe }}"
-    unit = "{{ pool1_chart.unit|safe }}"
+    values = {{ pool_Cl_chart.values|safe }}
+    labels = {{ pool_Cl_chart.labels|safe }}
+    labels_unit = {{ pool_Cl_chart.labels_unit|safe }}
+    title = "{{ pool_Cl_chart.title|safe }}"
+    chart_type = "{{ pool_Cl_chart.chart_type|safe }}"
+    unit = "{{ pool_Cl_chart.unit|safe }}"
     
     config = myConfig2(title, values, values_unit, labels, chart_type, unit);
 
-    var ctx = document.getElementById("canvas_pool1").getContext("2d");
+    var ctx = document.getElementById("canvas_pool_Cl").getContext("2d");
+    var lineChart = new Chart(ctx, config);
+</script>
+
+<canvas id="canvas_pool_pH" width="900" height="400"></canvas>
+<script>
+    values = {{ pool_pH_chart.values|safe }}
+    labels = {{ pool_pH_chart.labels|safe }}
+    labels_unit = {{ pool_pH_chart.labels_unit|safe }}
+    title = "{{ pool_pH_chart.title|safe }}"
+    chart_type = "{{ pool_pH_chart.chart_type|safe }}"
+    unit = "{{ pool_pH_chart.unit|safe }}"
+    
+    config = myConfig2(title, values, values_unit, labels, chart_type, unit);
+
+    var ctx = document.getElementById("canvas_pool_pH").getContext("2d");
     var lineChart = new Chart(ctx, config);
 </script>
 
