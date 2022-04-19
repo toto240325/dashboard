@@ -143,14 +143,14 @@ def index():
     
     elaps.elapsed_time("frigo_24h")
     
-    data = read_where("pool_Cl",60*24,"1900-01-01")
+    data = read_where("pool_Cl",60*10,"1900-01-01")
     events = data["events"]
     pool_Cl_values = [float(event["text"]) for event in events]
     pool_Cl_labels = [event["time"] for event in events]
     
     elaps.elapsed_time("pool_Cl")
     
-    data = read_where("pool_pH",60*24,"1900-01-01")
+    data = read_where("pool_pH",60*10,"1900-01-01")
     events = data["events"]
     pool_pH_values = [float(event["text"]) for event in events]
     pool_pH_labels = [event["time"] for event in events]
