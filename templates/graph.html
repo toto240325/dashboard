@@ -1,75 +1,129 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+    <title>My Title</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+
     <style type="text/css">
         .chartBox {
             width: 400px;
         }
     </style>
 </head>
+
 <body>
-    
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Navbar</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/about">About</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            Dropdown
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="/">Home</a></li>
+                            <li><a class="dropdown-item" href="/about">About</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        </ul>
+                    </li>
+                    <!-- <li class="nav-item">
+                        <a class="nav-link disabled">Disabled</a>
+                    </li> -->
+                </ul>
+                <form class="d-flex">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
     <script>
-        setTimeout(function(){
+        setTimeout(function () {
             window.location.reload(1);
         }, 60 * 1000);
-        
+
         function myConfig(labels, values, chart_type) {
             // var timeFormat = 'yyyy/MM/dd H:mm:ss';
             var timeFormat = 'yyyy/MM/dd';
 
             var a = [];
-            for (i=0; i<labels.length; i++) {
-                b = { x : labels[i], y : values[i] };
+            for (i = 0; i < labels.length; i++) {
+                b = { x: labels[i], y: values[i] };
                 a.push(b);
             }
             data_array_1a = a;
 
             var xA = [{
-                            type:       "time",
-                            time:       {
-                            //     format: timeFormat,
-                            //     // unit: 'day',
-                            parser: 'yyyy-MM-dd H:m:s'
-                            //     tooltipFormat: 'll'
-                            },
-                            scaleLabel: {
-                                display:     true,
-                                labelString: 'Date1'
-                            }
-                        }];
+                type: "time",
+                time: {
+                    //     format: timeFormat,
+                    //     // unit: 'day',
+                    parser: 'yyyy-MM-dd H:m:s'
+                    //     tooltipFormat: 'll'
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Date1'
+                }
+            }];
             var yA = [{
-                            scaleLabel: {
-                                display:     true,
-                                labelString: 'value'
-                            }
-                        }];
+                scaleLabel: {
+                    display: true,
+                    labelString: 'value'
+                }
+            }];
             var scales1 = {
-                        xAxes: xA,
-                        yAxes: yA
-                    };
+                xAxes: xA,
+                yAxes: yA
+            };
 
             var options1 = {
-                    responsive: true,
-                    title:      {
-                        display: true,
-                        text:    "Chart.js Time Scale"
-                    },
-                    scales:     scales1
-                };
+                responsive: true,
+                title: {
+                    display: true,
+                    text: "Chart.js Time Scale"
+                },
+                scales: scales1
+            };
             var config1 = {
                 //type: "line",
                 //type: "bar",
                 type: chart_type,
                 data: {
                     labels: labels,    //{{ labels | safe }},
-                    datasets:[
+                    datasets: [
                         {
                             label: "temperature",
                             data: data_array_1a,
@@ -81,7 +135,7 @@
                 },
                 options: options1
             };
-        return config1;
+            return config1;
         }
 
         function myConfig2(title, values, values_unit, labels, chart_type, unit) {
@@ -90,66 +144,66 @@
             // var timeFormat = 'H:mm';
 
             var a = [];
-            for (i=0; i<labels.length; i++) {
-                b = { x : labels[i], y : values[i] };
+            for (i = 0; i < labels.length; i++) {
+                b = { x: labels[i], y: values[i] };
                 a.push(b);
             }
             data_array_1a = a;
 
-            nowStr = (new Date()).toLocaleTimeString("fr-BE", {hour12: false, year: 'numeric', month: '2-digit', day: '2-digit' , hour: '2-digit', minute: '2-digit'});
+            nowStr = (new Date()).toLocaleTimeString("fr-BE", { hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
             var datetime2 = "LastSync: " + nowStr;
 
             var xA = [{
-                            type:       "time",
-                            time:       {
-                                // format: timeFormat,
+                type: "time",
+                time: {
+                    // format: timeFormat,
 
-                                displayFormats: {
-                                    'millisecond': 'MMM dd',
-                                    'second': 'MMM dd',
-                                    'minute': 'H:mm',
-                                    'hour': 'H:mm',
-                                    'day': 'dd/MM',
-                                    'week': 'MMM dd',
-                                    'month': 'MMM dd',
-                                    'quarter': 'MMM dd',
-                                    'year': 'MMM dd',
-                                },
-                                unit: unit,
-                                parser: 'yyyy-MM-dd H:m:s'
-                                //     tooltipFormat: 'll'
-                            },
-                            scaleLabel: {
-                                display:     true,
-                                labelString: datetime2
-                            }
-                        }];
+                    displayFormats: {
+                        'millisecond': 'MMM dd',
+                        'second': 'MMM dd',
+                        'minute': 'H:mm',
+                        'hour': 'H:mm',
+                        'day': 'dd/MM',
+                        'week': 'MMM dd',
+                        'month': 'MMM dd',
+                        'quarter': 'MMM dd',
+                        'year': 'MMM dd',
+                    },
+                    unit: unit,
+                    parser: 'yyyy-MM-dd H:m:s'
+                    //     tooltipFormat: 'll'
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: datetime2
+                }
+            }];
             var yA = [{
-                            scaleLabel: {
-                                display:     true,
-                                labelString: values_unit
-                            }
-                        }];
+                scaleLabel: {
+                    display: true,
+                    labelString: values_unit
+                }
+            }];
             var scales1 = {
-                        xAxes: xA,
-                        yAxes: yA
-                    };
+                xAxes: xA,
+                yAxes: yA
+            };
 
             var options1 = {
-                    responsive: true,
-                    title:      {
-                        display: true,
-                        text:    title
-                    },
-                    scales:     scales1
-                };
+                responsive: true,
+                title: {
+                    display: true,
+                    text: title
+                },
+                scales: scales1
+            };
             var config1 = {
                 //type: "line",
                 //type: "bar",
                 type: chart_type,
                 data: {
                     labels: labels,    //{{ labels | safe }},
-                    datasets:[
+                    datasets: [
                         {
                             label: "temperature",
                             data: data_array_1a,
@@ -161,26 +215,26 @@
                 },
                 options: options1
             };
-        return config1;
+            return config1;
         }
 
         function myConfig_2_datasets(
-                title,
-                labels1, values1, chart_type1,
-                labels2, values2, chart_type2,
-                unit) {
+            title,
+            labels1, values1, chart_type1,
+            labels2, values2, chart_type2,
+            unit) {
             // var timeFormat = 'yyyy/MM/dd H:mm:ss';
             var timeFormat = 'yyyy/MM/dd';
 
             var data1 = [];
-            for (i=0; i<labels1.length; i++) {
-                b = { x : labels1[i], y : values1[i] };
+            for (i = 0; i < labels1.length; i++) {
+                b = { x: labels1[i], y: values1[i] };
                 data1.push(b);
             }
 
             var data2 = [];
-            for (i=0; i<labels2.length; i++) {
-                b = { x : labels2[i], y : values2[i] };
+            for (i = 0; i < labels2.length; i++) {
+                b = { x: labels2[i], y: values2[i] };
                 data2.push(b);
             }
 
@@ -196,7 +250,7 @@
                     // },
                     id: "bubble",
                     type: "time",
-                    time:       {
+                    time: {
                         unit: unit,
                         // format: timeFormat,
                         displayFormats: {
@@ -224,59 +278,59 @@
                     distribution: "series",
                 }
 
-                ];
+            ];
             var yA = [
                 {
                     ticks: {
                         beginAtZero: true,
                     },
                     scaleLabel: {
-                        display:     true,
+                        display: true,
                         labelString: 'value'
                     }
                 },
                 {
                     id: 'ps4_5min',
                     scaleLabel: {
-                        display:     true,
+                        display: true,
                         labelString: 'value'
                     }
                 }
             ];
             var scales1 = {
-                        xAxes: xA,
-                        yAxes: yA
-                    };
+                xAxes: xA,
+                yAxes: yA
+            };
 
             var options = {
-                    scales: scales1,
-                    // responsive: true,
-                    // legend: {
-                    //     position: 'top',
-                    // },
-                    // title:      {
-                    //     display: true,
-                    //     text:    title
-                    // },
-                    // elements: {
-                    //     rectangle: {
-                    //         borderWidth: 2,
-                    //         borderColor: 'rgb(0, 255, 0)',
-                    //         borderSkipped: 'bottom'
-                    //     }
-                    // }
-                };
+                scales: scales1,
+                // responsive: true,
+                // legend: {
+                //     position: 'top',
+                // },
+                // title:      {
+                //     display: true,
+                //     text:    title
+                // },
+                // elements: {
+                //     rectangle: {
+                //         borderWidth: 2,
+                //         borderColor: 'rgb(0, 255, 0)',
+                //         borderSkipped: 'bottom'
+                //     }
+                // }
+            };
             //console.log(options);
             var config = {
                 //type: "line",
                 type: "bar",
                 data: {
                     labels: labels2,  //{{ labels | safe }},
-                    datasets:[
+                    datasets: [
                         {
                             barPercentage: .7,
-                        //     // categoryPercentage: .5,
-                        //     //type: chart_type2,
+                            //     // categoryPercentage: .5,
+                            //     //type: chart_type2,
                             xAxisID: "bar",
                             yAxisID: 'ps4_5min',
                             label: "ps4 x5min",
@@ -286,8 +340,8 @@
                             borderWidth: 1,
                             width: 55,
                             order: 2
-                        //     // fill: false
-                        //     //lineTension: 0.1
+                            //     // fill: false
+                            //     //lineTension: 0.1
                         },
                         {
                             label: "ps4 up/down",
@@ -305,20 +359,20 @@
                 options: options,
             };
             // console.log(config);
-        return config;
+            return config;
         }
 
     </script>
 
     <canvas id="canvas_frigo_1h" width="900" height="400"></canvas>
     <script>
-        values = {{ frigo_1h_chart.values|safe }}
+        values = {{ frigo_1h_chart.values | safe }}
         values_unit = "{{ frigo_1h_chart.values_unit|safe }}"
-        labels = {{ frigo_1h_chart.labels|safe }}
+        labels = {{ frigo_1h_chart.labels | safe }}
         title = "{{ frigo_1h_chart.title|safe }}"
         chart_type = "{{ frigo_1h_chart.chart_type|safe }}"
         unit = "{{ frigo_1h_chart.unit|safe }}"
-        
+
         config = myConfig2(title, values, values_unit, labels, chart_type, unit);
 
         var ctx = document.getElementById("canvas_frigo_1h").getContext("2d");
@@ -327,13 +381,13 @@
 
     <canvas id="canvas_frigo_smart_1h" width="900" height="400"></canvas>
     <script>
-        values = {{ frigo_1h_smart_chart.values|safe }}
+        values = {{ frigo_1h_smart_chart.values | safe }}
         values_unit = "{{ frigo_1h_smart_chart.values_unit|safe }}"
-        labels = {{ frigo_1h_smart_chart.labels|safe }}
+        labels = {{ frigo_1h_smart_chart.labels | safe }}
         title = "{{ frigo_1h_smart_chart.title|safe }}"
         chart_type = "{{ frigo_1h_smart_chart.chart_type|safe }}"
         unit = "{{ frigo_1h_smart_chart.unit|safe }}"
-        
+
         config = myConfig2(title, values, values_unit, labels, chart_type, unit);
 
         var ctx = document.getElementById("canvas_frigo_smart_1h").getContext("2d");
@@ -342,89 +396,120 @@
 
     <canvas id="canvas_frigo_10h" width="900" height="400"></canvas>
     <script>
-        values = {{ frigo_10h_chart.values|safe }}
-        labels = {{ frigo_10h_chart.labels|safe }}
-        labels_unit = {{ frigo_10h_chart.labels_unit|safe }}
+        values = {{ frigo_10h_chart.values | safe }}
+        labels = {{ frigo_10h_chart.labels | safe }}
+        labels_unit = {{ frigo_10h_chart.labels_unit | safe }}
         title = "{{ frigo_10h_chart.title|safe }}"
         chart_type = "{{ frigo_10h_chart.chart_type|safe }}"
         unit = "{{ frigo_10h_chart.unit|safe }}"
-        
+
         config = myConfig2(title, values, values_unit, labels, chart_type, unit);
 
         var ctx = document.getElementById("canvas_frigo_10h").getContext("2d");
         var lineChart = new Chart(ctx, config);
     </script>
 
-<canvas id="canvas_frigo_24h" width="900" height="400"></canvas>
-<script>
-    values = {{ frigo_24h_chart.values|safe }}
-    labels = {{ frigo_24h_chart.labels|safe }}
-    labels_unit = {{ frigo_24h_chart.labels_unit|safe }}
-    title = "{{ frigo_24h_chart.title|safe }}"
-    chart_type = "{{ frigo_24h_chart.chart_type|safe }}"
-    unit = "{{ frigo_24h_chart.unit|safe }}"
-    
-    config = myConfig2(title, values, values_unit, labels, chart_type, unit);
+    <canvas id="canvas_frigo_24h" width="900" height="400"></canvas>
+    <script>
+        values = {{ frigo_24h_chart.values | safe }}
+        labels = {{ frigo_24h_chart.labels | safe }}
+        labels_unit = {{ frigo_24h_chart.labels_unit | safe }}
+        title = "{{ frigo_24h_chart.title|safe }}"
+        chart_type = "{{ frigo_24h_chart.chart_type|safe }}"
+        unit = "{{ frigo_24h_chart.unit|safe }}"
 
-    var ctx = document.getElementById("canvas_frigo_24h").getContext("2d");
-    var lineChart = new Chart(ctx, config);
-</script>
+        config = myConfig2(title, values, values_unit, labels, chart_type, unit);
+
+        var ctx = document.getElementById("canvas_frigo_24h").getContext("2d");
+        var lineChart = new Chart(ctx, config);
+    </script>
+
+    <canvas id="canvas_pool_pH" width="900" height="400"></canvas>
+    <script>
+        values = {{ pool_pH_chart.values | safe }}
+        labels = {{ pool_pH_chart.labels | safe }}
+        labels_unit = {{ pool_pH_chart.labels_unit | safe }}
+        title = "{{ pool_pH_chart.title|safe }}"
+        chart_type = "{{ pool_pH_chart.chart_type|safe }}"
+        unit = "{{ pool_pH_chart.unit|safe }}"
+
+        config = myConfig2(title, values, values_unit, labels, chart_type, unit);
+
+        var ctx = document.getElementById("canvas_pool_pH").getContext("2d");
+        var lineChart = new Chart(ctx, config);
+    </script>
+
 
 <canvas id="canvas_pool_Cl" width="900" height="400"></canvas>
 <script>
-    values = {{ pool_Cl_chart.values|safe }}
-    labels = {{ pool_Cl_chart.labels|safe }}
-    labels_unit = {{ pool_Cl_chart.labels_unit|safe }}
+    values = {{ pool_Cl_chart.values | safe }}
+    labels = {{ pool_Cl_chart.labels | safe }}
+    labels_unit = {{ pool_Cl_chart.labels_unit | safe }}
     title = "{{ pool_Cl_chart.title|safe }}"
     chart_type = "{{ pool_Cl_chart.chart_type|safe }}"
     unit = "{{ pool_Cl_chart.unit|safe }}"
-    
+
     config = myConfig2(title, values, values_unit, labels, chart_type, unit);
 
     var ctx = document.getElementById("canvas_pool_Cl").getContext("2d");
     var lineChart = new Chart(ctx, config);
 </script>
 
-<canvas id="canvas_pool_pH" width="900" height="400"></canvas>
+<canvas id="canvas_power_day" width="900" height="400"></canvas>
 <script>
-    values = {{ pool_pH_chart.values|safe }}
-    labels = {{ pool_pH_chart.labels|safe }}
-    labels_unit = {{ pool_pH_chart.labels_unit|safe }}
-    title = "{{ pool_pH_chart.title|safe }}"
-    chart_type = "{{ pool_pH_chart.chart_type|safe }}"
-    unit = "{{ pool_pH_chart.unit|safe }}"
-    
+    values = {{ power_day_chart.values | safe }}
+    labels = {{ power_day_chart.labels | safe }}
+    labels_unit = {{ power_day_chart.labels_unit | safe }}
+    title = "{{ power_day_chart.title|safe }}"
+    chart_type = "{{ power_day_chart.chart_type|safe }}"
+    unit = "{{ power_day_chart.unit|safe }}"
+
     config = myConfig2(title, values, values_unit, labels, chart_type, unit);
 
-    var ctx = document.getElementById("canvas_pool_pH").getContext("2d");
+    var ctx = document.getElementById("canvas_power_day").getContext("2d");
     var lineChart = new Chart(ctx, config);
 </script>
 
 
-<canvas id="canvas_ps4" width="900" height="400"></canvas>
-        <script>
-            values = {{ ps4_chart.values|safe }}
-            values_unit = "{{ ps4_chart.values_unit|safe }}"
-            labels = {{ ps4_chart.labels|safe }}
-            title = "{{ ps4_chart.title|safe }}"
-            chart_type = "{{ ps4_chart.chart_type|safe }}"
-            unit = "{{ ps4_chart.unit|safe }}"
-            
-            config = myConfig2(title, values, values_unit, labels, chart_type, unit);
+<canvas id="canvas_power_night" width="900" height="400"></canvas>
+<script>
+values = {{ power_night_chart.values | safe }}
+labels = {{ power_night_chart.labels | safe }}
+labels_unit = {{ power_night_chart.labels_unit | safe }}
+title = "{{ power_night_chart.title|safe }}"
+chart_type = "{{ power_night_chart.chart_type|safe }}"
+unit = "{{ power_night_chart.unit|safe }}"
 
-            var ctx = document.getElementById("canvas_ps4").getContext("2d");
-            var lineChart = new Chart(ctx, config);
-        </script>
+config = myConfig2(title, values, values_unit, labels, chart_type, unit);
+
+var ctx = document.getElementById("canvas_power_night").getContext("2d");
+var lineChart = new Chart(ctx, config);
+</script>
+
+<canvas id="canvas_ps4" width="900" height="400"></canvas>
+    <script>
+        values = {{ ps4_chart.values | safe }}
+        values_unit = "{{ ps4_chart.values_unit|safe }}"
+        labels = {{ ps4_chart.labels | safe }}
+        title = "{{ ps4_chart.title|safe }}"
+        chart_type = "{{ ps4_chart.chart_type|safe }}"
+        unit = "{{ ps4_chart.unit|safe }}"
+
+        config = myConfig2(title, values, values_unit, labels, chart_type, unit);
+
+        var ctx = document.getElementById("canvas_ps4").getContext("2d");
+        var lineChart = new Chart(ctx, config);
+    </script>
 
     <canvas id="canvas_ps4_2" width="900" height="400"></canvas>
     <script>
         title = "{{ ps4_chart.title|safe }}"
-        values = {{ ps4_2_chart.values|safe }}
+        values = {{ ps4_2_chart.values | safe }}
         values_unit = "{{ ps4_2_chart.values_unit|safe }}"
-        labels = {{ ps4_2_chart.labels|safe }}
+        labels = {{ ps4_2_chart.labels | safe }}
         chart_type = "{{ ps4_2_chart.chart_type|safe }}"
         unit = "{{ ps4_chart.unit|safe }}"
-        
+
         config = myConfig2(title, values, values_unit, labels, chart_type, unit);
 
         var ctx = document.getElementById("canvas_ps4_2").getContext("2d");
@@ -434,229 +519,229 @@
     <canvas id="canvas_bar" width="900" height="400"></canvas>
     <script>
         var barChartData = {
-                labels: ["2015-01-01", "2015-02-01", "2015-03-01", "2015-04-01", "2015-05-01", "2015-07-01"],
-                datasets: [{/*from  w w w  . de mo 2 s . com*/
-                    categoryPercentage: .5,
-                    barPercentage: 1,
-                    label: 'Dataset 1',
-                    backgroundColor: "rgba(220,220,220,0.5)",
-                    data: [10, 4, 5, 7, 2, 3]
-                }]
-            };
+            labels: ["2015-01-01", "2015-02-01", "2015-03-01", "2015-04-01", "2015-05-01", "2015-07-01"],
+            datasets: [{/*from  w w w  . de mo 2 s . com*/
+                categoryPercentage: .5,
+                barPercentage: 1,
+                label: 'Dataset 1',
+                backgroundColor: "rgba(220,220,220,0.5)",
+                data: [10, 4, 5, 7, 2, 3]
+            }]
+        };
         var ctx = document.getElementById("canvas_bar").getContext("2d");
         new Chart(ctx, {
-        type: 'bar',
-        data: barChartData,
-        options: {
-            elements: {
-            rectangle: {
-                borderWidth: 2,
-                borderColor: 'rgb(0, 255, 0)',
-                borderSkipped: 'bottom'
-            }
-            },
-            responsive: true,
-            legend: {
-            position: 'top',
-            },
-        title:  {
-            display: true,
-            text: 'Chart.js Bar Chart'
-            },
-            scales: {
-            xAxes: [{
-                type: 'time',
-                offset: true,
-                scaleLabel: {
-                display: true,
-                labelString: 'Year-Month'
+            type: 'bar',
+            data: barChartData,
+            options: {
+                elements: {
+                    rectangle: {
+                        borderWidth: 2,
+                        borderColor: 'rgb(0, 255, 0)',
+                        borderSkipped: 'bottom'
+                    }
                 },
-                time: {
-            // min: '2014-12-01' ,
-            // max: '2015-12-01',
-                unit: 'month',
-                displayFormats: {
-                    month: "MMM yy"
+                responsive: true,
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Chart.js Bar Chart'
+                },
+                scales: {
+                    xAxes: [{
+                        type: 'time',
+                        offset: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Year-Month'
+                        },
+                        time: {
+                            // min: '2014-12-01' ,
+                            // max: '2015-12-01',
+                            unit: 'month',
+                            displayFormats: {
+                                month: "MMM yy"
+                            }
+                        },
+                        gridLines: {
+                            offsetGridLines: false,
+                            drawTicks: true,
+                            display: true
+                        },
+                        stacked: true
+                    }],
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        },
+                        stacked: true
+                    }]
                 }
-                },
-                gridLines: {
-                offsetGridLines: false,
-                drawTicks: true,
-                display: true
-                },
-                stacked: true
-            }],
-            yAxes: [{
-                ticks: {
-                beginAtZero: true
-                },
-                stacked: true
-            }]
             }
-        }
         });
     </script>
 
     <canvas id="canvas_bar2" width="900" height="400"></canvas>
     <script>
-            const dailyStock = [
-        { x: "2017-07-25", y: 1 },
-        { x: "2017-08-25", y: 3 },
-        { x: "2017-09-10", y: 7 },
-        { x: "2017-09-28", y: 0 },
-        { x: "2017-10-02", y: 3 },
-        { x: "2017-10-24", y: 2 },
-        { x: "2017-12-01", y: 1 },
-        { x: "2017-12-30", y: 0 },
+        const dailyStock = [
+            { x: "2017-07-25", y: 1 },
+            { x: "2017-08-25", y: 3 },
+            { x: "2017-09-10", y: 7 },
+            { x: "2017-09-28", y: 0 },
+            { x: "2017-10-02", y: 3 },
+            { x: "2017-10-24", y: 2 },
+            { x: "2017-12-01", y: 1 },
+            { x: "2017-12-30", y: 0 },
         ];
 
         const monthlyTotal = [
-        { x: "2017-08-01", y: 1 },
-        { x: "2017-09-01", y: 10 },
-        { x: "2017-10-01", y: 5 },
-        { x: "2017-12-01", y: 6 },
+            { x: "2017-08-01", y: 1 },
+            { x: "2017-09-01", y: 10 },
+            { x: "2017-10-01", y: 5 },
+            { x: "2017-12-01", y: 6 },
         ];
 
         var ctx = document.getElementById("canvas_bar2").getContext("2d");
         var myChart = new Chart(ctx, {
-        type: "bar",
-        data: {
-            //labels: ["2017-08", "2017-09", "2017-10", "2017-11", "2017-12"],
-            datasets: [
-            {
-                barPercentage: .7,
-                // xAxisID: "bar",
-                // label: "sales",
-                data: monthlyTotal,
-                // backgroundColor: "green",
-                // borderColor: "black",
-                // borderWidth: 1,
-                // width: 55,
-                // order: 2,
-            },
-            {
-                label: "stock",
-                type: "line",
-                data: dailyStock,
-                backgroundColor: "orange",
-                borderColor: "orange",
-                fill: false,
-                order: 1,
-            },
-            ],
-        },
-        options: {
-            scales: {
-                xAxes: [
+            type: "bar",
+            data: {
+                //labels: ["2017-08", "2017-09", "2017-10", "2017-11", "2017-12"],
+                datasets: [
                     {
-                        // id: "line",
-                        type: "time",
-                        // time: {
-                        //     unit: "month",
-                        //     displayFormats: {
-                        //         month: "MMM",
-                        //     },
-                        // },
-                        // distribution: "linear",
+                        barPercentage: .7,
+                        // xAxisID: "bar",
+                        // label: "sales",
+                        data: monthlyTotal,
+                        // backgroundColor: "green",
+                        // borderColor: "black",
+                        // borderWidth: 1,
+                        // width: 55,
+                        // order: 2,
                     },
-                    // {
-                    //     id: "bar",
-                    //     offset: true,
-                    //     type: "category",
-                    //     distribution: "series",
-                    // }
-                ],
-                yAxes: [
                     {
-                        ticks: {
-                            beginAtZero: true,
+                        label: "stock",
+                        type: "line",
+                        data: dailyStock,
+                        backgroundColor: "orange",
+                        borderColor: "orange",
+                        fill: false,
+                        order: 1,
+                    },
+                ],
+            },
+            options: {
+                scales: {
+                    xAxes: [
+                        {
+                            // id: "line",
+                            type: "time",
+                            // time: {
+                            //     unit: "month",
+                            //     displayFormats: {
+                            //         month: "MMM",
+                            //     },
+                            // },
+                            // distribution: "linear",
                         },
-                    },
-                ],
+                        // {
+                        //     id: "bar",
+                        //     offset: true,
+                        //     type: "category",
+                        //     distribution: "series",
+                        // }
+                    ],
+                    yAxes: [
+                        {
+                            ticks: {
+                                beginAtZero: true,
+                            },
+                        },
+                    ],
+                },
             },
-        },
         });
     </script>
 
 
     <canvas id="canvas_bar3" width="900" height="400"></canvas>
     <script>
-            const dailyStock2 = [
-        { x: "2017-08-02 10:00", y: 1 },
-        { x: "2017-08-02 11:00", y: 3 },
-        { x: "2017-08-02 15:00", y: 7 },
-        { x: "2017-08-03 09:00", y: 0 },
-        { x: "2017-08-03 10:00", y: 3 },
-        { x: "2017-08-03 10:30", y: 2 },
-        { x: "2017-08-04 10:45", y: 1 },
-        { x: "2017-08-10 17:00", y: 0 },
+        const dailyStock2 = [
+            { x: "2017-08-02 10:00", y: 1 },
+            { x: "2017-08-02 11:00", y: 3 },
+            { x: "2017-08-02 15:00", y: 7 },
+            { x: "2017-08-03 09:00", y: 0 },
+            { x: "2017-08-03 10:00", y: 3 },
+            { x: "2017-08-03 10:30", y: 2 },
+            { x: "2017-08-04 10:45", y: 1 },
+            { x: "2017-08-10 17:00", y: 0 },
         ];
 
         const monthlyTotal2 = [
-        { x: "2017-08-02", y: 1 },
-        { x: "2017-08-03", y: 10 },
-        { x: "2017-08-04", y: 5 },
-        { x: "2017-08-10", y: 5 },
+            { x: "2017-08-02", y: 1 },
+            { x: "2017-08-03", y: 10 },
+            { x: "2017-08-04", y: 5 },
+            { x: "2017-08-10", y: 5 },
         ];
 
         var ctx2 = document.getElementById("canvas_bar3").getContext("2d");
         var myChart2 = new Chart(ctx2, {
-        type: "bar",
-        data: {
-            labels: ["2017-08-02", "2017-08-03", "2017-08-04", "2017-08-10"],
-            datasets: [
-            {
-                barPercentage: .7,
-                xAxisID: "bar",
-                label: "sales",
-                data: monthlyTotal2,
-                backgroundColor: "green",
-                borderColor: "black",
-                borderWidth: 1,
-                width: 55,
-                order: 2,
-            },
-            {
-                label: "stock",
-                type: "line",
-                data: dailyStock2,
-                backgroundColor: "orange",
-                borderColor: "orange",
-                fill: false,
-                order: 1,
-            },
-            ],
-        },
-        options: {
-            scales: {
-                xAxes: [
+            type: "bar",
+            data: {
+                labels: ["2017-08-02", "2017-08-03", "2017-08-04", "2017-08-10"],
+                datasets: [
                     {
-                        id: "line",
-                        type: "time",
-                        time: {
-                            unit: "day",
-                            displayFormats: {
-                                month: "DD",
-                            },
-                        },
-                        distribution: "linear",
-                        },
-                        {
-                            id: "bar",
-                        offset: true,
-                        type: "category",
-                        distribution: "series",
-                    }
-                ],
-                yAxes: [
+                        barPercentage: .7,
+                        xAxisID: "bar",
+                        label: "sales",
+                        data: monthlyTotal2,
+                        backgroundColor: "green",
+                        borderColor: "black",
+                        borderWidth: 1,
+                        width: 55,
+                        order: 2,
+                    },
                     {
-                        ticks: {
-                            beginAtZero: true,
-                        },
+                        label: "stock",
+                        type: "line",
+                        data: dailyStock2,
+                        backgroundColor: "orange",
+                        borderColor: "orange",
+                        fill: false,
+                        order: 1,
                     },
                 ],
             },
-        },
+            options: {
+                scales: {
+                    xAxes: [
+                        {
+                            id: "line",
+                            type: "time",
+                            time: {
+                                unit: "day",
+                                displayFormats: {
+                                    month: "DD",
+                                },
+                            },
+                            distribution: "linear",
+                        },
+                        {
+                            id: "bar",
+                            offset: true,
+                            type: "category",
+                            distribution: "series",
+                        }
+                    ],
+                    yAxes: [
+                        {
+                            ticks: {
+                                beginAtZero: true,
+                            },
+                        },
+                    ],
+                },
+            },
         });
     </script>
 
@@ -665,20 +750,20 @@
     <script>
         title = "{{ ps4_2_datasets_chart.title|safe }}"
 
-        labels1 = {{ ps4_2_datasets_chart.labels1|safe }}
-        values1 = {{ ps4_2_datasets_chart.values1|safe }}
+        labels1 = {{ ps4_2_datasets_chart.labels1 | safe }}
+        values1 = {{ ps4_2_datasets_chart.values1 | safe }}
         chart_type1 = "{{ ps4_2_datasets_chart.chart_type1|safe }}"
-        
-        labels2 = {{ ps4_2_datasets_chart.labels2|safe }}
-        values2 = {{ ps4_2_datasets_chart.values2|safe }}
+
+        labels2 = {{ ps4_2_datasets_chart.labels2 | safe }}
+        values2 = {{ ps4_2_datasets_chart.values2 | safe }}
         chart_type2 = "{{ ps4_2_datasets_chart.chart_type2|safe }}"
-        
+
         unit = "{{ ps4_2_datasets_chart.unit|safe }}"
-        
+
         config = myConfig_2_datasets(
-            title, 
-            labels1, values1, chart_type1, 
-            labels2, values2, chart_type2, 
+            title,
+            labels1, values1, chart_type1,
+            labels2, values2, chart_type2,
             unit);
         //console.log(config);
 
@@ -687,107 +772,107 @@
     </script>
 
     <canvas id="canvas3"></canvas>
-        <script>
-            var timeFormat = 'dd/MM/yyyy';
-            var data31 = [{
-                                x: "04/01/2014", y: 175
-                            }, {
-                                x: "10/01/2014", y: 175
-                            }, {
-                                x: "04/01/2015", y: 178
-                            }, {
-                                x: "10/01/2015", y: 178
-                            }];
-            var data3 = {
-                    datasets: [
-                        {
-                            label: "US Dates",
-                            data: data31,
-                            fill: false,
-                            borderColor: 'red'
-                        },
-                        {
-                            label: "UK Dates",
-                            data:  [{
-                                x: "01/04/2014", y: 175
-                            }, {
-                                x: "01/10/2014", y: 175
-                            }, {
-                                x: "01/04/2015", y: 178
-                            }, {
-                                x: "01/10/2015", y: 178
-                            }],
-                            fill:  false,
-                            borderColor: 'blue'
-                        }
-                    ]
-                };
-                // console.log(data3);
-                var options3 = {
-                    responsive: true,
-                    title:      {
-                        display: true,
-                        text:    "Chart.js Time Scale"
+    <script>
+        var timeFormat = 'dd/MM/yyyy';
+        var data31 = [{
+            x: "04/01/2014", y: 175
+        }, {
+            x: "10/01/2014", y: 175
+        }, {
+            x: "04/01/2015", y: 178
+        }, {
+            x: "10/01/2015", y: 178
+        }];
+        var data3 = {
+            datasets: [
+                {
+                    label: "US Dates",
+                    data: data31,
+                    fill: false,
+                    borderColor: 'red'
+                },
+                {
+                    label: "UK Dates",
+                    data: [{
+                        x: "01/04/2014", y: 175
+                    }, {
+                        x: "01/10/2014", y: 175
+                    }, {
+                        x: "01/04/2015", y: 178
+                    }, {
+                        x: "01/10/2015", y: 178
+                    }],
+                    fill: false,
+                    borderColor: 'blue'
+                }
+            ]
+        };
+        // console.log(data3);
+        var options3 = {
+            responsive: true,
+            title: {
+                display: true,
+                text: "Chart.js Time Scale"
+            },
+            scales: {
+                xAxes: [{
+                    type: "time",
+                    time: {
+                        format: timeFormat,
+                        tooltipFormat: 'll'
                     },
-                    scales:     {
-                        xAxes: [{
-                            type:       "time",
-                            time:       {
-                                format: timeFormat,
-                                tooltipFormat: 'll'
-                            },
-                            scaleLabel: {
-                                display:     true,
-                                labelString: 'Date3'
-                            }
-                        }],
-                        yAxes: [{
-                            scaleLabel: {
-                                display:     true,
-                                labelString: 'value'
-                            }
-                        }]
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Date3'
                     }
-                };
-                var config3 = {
-                type: 'line',
-                data: data3,
-                options: options3
-                // options: {}
-                };
+                }],
+                yAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'value'
+                    }
+                }]
+            }
+        };
+        var config3 = {
+            type: 'line',
+            data: data3,
+            options: options3
+            // options: {}
+        };
 
-    // -------------------------
-    //         const labels3 = [
-    //             'January',
-    //             'February',
-    //             'March',
-    //             'April',
-    //             'May',
-    //             'June',
-    //             ];
-    //         const data3 = {
-    //             labels: labels3,
-    //             datasets: [{
-    //                 label: 'My First dataset',
-    //                 backgroundColor: 'rgb(255, 99, 132)',
-    //                 borderColor: 'rgb(255, 99, 132)',
-    //                 data: [0, 10, 5, 2, 20, 30, 45],
-    //             }]
-    //         };
-    //         const config3 = {
-    //             type: 'line',
-    //             data: data3,
-    //             options: {}
-    //             };
+        // -------------------------
+        //         const labels3 = [
+        //             'January',
+        //             'February',
+        //             'March',
+        //             'April',
+        //             'May',
+        //             'June',
+        //             ];
+        //         const data3 = {
+        //             labels: labels3,
+        //             datasets: [{
+        //                 label: 'My First dataset',
+        //                 backgroundColor: 'rgb(255, 99, 132)',
+        //                 borderColor: 'rgb(255, 99, 132)',
+        //                 data: [0, 10, 5, 2, 20, 30, 45],
+        //             }]
+        //         };
+        //         const config3 = {
+        //             type: 'line',
+        //             data: data3,
+        //             options: {}
+        //             };
 
-    const myChart3 = new Chart(
-        document.getElementById('canvas3'),
-        config3
-    );
+        const myChart3 = new Chart(
+            document.getElementById('canvas3'),
+            config3
+        );
     </script>
 
     <div style="width:75%;">
-    <canvas id="canvas4"></canvas>
+        <canvas id="canvas4"></canvas>
     </div>
     <script>
         const labels4 = [
@@ -797,7 +882,7 @@
             'April',
             'May',
             'June',
-            ];
+        ];
         const data4 = {
             labels: labels4,
             datasets: [{
@@ -811,11 +896,12 @@
             type: 'line',
             data: data4,
             options: {}
-            };
-    const myChart4 = new Chart(
-        document.getElementById('canvas4'),
-        config4
-    );
+        };
+        const myChart4 = new Chart(
+            document.getElementById('canvas4'),
+            config4
+        );
     </script>
 </body>
+
 </html>
