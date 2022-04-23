@@ -125,7 +125,7 @@
                     labels: labels,    //{{ labels | safe }},
                     datasets: [
                         {
-                            label: "temperature",
+                            label: "temperature2",
                             data: data_array_1a,
                             fill: false,
                             borderColor: "rgb(75, 192, 192)",
@@ -138,7 +138,7 @@
             return config1;
         }
 
-        function myConfig2(title, values, values_unit, labels, chart_type, unit) {
+        function myConfig2(title, values, values_unit, labels, chart_type, unit, label) {
             // var timeFormat = 'yyyy/MM/dd H:mm:ss';
             var timeFormat = 'yyyy/MM/dd';
             // var timeFormat = 'H:mm';
@@ -191,6 +191,7 @@
 
             var options1 = {
                 responsive: true,
+                
                 title: {
                     display: true,
                     text: title
@@ -205,7 +206,7 @@
                     labels: labels,    //{{ labels | safe }},
                     datasets: [
                         {
-                            label: "temperature",
+                            label: label,
                             data: data_array_1a,
                             fill: false,
                             borderColor: "rgb(75, 192, 192)",
@@ -362,33 +363,199 @@
             return config;
         }
 
+        function myConfig_2_datasets2(
+            title,
+            labels1, values1, chart_type1,
+            labels2, values2, chart_type2,
+            unit) {
+            var timeFormat = 'yyyy/MM/dd';
+
+            var data1 = [];
+            for (i = 0; i < labels1.length; i++) {
+                b = { x: labels1[i], y: values1[i] };
+                data1.push(b);
+            }
+
+            var data2 = [];
+            // for (i = 0; i < labels2.length; i++) {
+            //     b = { x: labels2[i], y: values2[i] };
+            //     data2.push(b);
+            // }
+
+            var xA = [
+                {
+                    // scaleLabel: {
+                    //     display: true,
+                    //     labelString: 'Month-Day'
+                    // },
+                    // scaleLabel: {
+                    //     display:     true,
+                    //     labelString: 'Date'
+                    // },
+                    id: "xAxis_ID1",
+                    type: "time",
+                    time: {
+                        unit: unit,
+                        // format: timeFormat,
+                        displayFormats: {
+                            day: "DD"
+                        },
+                        parser: 'yyyy-MM-dd H:m:s'
+                        //     tooltipFormat: 'll'
+                    },
+                    offset: true,
+                    type: "category",
+                    distribution: "series",
+
+                    // gridLines: {
+                    //     offsetGridLines: false,
+                    //     drawTicks: true,
+                    //     display: true
+                    // },
+                    //stacked: true
+                },
+                {
+                    id: "night_ID",
+                    offset: true,
+                    type: "time",
+                    type: "category",
+                    distribution: "series",
+                }
+
+            ];
+            var yA = [
+                {
+                    ticks: {
+                        beginAtZero: true,
+                    },
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Y1'
+                    }
+                },
+                // {
+                //     id: 'y_day_id',
+                //     scaleLabel: {
+                //         display: true,
+                //         labelString: 'Y2'
+                //     }
+                // }
+            ];
+            var scales1 = {
+                xAxes: xA,
+                yAxes: yA
+            };
+
+            var options = {
+                scales: scales1,
+                responsive: true,
+                // legend: {
+                //     position: 'top',
+                // },
+                title:      {
+                    display: true,
+                    text:    title
+                },
+                // elements: {
+                //     rectangle: {
+                //         borderWidth: 2,
+                //         borderColor: 'rgb(0, 255, 0)',
+                //         borderSkipped: 'bottom'
+                //     }
+                // }
+            };
+            //console.log(options);
+            var config = {
+                type: "line",
+                data: {
+                    labels: labels2,  //{{ labels | safe }},
+                    datasets: [
+                        {
+                            label: "Delta Day",
+                            // barPercentage: .7,
+                            //     // categoryPercentage: .5,
+                            //     //type: chart_type2,
+                            // xAxisID: "xAxis_ID",
+                            // yAxisID: 'yAxis_ID',
+                            // label: "my label",
+                            // backgroundColor: "green",
+                            borderColor: "green",
+                            // borderWidth: 1,
+                            // // width: 55,
+                            order: 1,
+                            //     // fill: false,
+                            //     //lineTension: 0.1,
+                            data: data1
+                            },
+                        {
+                            label: "Delta Night",
+                            // type: "line",
+                            // xAxisID: "xAxis_ID2",
+                            borderColor: "orange",
+                            // backgroundColor: "orange",
+                            // borderColor: "orange",
+                            // // fill: false,
+                            // //lineTension: 0.1,
+                            order: 2,
+                            data: data2
+                            }
+                    ]
+                },
+                options: options,
+            };
+            // console.log(config);
+            return config;
+        }
+
+     </script>
+
+    <canvas id="myCanvas" width="200" height="100" style="border:1px solid #d3d3d3;">
+        Your browser does not support the HTML canvas tag.</canvas>
+
+    <script>
+        var c = document.getElementById("myCanvas");
+        var ctx = c.getContext("2d");
+        ctx.moveTo(0, 0);
+        ctx.lineTo(200, 100);
+        ctx.stroke();
     </script>
 
-    <canvas id="canvas_frigo_1h" width="900" height="400"></canvas>
+    <!-- <canvas id="canvas_frigo_1h" width="900" height="400" style="border:1px solid #d3d3d3;"></canvas> -->
+    <canvas id="canvas_frigo_1h" width="200" height="100" style="border:1px solid #d3d3d3;"></canvas>
+
+
     <script>
-        values = {{ frigo_1h_chart.values | safe }}
+        // values = {{ frigo_1h_chart.values | safe }}
+        values = JSON.parse('{{ frigo_1h_chart.values | tojson }}');
         values_unit = "{{ frigo_1h_chart.values_unit|safe }}"
-        labels = {{ frigo_1h_chart.labels | safe }}
+        // labels = {{ frigo_1h_chart.labels | safe }}
+        labels = JSON.parse('{{ frigo_1h_chart.labels | tojson }}');
         title = "{{ frigo_1h_chart.title|safe }}"
         chart_type = "{{ frigo_1h_chart.chart_type|safe }}"
         unit = "{{ frigo_1h_chart.unit|safe }}"
+        label = "{{ frigo_1h_chart.label|safe }}"
 
-        config = myConfig2(title, values, values_unit, labels, chart_type, unit);
+        config = myConfig2(title, values, values_unit, labels, chart_type, unit, label);
 
         var ctx = document.getElementById("canvas_frigo_1h").getContext("2d");
+        // ctx.font = "30px Arial";
+        // ctx.fillText("Hello World", 10, 50);
         var lineChart = new Chart(ctx, config);
     </script>
 
     <canvas id="canvas_frigo_smart_1h" width="900" height="400"></canvas>
     <script>
-        values = {{ frigo_1h_smart_chart.values | safe }}
+        // values = {{ frigo_1h_smart_chart.values | safe }}
+        values = JSON.parse('{{ frigo_1h_smart_chart.values | tojson }}');
+        labels = JSON.parse('{{ frigo_1h_smart_chart.labels | tojson }}');
         values_unit = "{{ frigo_1h_smart_chart.values_unit|safe }}"
-        labels = {{ frigo_1h_smart_chart.labels | safe }}
+        // labels = {{ frigo_1h_smart_chart.labels | safe }}
         title = "{{ frigo_1h_smart_chart.title|safe }}"
         chart_type = "{{ frigo_1h_smart_chart.chart_type|safe }}"
         unit = "{{ frigo_1h_smart_chart.unit|safe }}"
+        label = "{{ frigo_1h_smart_chart.label|safe }}"
 
-        config = myConfig2(title, values, values_unit, labels, chart_type, unit);
+        config = myConfig2(title, values, values_unit, labels, chart_type, unit, label);
 
         var ctx = document.getElementById("canvas_frigo_smart_1h").getContext("2d");
         var lineChart = new Chart(ctx, config);
@@ -396,14 +563,17 @@
 
     <canvas id="canvas_frigo_10h" width="900" height="400"></canvas>
     <script>
-        values = {{ frigo_10h_chart.values | safe }}
-        labels = {{ frigo_10h_chart.labels | safe }}
-        labels_unit = {{ frigo_10h_chart.labels_unit | safe }}
+        values = JSON.parse('{{ frigo_10h_chart.values | tojson }}');
+        labels = JSON.parse('{{ frigo_10h_chart.labels | tojson }}');
+        // values = {{ frigo_10h_chart.values | safe }}
+        // labels = {{ frigo_10h_chart.labels | safe }}
+        values_unit = "{{ frigo_10h_chart.values_unit | safe }}"
         title = "{{ frigo_10h_chart.title|safe }}"
         chart_type = "{{ frigo_10h_chart.chart_type|safe }}"
         unit = "{{ frigo_10h_chart.unit|safe }}"
+        label = "{{ frigo_10h_chart.label|safe }}"
 
-        config = myConfig2(title, values, values_unit, labels, chart_type, unit);
+        config = myConfig2(title, values, values_unit, labels, chart_type, unit, label);
 
         var ctx = document.getElementById("canvas_frigo_10h").getContext("2d");
         var lineChart = new Chart(ctx, config);
@@ -411,91 +581,178 @@
 
     <canvas id="canvas_frigo_24h" width="900" height="400"></canvas>
     <script>
-        values = {{ frigo_24h_chart.values | safe }}
-        labels = {{ frigo_24h_chart.labels | safe }}
-        labels_unit = {{ frigo_24h_chart.labels_unit | safe }}
+        values = JSON.parse('{{ frigo_24h_chart.values | tojson }}');
+        labels = JSON.parse('{{ frigo_24h_chart.labels | tojson }}');
+        // values = {{ frigo_24h_chart.values | safe }}
+        // labels = {{ frigo_24h_chart.labels | safe }}
+        values_unit = "{{ frigo_24h_chart.values_unit | safe }}"
         title = "{{ frigo_24h_chart.title|safe }}"
         chart_type = "{{ frigo_24h_chart.chart_type|safe }}"
         unit = "{{ frigo_24h_chart.unit|safe }}"
+        label = "{{ frigo_24h_chart.label|safe }}"
 
-        config = myConfig2(title, values, values_unit, labels, chart_type, unit);
+        config = myConfig2(title, values, values_unit, labels, chart_type, unit, label);
 
         var ctx = document.getElementById("canvas_frigo_24h").getContext("2d");
         var lineChart = new Chart(ctx, config);
     </script>
 
-    <canvas id="canvas_pool_pH" width="900" height="400"></canvas>
+    <canvas id="canvas_pool_ph" width="900" height="400"></canvas>
     <script>
-        values = {{ pool_pH_chart.values | safe }}
-        labels = {{ pool_pH_chart.labels | safe }}
-        labels_unit = {{ pool_pH_chart.labels_unit | safe }}
-        title = "{{ pool_pH_chart.title|safe }}"
-        chart_type = "{{ pool_pH_chart.chart_type|safe }}"
-        unit = "{{ pool_pH_chart.unit|safe }}"
+        values = JSON.parse('{{ pool_ph_chart.values | tojson }}');
+        labels = JSON.parse('{{ pool_ph_chart.labels | tojson }}');
+        // values = {{ pool_ph_chart.values | safe }}
+        // labels = {{ pool_ph_chart.labels | safe }}
+        values_unit = "{{ pool_ph_chart.values_unit | safe }}"
+        title = "{{ pool_ph_chart.title|safe }}"
+        chart_type = "{{ pool_ph_chart.chart_type|safe }}"
+        unit = "{{ pool_ph_chart.unit|safe }}"
+        label = "{{ pool_ph_chart.label|safe }}"
 
-        config = myConfig2(title, values, values_unit, labels, chart_type, unit);
+        config = myConfig2(title, values, values_unit, labels, chart_type, unit, label);
 
-        var ctx = document.getElementById("canvas_pool_pH").getContext("2d");
+        var ctx = document.getElementById("canvas_pool_ph").getContext("2d");
         var lineChart = new Chart(ctx, config);
     </script>
 
 
-<canvas id="canvas_pool_Cl" width="900" height="400"></canvas>
-<script>
-    values = {{ pool_Cl_chart.values | safe }}
-    labels = {{ pool_Cl_chart.labels | safe }}
-    labels_unit = {{ pool_Cl_chart.labels_unit | safe }}
-    title = "{{ pool_Cl_chart.title|safe }}"
-    chart_type = "{{ pool_Cl_chart.chart_type|safe }}"
-    unit = "{{ pool_Cl_chart.unit|safe }}"
-
-    config = myConfig2(title, values, values_unit, labels, chart_type, unit);
-
-    var ctx = document.getElementById("canvas_pool_Cl").getContext("2d");
-    var lineChart = new Chart(ctx, config);
-</script>
-
-<canvas id="canvas_power_day" width="900" height="400"></canvas>
-<script>
-    values = {{ power_day_chart.values | safe }}
-    labels = {{ power_day_chart.labels | safe }}
-    labels_unit = {{ power_day_chart.labels_unit | safe }}
-    title = "{{ power_day_chart.title|safe }}"
-    chart_type = "{{ power_day_chart.chart_type|safe }}"
-    unit = "{{ power_day_chart.unit|safe }}"
-
-    config = myConfig2(title, values, values_unit, labels, chart_type, unit);
-
-    var ctx = document.getElementById("canvas_power_day").getContext("2d");
-    var lineChart = new Chart(ctx, config);
-</script>
-
-
-<canvas id="canvas_power_night" width="900" height="400"></canvas>
-<script>
-values = {{ power_night_chart.values | safe }}
-labels = {{ power_night_chart.labels | safe }}
-labels_unit = {{ power_night_chart.labels_unit | safe }}
-title = "{{ power_night_chart.title|safe }}"
-chart_type = "{{ power_night_chart.chart_type|safe }}"
-unit = "{{ power_night_chart.unit|safe }}"
-
-config = myConfig2(title, values, values_unit, labels, chart_type, unit);
-
-var ctx = document.getElementById("canvas_power_night").getContext("2d");
-var lineChart = new Chart(ctx, config);
-</script>
-
-<canvas id="canvas_ps4" width="900" height="400"></canvas>
+    <canvas id="canvas_pool_cl" width="900" height="400"></canvas>
     <script>
-        values = {{ ps4_chart.values | safe }}
+        values = JSON.parse('{{ pool_cl_chart.values | tojson }}');
+        labels = JSON.parse('{{ pool_cl_chart.labels | tojson }}');
+        // values = {{ pool_cl_chart.values | safe }}
+        // labels = {{ pool_cl_chart.labels | safe }}
+        values_unit = "{{ pool_cl_chart.values_unit | safe }}"
+        title = "{{ pool_cl_chart.title|safe }}"
+        chart_type = "{{ pool_cl_chart.chart_type|safe }}"
+        unit = "{{ pool_cl_chart.unit|safe }}"
+        label = "{{ pool_cl_chart.label|safe }}"
+
+        config = myConfig2(title, values, values_unit, labels, chart_type, unit, label);
+
+        var ctx = document.getElementById("canvas_pool_cl").getContext("2d");
+        var lineChart = new Chart(ctx, config);
+    </script>
+
+    <canvas id="canvas_power" width="900" height="400"></canvas>
+    <script>
+        title = "{{ power_chart.title|safe }}"
+        console.log("title : "+title)
+
+        values1 = JSON.parse('{{ power_chart.values1 | tojson }}');
+        labels1 = JSON.parse('{{ power_chart.labels1 | tojson }}');
+        // labels1 = {{ power_chart.labels1 | safe }}
+        // values1 = {{ power_chart.values1 | safe }}
+        chart_type1 = "{{ power_chart.chart_type1|safe }}"
+
+        values2 = JSON.parse('{{ power_chart.values2 | tojson }}');
+        labels2 = JSON.parse('{{ power_chart.labels2 | tojson }}');
+        // labels2 = {{ power_chart.labels2 | safe }}
+        // values2 = {{ power_chart.values2 | safe }}
+        chart_type2 = "{{ power_chart.chart_type2|safe }}"
+
+        unit = "{{ power_chart.unit|safe }}"
+
+        config = myConfig_2_datasets2(
+            title,
+            labels1, values1, chart_type1,
+            labels2, values2, chart_type2,
+            unit);
+        //console.log(config);
+
+        var ctx = document.getElementById("canvas_power").getContext("2d");
+        var lineChart = new Chart(ctx, config);
+    </script>
+
+    <canvas id="canvas_power_day" width="900" height="400"></canvas>
+    <script>
+        values = JSON.parse('{{ power_day_chart.values | tojson }}');
+        labels = JSON.parse('{{ power_day_chart.labels | tojson }}');
+
+        // values = {{ power_day_chart.values | safe }}
+        // labels = {{ power_day_chart.labels | safe }}
+        values_unit = "{{ power_day_chart.values_unit | safe }}"
+        title = "{{ power_day_chart.title|safe }}"
+        chart_type = "{{ power_day_chart.chart_type|safe }}"
+        unit = "{{ power_day_chart.unit|safe }}"
+        label = "{{ power_day_chart.label|safe }}"
+
+        config = myConfig2(title, values, values_unit, labels, chart_type, unit, label);
+
+        var ctx = document.getElementById("canvas_power_day").getContext("2d");
+        var lineChart = new Chart(ctx, config);
+    </script>
+
+
+    <canvas id="canvas_power_day_delta" width="900" height="400"></canvas>
+    <script>
+        values = JSON.parse('{{ power_day_delta_chart.values | tojson }}');
+        labels = JSON.parse('{{ power_day_delta_chart.labels | tojson }}');
+        // values = {{ power_day_delta_chart.values | safe }}
+        // labels = {{ power_day_delta_chart.labels | safe }}"
+        values_unit = "{{ power_day_delta_chart.values_unit | safe }}"
+        title = "{{ power_day_delta_chart.title|safe }}"
+        chart_type = "{{ power_day_delta_chart.chart_type|safe }}"
+        unit = "{{ power_day_delta_chart.unit|safe }}"
+        label = "{{ power_day_delta_chart.label|safe }}"
+
+        config = myConfig2(title, values, values_unit, labels, chart_type, unit, label);
+
+        var ctx = document.getElementById("canvas_power_day_delta").getContext("2d");
+        var lineChart = new Chart(ctx, config);
+    </script>
+
+
+    <canvas id="canvas_power_night" width="900" height="400"></canvas>
+    <script>
+        values = JSON.parse('{{ power_night_chart.values | tojson }}');
+        labels = JSON.parse('{{ power_night_chart.labels | tojson }}');
+        // values = {{ power_night_chart.values | safe }}
+        // labels = {{ power_night_chart.labels | safe }}
+        values_unit = "{{ power_night_chart.values_unit | safe }}"
+        title = "{{ power_night_chart.title|safe }}"
+        chart_type = "{{ power_night_chart.chart_type|safe }}"
+        unit = "{{ power_night_chart.unit|safe }}"
+        label = "{{ power_night_chart.label|safe }}"
+
+        config = myConfig2(title, values, values_unit, labels, chart_type, unit, label);
+
+        var ctx = document.getElementById("canvas_power_night").getContext("2d");
+        var lineChart = new Chart(ctx, config);
+    </script>
+
+    <canvas id="canvas_power_night_delta" width="900" height="400"></canvas>
+    <script>
+        values = JSON.parse('{{ power_night_delta_chart.values | tojson }}');
+        labels = JSON.parse('{{ power_night_delta_chart.labels | tojson }}');
+        // values = {{ power_night_delta_chart.values | safe }}
+        // labels = {{ power_night_delta_chart.labels | safe }}
+        values_unit = "{{ power_night_delta_chart.values_unit | safe }}"
+        title = "{{ power_night_delta_chart.title|safe }}"
+        chart_type = "{{ power_night_delta_chart.chart_type|safe }}"
+        unit = "{{ power_night_delta_chart.unit|safe }}"
+        label = "{{ power_night_delta_chart.label|safe }}"
+
+        config = myConfig2(title, values, values_unit, labels, chart_type, unit, label);
+
+        var ctx = document.getElementById("canvas_power_night_delta").getContext("2d");
+        var lineChart = new Chart(ctx, config);
+    </script>
+
+
+    <canvas id="canvas_ps4" width="900" height="400"></canvas>
+    <script>
+        values = JSON.parse('{{ ps4_chart.values | tojson }}');
+        labels = JSON.parse('{{ ps4_chart.labels | tojson }}');
+        // values = {{ ps4_chart.values | safe }}
+        // labels = {{ ps4_chart.labels | safe }}
         values_unit = "{{ ps4_chart.values_unit|safe }}"
-        labels = {{ ps4_chart.labels | safe }}
         title = "{{ ps4_chart.title|safe }}"
         chart_type = "{{ ps4_chart.chart_type|safe }}"
         unit = "{{ ps4_chart.unit|safe }}"
+        label = "{{ ps4_chart.label|safe }}"
 
-        config = myConfig2(title, values, values_unit, labels, chart_type, unit);
+        config = myConfig2(title, values, values_unit, labels, chart_type, unit, label);
 
         var ctx = document.getElementById("canvas_ps4").getContext("2d");
         var lineChart = new Chart(ctx, config);
@@ -504,13 +761,16 @@ var lineChart = new Chart(ctx, config);
     <canvas id="canvas_ps4_2" width="900" height="400"></canvas>
     <script>
         title = "{{ ps4_chart.title|safe }}"
-        values = {{ ps4_2_chart.values | safe }}
+        values = JSON.parse('{{ ps4_2_chart.values | tojson }}');
+        labels = JSON.parse('{{ ps4_2_chart.labels | tojson }}');
+        // values = {{ ps4_2_chart.values | safe }}
+        // labels = {{ ps4_2_chart.labels | safe }}
         values_unit = "{{ ps4_2_chart.values_unit|safe }}"
-        labels = {{ ps4_2_chart.labels | safe }}
         chart_type = "{{ ps4_2_chart.chart_type|safe }}"
         unit = "{{ ps4_chart.unit|safe }}"
+        label = "{{ ps4_chart.label|safe }}"
 
-        config = myConfig2(title, values, values_unit, labels, chart_type, unit);
+        config = myConfig2(title, values, values_unit, labels, chart_type, unit, label);
 
         var ctx = document.getElementById("canvas_ps4_2").getContext("2d");
         var lineChart = new Chart(ctx, config);
@@ -750,12 +1010,16 @@ var lineChart = new Chart(ctx, config);
     <script>
         title = "{{ ps4_2_datasets_chart.title|safe }}"
 
-        labels1 = {{ ps4_2_datasets_chart.labels1 | safe }}
-        values1 = {{ ps4_2_datasets_chart.values1 | safe }}
+        values1 = JSON.parse('{{ ps4_2_datasets_chart.values1 | tojson }}');
+        labels1 = JSON.parse('{{ ps4_2_datasets_chart.labels1 | tojson }}');
+        // labels1 = {{ ps4_2_datasets_chart.labels1 | safe }}
+        // values1 = {{ ps4_2_datasets_chart.values1 | safe }}
         chart_type1 = "{{ ps4_2_datasets_chart.chart_type1|safe }}"
 
-        labels2 = {{ ps4_2_datasets_chart.labels2 | safe }}
-        values2 = {{ ps4_2_datasets_chart.values2 | safe }}
+        values2 = JSON.parse('{{ ps4_2_datasets_chart.values2 | tojson }}');
+        labels2 = JSON.parse('{{ ps4_2_datasets_chart.labels2 | tojson }}');
+        // labels2 = {{ ps4_2_datasets_chart.labels2 | safe }}
+        // values2 = {{ ps4_2_datasets_chart.values2 | safe }}
         chart_type2 = "{{ ps4_2_datasets_chart.chart_type2|safe }}"
 
         unit = "{{ ps4_2_datasets_chart.unit|safe }}"
