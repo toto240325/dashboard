@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+    <title>My Title</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+
+    <style type="text/css">
+        .chartBox {
+            width: 400px;
+        }
+
+        .chart {
+            vertical-align: middle;
+            width: 100%;
+            margin: 0 auto;
+            position: relative;
+            display: inline-block;
+
+        }
+
+        p {
+            text-align: center;
+            font-family: 'Verdana', sans-serif;
+            font-size: 10px;
+        }
+
+        canvas {
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Navbar</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/about">About</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            Dropdown
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="/">Home</a></li>
+                            <li><a class="dropdown-item" href="/about">About</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled">Disabled</a>
+                    </li>
+                </ul>
+                <form class="d-flex">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>This is my about page</h1>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 text-center">
+                <h2>Charting with Chartjs</h2>
+            </div>
+
+            <div class="col-xs-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Line Chart</h3>
+                    </div>
+                    <div class="panel-content text-center">
+                        <canvas id="myLineChart" class="chart"></canvas>
+                    </div>
+                    <div class="panel-footer">A simple Line Chart with basic settings</div>
+                </div>
+            </div>
+
+            <div class="col-xs-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Donut Chart</h3>
+                    </div>
+                    <div class="panel-content text-center">
+                        <canvas id="myDonutChart" class="chart"></canvas>
+                    </div>
+                    <div class="panel-footer">A simple Line Chart with basic settings</div>
+                </div>
+            </div>
+
+            <div class="col-xs-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Donut Chart</h3>
+                    </div>
+                    <div class="panel-content text-center">
+                        <canvas id="myLinearChart" class="chart"></canvas>
+                    </div>
+                    <div class="panel-footer">A simple Line Chart with basic settings</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Data
+        var data = {
+            labels: ["January", "February", "March", "April", "May", "June", "July"],
+            datasets: [{
+                label: "My First dataset",
+                fillColor: "rgba(220,220,220,0.2)",
+                strokeColor: "rgba(220,220,220,1)",
+                pointColor: "rgba(220,220,220,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(220,220,220,1)",
+                data: [65, 59, 80, 81, 56, 55, 40]
+            }, {
+                label: "My Second dataset",
+                fillColor: "rgba(151,187,205,0.2)",
+                strokeColor: "rgba(151,187,205,1)",
+                pointColor: "rgba(151,187,205,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(151,187,205,1)",
+                data: [28, 48, 40, 19, 86, 27, 90]
+            }]
+        };
+
+
+
+
+        var data2 = [
+            {
+                value: 300,
+                color: "#F7464A",
+                highlight: "#FF5A5E",
+                label: "Red"
+            },
+            {
+                value: 50,
+                color: "#46BFBD",
+                highlight: "#5AD3D1",
+                label: "Green"
+            },
+            {
+                value: 100,
+                color: "#FDB45C",
+                highlight: "#FFC870",
+                label: "Yellow"
+            },
+            {
+                value: 40,
+                color: "#949FB1",
+                highlight: "#A8B3C5",
+                label: "Grey"
+            },
+            {
+                value: 120,
+                color: "#4D5360",
+                highlight: "#616774",
+                label: "Dark Grey"
+            }
+
+        ];
+
+
+        // Global + Custom Chart Config Options
+
+        var options = {
+            bezierCurve: false,
+            animation: true,
+            animationEasing: "easeOutQuart",
+            showScale: false,
+            tooltipEvents: ["mousemove", "touchstart", "touchmove"],
+            tooltipCornerRadius: 3,
+            pointDot: true,
+            pointDotRadius: 4,
+            datasetFill: true,
+            scaleShowLine: true,
+            animationEasing: "easeOutBounce",
+            animateRotate: true,
+            animateScale: true,
+        };
+
+
+        // Load Chart
+
+        var ctx1 = document.getElementById("myLineChart").getContext("2d");
+        var ctx = document.getElementById("myDonutChart").getContext("2d");
+
+        var myLineChart = new Chart(ctx1).Line(data, options);
+        // var myBarChart = new Chart(ctx).Bar(data, options);
+        // var myRadarChart = new Chart(ctx).Radar(data, options);
+        // new Chart(ctx).PolarArea(data2, options);
+
+        // For a pie chart
+        // var myPieChart = new Chart(ctx).Pie(data2,options);
+
+        // And for a doughnut chart
+        var myDoughnutChart = new Chart(ctx).Doughnut(data2, options);
+
+    </script>
+
+
+
+
+
+
+    <table>
+        <tr>
+            <td>
+                <canvas id="myCanvas" width="600" height="300" style="border:1px solid #d3d3d3;">
+                    Your browser does not support the HTML canvas tag.</canvas>
+
+                <script>
+                    var c = document.getElementById("myCanvas");
+                    var ctx = c.getContext("2d");
+                    ctx.moveTo(0, 0);
+                    ctx.lineTo(200, 100);
+                    ctx.stroke();
+                </script>
+
+            </td>
+            <td>
+                <canvas id="myCanvas2" width="400" height="200" style="border:1px solid #d3d3d3;">
+                    Your browser does not support the HTML canvas tag.</canvas>
+
+                <script>
+                    var c = document.getElementById("myCanvas2");
+                    var ctx = c.getContext("2d");
+                    ctx.moveTo(0, 50);
+                    ctx.lineTo(200, 0);
+                    ctx.stroke();
+                </script>
+
+
+            </td>
+        </tr>
+    </table>
+
+
+</body>
+
+</html>
