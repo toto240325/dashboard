@@ -202,8 +202,8 @@ def smoothen(myarray):
     """
     smoothen the values of the passed array to smoothen the curve
     """
-    smoothened_array = savgol_filter(myarray, 50, 3)
-    return smoothened_array.tolist()
+    # myarray = savgol_filter(myarray, 10, 1).tolist()
+    return myarray
 
 
 @app.route('/about')
