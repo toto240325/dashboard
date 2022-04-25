@@ -13,6 +13,9 @@ import datetime
 import logging
 import time
 import sys
+
+from scipy.signal import savgol_filter
+
 from utils import diff_date_secs
 
 from flask import Flask, render_template  # , url_for, request, redirect
@@ -195,6 +198,14 @@ class ElapsedTime:
         logging.info(msg)
 
 
+def smoothen(myarray):
+    """
+    smoothen the values of the passed array to smoothen the curve
+    """
+    smoothened_array = savgol_filter(myarray, 50, 3)
+    return smoothened_array.tolist()
+
+
 @app.route('/about')
 def about():
     """
@@ -272,6 +283,8 @@ def index():
     power_day_values = [float(event["text"]) for event in events]
     power_day_labels = [event["time"] for event in events]
 
+    power_day_values = smoothen(power_day_values)
+
     elaps.elapsed_time("power_day")
 
     data = read_where("power_day", 60*10, "1900-01-01")
@@ -292,6 +305,10 @@ def index():
     # ---------------
 
     power_day_delta_values, power_day_delta_labels = average_events(events)
+
+    power_day_delta_values = smoothen(power_day_delta_values)
+
+
 
     elaps.elapsed_time("power_day_delta")
 
