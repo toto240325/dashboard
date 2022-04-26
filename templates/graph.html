@@ -18,6 +18,9 @@
         integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
         crossorigin="anonymous"></script>
 
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/1.2.1/chartjs-plugin-zoom.min.js"></script> -->
+
     <style type="text/css">
         .chartBox {
             width: 400px;
@@ -70,6 +73,7 @@
     </nav>
 
     <script>
+        'use strict';
         setTimeout(function () {
             window.location.reload(1);
         }, 10 * 60 * 1000);
@@ -83,7 +87,7 @@
                 b = { x: labels[i], y: values[i] };
                 a.push(b);
             }
-            data_array_1a = a;
+            var data_array_1a = a;
 
             var xA = [{
                 type: "time",
@@ -148,7 +152,7 @@
                 b = { x: labels[i], y: values[i] };
                 a.push(b);
             }
-            data_array_1a = a;
+            var data_array_1a = a;
 
             nowStr = (new Date()).toLocaleTimeString("fr-BE", { hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
             var datetime2 = "LastSync: " + nowStr;
@@ -218,6 +222,100 @@
             return config1;
         }
 
+        function myConfig2_with_IDs(title, values, IDs, values_unit, labels, chart_type, unit, label) {
+            // var timeFormat = 'yyyy/MM/dd H:mm:ss';
+            var timeFormat = 'yyyy/MM/dd';
+            // var timeFormat = 'H:mm';
+
+            var a = [];
+            var b = [];
+            for (i = 0; i < labels.length; i++) {
+                b = { x: labels[i], y: values[i] };
+                a.push(b);
+            }
+            var data_array_1a = a;
+
+            var a = [];
+            var b = [];
+            for (i = 0; i < labels.length; i++) {
+                b = { x: labels[i], y: IDs[i] };
+                a.push(b);
+            }
+            var data_array_2a = a;
+
+            nowStr = (new Date()).toLocaleTimeString("fr-BE", { hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+            var datetime2 = "LastSync: " + nowStr;
+
+            var xA = [{
+                type: "time",
+                time: {
+                    // format: timeFormat,
+                    displayFormats: {
+                        'millisecond': 'MMM dd',
+                        'second': 'MMM dd',
+                        'minute': 'H:mm',
+                        'hour': 'H:mm',
+                        'day': 'dd/MM',
+                        'week': 'MMM dd',
+                        'month': 'MMM dd',
+                        'quarter': 'MMM dd',
+                        'year': 'MMM dd',
+                    },
+                    unit: unit,
+                    parser: 'yyyy-MM-dd H:m:s'
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: datetime2
+                }
+            }];
+            var yA = [{
+                scaleLabel: {
+                    display: true,
+                    labelString: values_unit
+                }
+            }];
+            var scales1 = {
+                xAxes: xA,
+                yAxes: yA
+            };
+
+            var options1 = {
+                // responsive: true,
+                title: {
+                    display: true,
+                    text: title
+                },
+                scales: scales1
+            };
+            var config1 = {
+                //type: "line",
+                //type: "bar",
+                type: chart_type,
+                data: {
+                    labels: labels,    //{{ labels | safe }},
+                    datasets: [
+                        {
+                            label: label,
+                            data: data_array_1a,
+                            fill: false,
+                            borderColor: "rgb(75, 192, 192)",
+                            lineTension: 0.1
+                        },
+                        {
+                            label: label,
+                            data: data_array_2a,
+                            fill: false,
+                            borderColor: "rgb(75, 192, 192)",
+                            hidden: true
+                        }
+                    ]
+                },
+                options: options1
+            };
+            return config1;
+        }
+
         function myConfig_2_datasets(
             title,
             labels1, values1, chart_type1,
@@ -240,14 +338,6 @@
 
             var xA = [
                 {
-                    // scaleLabel: {
-                    //     display: true,
-                    //     labelString: 'Month-Day'
-                    // },
-                    // scaleLabel: {
-                    //     display:     true,
-                    //     labelString: 'Date'
-                    // },
                     id: "bubble",
                     type: "time",
                     time: {
@@ -518,6 +608,8 @@
     </script> -->
 
     <canvas id="canvas32"></canvas>
+    <button type="button" onclick="alert('Hello world!')">Click Me!</button>
+
     <script>
 
         values = JSON.parse('{{ frigo_1h_chart.values | tojson }}');
@@ -593,13 +685,6 @@
                         unit: unit,
                         parser: 'yyyy-MM-dd H:m:s'
                     },
-
-
-
-                    // time: {
-                    //     format: timeFormat,
-                    //     // tooltipFormat: 'll'
-                    // },
                     scaleLabel: {
                         display: true,
                         labelString: 'Date3'
@@ -625,27 +710,27 @@
             config32
         );
 
-        var mycanvas32 = document.getElementById("canvas32");
-        mycanvas32.onclick = function (evt) {
-            var activePoints = myChart32.getElementsAtEvent(evt);
-            if (activePoints[0]) {
-                console.log("start");
-                obj = activePoints[0];
-                console.log('Item: %o', obj);
-                var chartData = activePoints[0]['_chart'].config.data;
-                console.log('chartData: %o', chartData);
-                var idx = activePoints[0]['_index'];
-                console.log('idx: %o', idx);
-                var label = chartData.labels[idx];
-                console.log('label: %o', label);
-                var value = chartData.datasets[0].data[idx];
-                console.log('value: %o', value);
+        // var mycanvas32 = document.getElementById("canvas32");
+        // mycanvas32.onclick = function (evt) {
+        //     var activePoints = myChart32.getElementsAtEvent(evt);
+        //     if (activePoints[0]) {
+        //         console.log("start");
+        //         obj = activePoints[0];
+        //         console.log('Item: %o', obj);
+        //         var chartData = activePoints[0]['_chart'].config.data;
+        //         console.log('chartData: %o', chartData);
+        //         var idx = activePoints[0]['_index'];
+        //         console.log('idx: %o', idx);
+        //         var label = chartData.labels[idx];
+        //         console.log('label: %o', label);
+        //         var value = chartData.datasets[0].data[idx];
+        //         console.log('value: %o', value);
 
-                var url = "http://example.com/?label=" + label + "&value=" + value;
-                // console.log(url);
-                // alert(url);
-            }
-        };
+        //         var url = "http://example.com/?label=" + label + "&value=" + value;
+        //         // console.log(url);
+        //         // alert(url);
+        //     }
+        // };
     </script>
 
     <canvas id="canvas_frigo_with_smart" width="900" height="200" style="border:1px solid #d3d3d3;"></canvas>
@@ -870,30 +955,30 @@
         var ctx = document.getElementById("canvas_frigo_10h").getContext("2d");
         var lineChart = new Chart(ctx, config);
 
-        var mycanvas = document.getElementById("canvas_frigo_10h");
-        console.log('Item: %o', mycanvas);
-        mycanvas.onclick = function (evt) {
-            console.log("clicked !");
-            console.log('lineChart: %o', lineChart);
-            var activePoints = lineChart.getElementsAtEvent(evt);
-            if (activePoints[0]) {
-                console.log("start");
-                obj = activePoints[0];
-                console.log('Item: %o', obj);
-                var chartData = activePoints[0]['_chart'].config.data;
-                console.log('chartData: %o', chartData);
-                var idx = activePoints[0]['_index'];
-                console.log('idx: %o', idx);
-                var label = chartData.labels[idx];
-                console.log('label: %o', label);
-                var value = chartData.datasets[0].data[idx];
-                console.log('value: %o', value);
+        // var mycanvas = document.getElementById("canvas_frigo_10h");
+        // // console.log('Item: %o', mycanvas);
+        // mycanvas.onclick = function (evt) {
+        //     console.log("clicked !");
+        //     console.log('lineChart: %o', lineChart);
+        //     var activePoints = lineChart.getElementsAtEvent(evt);
+        //     if (activePoints[0]) {
+        //         console.log("start");
+        //         obj = activePoints[0];
+        //         // console.log('Item: %o', obj);
+        //         var chartData = activePoints[0]['_chart'].config.data;
+        //         console.log('chartData: %o', chartData);
+        //         var idx = activePoints[0]['_index'];
+        //         console.log('idx: %o', idx);
+        //         var label = chartData.labels[idx];
+        //         console.log('label: %o', label);
+        //         var value = chartData.datasets[0].data[idx];
+        //         console.log('value: %o', value);
 
-                var url = "http://example.com/?label=" + label + "&value=" + value;
-                // console.log(url);
-                // alert(url);
-            }
-        };
+        //         var url = "http://example.com/?label=" + label + "&value=" + value;
+        //         // console.log(url);
+        //         // alert(url);
+        //     }
+        // };
     </script>
 
     <canvas id="canvas_frigo_24h" width="900" height="250"></canvas>
@@ -981,30 +1066,111 @@
         var lineChart = new Chart(ctx, config);
     </script>
 
-    <canvas id="canvas_power_day" width="900" height="300"></canvas>
-    <script>
-        values = JSON.parse('{{ power_day_chart.values | tojson }}');
-        labels = JSON.parse('{{ power_day_chart.labels | tojson }}');
 
-        // values = {{ power_day_chart.values | safe }}
-        // labels = {{ power_day_chart.labels | safe }}
+    <div style="width:75%;"><canvas id="canvas4"></canvas>
+    </div>
+    <script>
+        const labels4 = [
+            'January',
+            'February',
+            'March',
+            'April',
+            'May',
+            'June',
+        ];
+        data1 = [0, 10, 5, 2, 20, 30, 45];
+        data2 = [5, 15, 15, 22, 21, 30, 40];
+
+        const datafull4 = {
+            labels: labels4,
+            datasets: [{
+                label: 'My second dataset',
+                data: data1,
+            },
+            {
+                label: 'My third dataset',
+                data: data2,
+            }]
+        };
+
+        const config4 = {
+            type: 'line',
+            data: datafull4,
+            options: {
+                title: {
+                    display: true,
+                    text: "canvas4"
+                }
+            }
+        };
+
+        const myChart4 = new Chart(
+            document.getElementById('canvas4'),
+            config4
+        );
+        // var mycanvas = document.getElementById("canvas4");
+        // console.log('Item: %o', mycanvas);
+        // mycanvas.onclick = function (evt) {
+        //     console.log("--------------------");
+        //     console.log('mychart4: %o', myChart4);
+        //     var activePoints = myChart4.getElementsAtEvent(evt);
+        //     if (activePoints[0]) {
+        //         console.log(" activePoints");
+        //         obj = activePoints[0];
+        //         console.log('Item: %o', obj);
+        //         var chartData = activePoints[0]['_chart'].config.data;
+        //         console.log('chartData: %o', chartData);
+        //         var idx = activePoints[0]['_index'];
+        //         console.log('idx: %o', idx);
+        //         var label = chartData.labels[idx];
+        //         console.log('label: %o', label);
+        //         var value = chartData.datasets[0].data[idx];
+        //         console.log('value: %o', value);
+
+        //         var url = "http://example.com/?label=" + label + "&value=" + value;
+        //         // console.log(url);
+        //         // alert(url);
+        //     }
+        // };
+
+    </script>
+
+    <canvas id="canvas_power_day" width="900" height="300"></canvas>
+    <script type="module">
+        // alert(import.meta.url); // script URL
+
+        values = JSON.parse('{{ power_day_chart.values | tojson }}');
+        var IDs = JSON.parse('{{ power_day_chart.IDs | tojson }}');
+        labels = JSON.parse('{{ power_day_chart.labels | tojson }}');
         values_unit = "{{ power_day_chart.values_unit | safe }}"
         title = "{{ power_day_chart.title|safe }}"
         chart_type = "{{ power_day_chart.chart_type|safe }}"
         unit = "{{ power_day_chart.unit|safe }}"
         label = "{{ power_day_chart.label|safe }}"
 
-        config = myConfig2(title, values, values_unit, labels, chart_type, unit, label);
+        config = myConfig2_with_IDs(title, values, IDs, values_unit, labels, chart_type, unit, label);
 
         var ctx = document.getElementById("canvas_power_day").getContext("2d");
-        var lineChart = new Chart(ctx, config);
+        var lineChartPowerDay = new Chart(ctx, config);
+
+        // import { Chart } from 'chart.js';
+        // import { Chart } from './node_modules/chart.js';
+        // import Chart from 'https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js';
+        // parse = require('https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js');
+
+
+        // import zoomPlugin from './node_modules/chartjs-plugin-zoom';
+        // Chart.register(zoomPlugin);
 
         var mycanvasday = document.getElementById("canvas_power_day");
-        console.log('Item: %o', mycanvasday);
+        // console.log('Item: %o', mycanvasday);
         mycanvasday.onclick = function (evt) {
-            console.log("clicked !");
-            console.log('lineChart: %o', lineChart);
-            var activePoints = lineChart.getElementsAtEvent(evt);
+            console.log("------------------");
+            console.log('lineChartPowerDay: %o', lineChartPowerDay);
+            var activePoints = lineChartPowerDay.getElementsAtEvent(evt);
+            var obj = activePoints;
+            console.log('Item: %o', obj);
+            
             if (activePoints[0]) {
                 console.log("start");
                 obj = activePoints[0];
@@ -1014,17 +1180,23 @@
                 var idx = activePoints[0]['_index'];
                 console.log('idx: %o', idx);
                 var label = chartData.labels[idx];
-                console.log('label: %o', label);
+                // console.log('label: %o', label);
                 var value = chartData.datasets[0].data[idx];
-                console.log('value: %o', value);
+                // console.log('value: %o', value);
+                var id = chartData.datasets[1].data[idx];
+                // console.log('id: %o', id);
 
-                var url = "http://example.com/?label=" + label + "&value=" + value;
-                // console.log(url);
-                // alert(url);
+                var url = "http://192.168.0.73/event/api/event/delete.php?id=" + id.y;
+
+                const Http = new XMLHttpRequest();
+                Http.open("GET", url);
+                Http.send();
+                Http.onreadystatechange = (e) => {
+                    console.log(Http.responseText)
+                }
             }
         };
     </script>
-
 
     <canvas id="canvas_power_day_delta" width="900" height="300"></canvas>
     <script>
@@ -1041,13 +1213,19 @@
         config = myConfig2(title, values, values_unit, labels, chart_type, unit, label);
 
         var ctx = document.getElementById("canvas_power_day_delta").getContext("2d");
-        var lineChart = new Chart(ctx, config);
+        var lineChart_power_day_delta = new Chart(ctx, config);
     </script>
 
 
     <canvas id="canvas_power_night" width="900" height="300"></canvas>
     <script>
+        console.log("test");
         values = JSON.parse('{{ power_night_chart.values | tojson }}');
+        var IDs = JSON.parse('{{ power_night_chart.IDs | tojson }}');
+        
+        // console.log("toto" + values);
+        // console.log("toto" + IDs);
+        
         labels = JSON.parse('{{ power_night_chart.labels | tojson }}');
         // values = {{ power_night_chart.values | safe }}
         // labels = {{ power_night_chart.labels | safe }}
@@ -1057,10 +1235,36 @@
         unit = "{{ power_night_chart.unit|safe }}"
         label = "{{ power_night_chart.label|safe }}"
 
-        config = myConfig2(title, values, values_unit, labels, chart_type, unit, label);
+        config = myConfig2_with_IDs(title, values, IDs, values_unit, labels, chart_type, unit, label);
 
         var ctx = document.getElementById("canvas_power_night").getContext("2d");
-        var lineChart = new Chart(ctx, config);
+        var lineChart_power_night = new Chart(ctx, config);
+
+        var mycanvas_night = document.getElementById("canvas_power_night");
+        mycanvas_night.onclick = function (evt) {
+            // console.log("------------------");
+            // console.log('lineChart_power_night: %o', lineChart_power_night);
+            var activePoints = lineChart_power_night.getElementsAtEvent(evt);
+            if (activePoints[0]) {
+                var chartData = activePoints[0]['_chart'].config.data;
+                var idx = activePoints[0]['_index'];
+                // var label = chartData.labels[idx];
+                // var value = chartData.datasets[0].data[idx];
+                var id = chartData.datasets[1].data[idx];
+
+                var url = "http://192.168.0.73/event/api/event/delete.php?id=" + id.y;
+
+                const Http = new XMLHttpRequest();
+                Http.open("GET", url);
+                Http.send();
+                Http.onreadystatechange = (e) => {
+                    console.log(Http.responseText)
+                }
+            }
+        };
+
+
+
     </script>
 
     <canvas id="canvas_power_night_delta" width="900" height="300"></canvas>
@@ -1476,65 +1680,59 @@
             config3
         );
 
-        var mycanvas3 = document.getElementById("canvas3");
-        mycanvas3.onclick = function (evt) {
-            var activePoints = myChart3.getElementsAtEvent(evt);
-            if (activePoints[0]) {
-                console.log("start");
-                obj = activePoints[0];
-                console.log('Item: %o', obj);
-                var chartData = activePoints[0]['_chart'].config.data;
-                console.log('chartData: %o', chartData);
-                var idx = activePoints[0]['_index'];
-                console.log('idx: %o', idx);
-                var label = chartData.labels[idx];
-                console.log('label: %o', label);
-                var value = chartData.datasets[0].data[idx];
-                console.log('value: %o', value);
+        // var mycanvas3 = document.getElementById("canvas3");
+        // mycanvas3.onclick = function (evt) {
+        //     var activePoints = myChart3.getElementsAtEvent(evt);
+        //     if (activePoints[0]) {
+        //         console.log("start");
+        //         obj = activePoints[0];
+        //         console.log('Item: %o', obj);
+        //         var chartData = activePoints[0]['_chart'].config.data;
+        //         console.log('chartData: %o', chartData);
+        //         var idx = activePoints[0]['_index'];
+        //         console.log('idx: %o', idx);
+        //         var label = chartData.labels[idx];
+        //         console.log('label: %o', label);
+        //         var value = chartData.datasets[0].data[idx];
+        //         console.log('value: %o', value);
 
-                var url = "http://example.com/?label=" + label + "&value=" + value;
-                // console.log(url);
-                // alert(url);
-            }
-        };
+        //         var url = "http://example.com/?label=" + label + "&value=" + value;
+        //         // console.log(url);
+        //         // alert(url);
+        //     }
+        // };
     </script>
 
-    <div style="width:75%;">
-        <canvas id="canvas4"></canvas>
+
+    <!-- <div style="width:75%;"><canvas id="canvas5"></canvas>
     </div>
     <script>
-        const labels4 = [
-            'January',
-            'February',
-            'March',
-            'April',
-            'May',
-            'June',
-        ];
-        const data4 = {
-            labels: labels4,
-            datasets: [{
-                label: 'My second dataset',
-                backgroundColor: 'rgb(255, 99, 132)',
-                borderColor: 'rgb(255, 99, 132)',
-                data: [0, 10, 5, 2, 20, 30, 45],
-            }]
-        };
-        const config4 = {
+        data5 = [{ id: 'Sales', value: 1500 }, { id: 'Purchases', value: 500 }, { id: 'Purchases', value: 100 }, { id: 'Purchases', value: 300 }]
+        const config5 = {
             type: 'line',
-            data: data4,
-            options: {}
+            data: {
+                datasets: [{
+                    data: data5.map(o => o.value)
+                }]
+            },
+            options: {
+                parsing: {
+                    xAxisKey: 'id',
+                    yAxisKey: 'nested.value'
+                }
+            }
         };
-        const myChart4 = new Chart(
-            document.getElementById('canvas4'),
-            config4
+
+        const myChart5 = new Chart(
+            document.getElementById('canvas5'),
+            config5
         );
-        var mycanvas = document.getElementById("canvas4");
+        var mycanvas = document.getElementById("canvas5");
         console.log('Item: %o', mycanvas);
         mycanvas.onclick = function (evt) {
-            console.log("clicked !");
-            console.log('mychart4: %o', myChart4);
-            var activePoints = myChart4.getElementsAtEvent(evt);
+            console.log("chart5 clicked !");
+            console.log('mychart5: %o', myChart4);
+            var activePoints = myChart5.getElementsAtEvent(evt);
             if (activePoints[0]) {
                 console.log("start");
                 obj = activePoints[0];
@@ -1554,7 +1752,9 @@
             }
         };
 
-    </script>
+    </script> -->
+
+
 </body>
 
 </html>

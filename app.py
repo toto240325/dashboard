@@ -6,6 +6,7 @@
 # if error "OSError: [Errno 98] Address already in use":
 # ps -aux |grep "flask run"
 # kill <process>
+# echo $(ps -aux |grep "flask run --no-debugger" | awk '{print $2}'| head -n 1)
 """
 test
 """
@@ -281,6 +282,7 @@ def index():
     events = data["events"]
     events = remove_duplicates(events)
     power_day_values = [float(event["text"]) for event in events]
+    power_day_IDs = [float(event["id"]) for event in events]
     power_day_labels = [event["time"] for event in events]
 
     power_day_values = smoothen(power_day_values)
@@ -305,16 +307,14 @@ def index():
     # ---------------
 
     power_day_delta_values, power_day_delta_labels = average_events(events)
-
     power_day_delta_values = smoothen(power_day_delta_values)
-
-
 
     elaps.elapsed_time("power_day_delta")
 
     data = read_where("power_night", 60*10, "1900-01-01")
     events = data["events"]
     power_night_values = [float(event["text"]) for event in events]
+    power_night_IDs = [float(event["id"]) for event in events]
     power_night_labels = [event["time"] for event in events]
 
     elaps.elapsed_time("power_night")
@@ -394,6 +394,23 @@ def index():
             self.unit = unit
             self.label = label
 
+    class MyChartValues_with_IDs:
+        """
+        this class is just there to create an object containing all the parameters of a given chart,
+        which will be handy to pass in one go all those values as an objects to the javascript
+        that will need to process all those values
+        """
+
+        def __init__(self, title, values, IDs, values_unit, labels, chart_type, unit, label):
+            self.title = title
+            self.values = values
+            self.IDs = IDs
+            self.values_unit = values_unit
+            self.labels = labels
+            self.chart_type = chart_type
+            self.unit = unit
+            self.label = label
+
     class MyChartValues2:
         """
         MyChartValues2 desc
@@ -450,13 +467,17 @@ def index():
     power_chart = MyChartValues2(
         "power day/night", power_day_values, power_night_values, "KwH", power_day_labels,
         power_night_labels, "line", "hour", "KwH day/night")
-    power_day_chart = MyChartValues(
-        "power_day", power_day_values, "KwH", power_day_labels, "line", "hour", "KwH day")
+    # power_day_chart = MyChartValues(
+    #     "power_day", power_day_values, "KwH", power_day_labels, "line", "hour", "KwH day")
+    power_day_chart = MyChartValues_with_IDs(
+        "power_day", power_day_values, power_day_IDs, "KwH", power_day_labels, "line", "hour", "KwH day")
     power_day_delta_chart = MyChartValues(
         "power_day_delta", power_day_delta_values, "kwH", power_day_delta_labels,
         "line", "hour", "KwH day Delta")
-    power_night_chart = MyChartValues(
-        "power_night", power_night_values, "Cl", power_night_labels, "line", "hour", "KwH night")
+    # power_night_chart = MyChartValues(
+    #     "power_night", power_night_values, "Cl", power_night_labels, "line", "hour", "KwH night")
+    power_night_chart = MyChartValues_with_IDs(
+        "power_night", power_night_values, power_night_IDs, "KwH", power_night_labels, "line", "hour", "KwH night")
     power_night_delta_chart = MyChartValues(
         "power_night_delta", power_night_delta_values, "kwH", power_night_delta_labels,
         "line", "hour", "KwH night Delta")
@@ -470,22 +491,23 @@ def index():
         values_ps4_2, labels_ps4_2, "bar",
         "day")
 
-    return render_template("graph.html",
-                           frigo_1h_chart=frigo_1h_chart,
-                           frigo_1h_smart_chart=frigo_1h_smart_chart,
-                           frigo_10h_chart=frigo_10h_chart,
-                           frigo_24h_chart=frigo_24h_chart,
-                           pool_ph_chart=pool_ph_chart,
-                           pool_cl_chart=pool_cl_chart,
-                           power_chart=power_chart,
-                           power_day_chart=power_day_chart,
-                           power_day_delta_chart=power_day_delta_chart,
-                           power_night_chart=power_night_chart,
-                           power_night_delta_chart=power_night_delta_chart,
-                           ps4_chart=ps4_chart,
-                           ps4_2_chart=ps4_2_chart,
-                           ps4_2_datasets_chart=ps4_2_datasets_chart
-                           )
+    result = render_template("graph.html",
+                             frigo_1h_chart=frigo_1h_chart,
+                             frigo_1h_smart_chart=frigo_1h_smart_chart,
+                             frigo_10h_chart=frigo_10h_chart,
+                             frigo_24h_chart=frigo_24h_chart,
+                             pool_ph_chart=pool_ph_chart,
+                             pool_cl_chart=pool_cl_chart,
+                             power_chart=power_chart,
+                             power_day_chart=power_day_chart,
+                             power_day_delta_chart=power_day_delta_chart,
+                             power_night_chart=power_night_chart,
+                             power_night_delta_chart=power_night_delta_chart,
+                             ps4_chart=ps4_chart,
+                             ps4_2_chart=ps4_2_chart,
+                             ps4_2_datasets_chart=ps4_2_datasets_chart
+                             )
+    return result
 
     # return
     # if request.method == 'POST':
