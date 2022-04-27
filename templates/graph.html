@@ -11,12 +11,20 @@
         integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 
     <title>My Title</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1"></script>
+
+
     <script
-        src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@2.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+
+    <!-- <script
+        src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script> -->
+
+
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
-        crossorigin="anonymous"></script>
+        crossorigin="anonymous"></script> -->
 
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/1.2.1/chartjs-plugin-zoom.min.js"></script> -->
@@ -78,6 +86,53 @@
             window.location.reload(1);
         }, 10 * 60 * 1000);
 
+
+        function enable_deletion(mycanvas, mychart) {
+            console.log('Item: %o', mycanvas);
+            mycanvas.onclick = function (evt) {
+                // console.log("------------------");
+                // console.log('mychart: %o', mychart);
+                // console.log('mychart: %o', mychart);
+                var activePoints = mychart.getElementsAtEventForMode(evt, 'index', { intersect: true }, false);
+                var obj = activePoints;
+                // console.log('Item: %o', obj);
+
+                if (activePoints[0]) {
+                    // console.log("start");
+                    var obj = activePoints[0];
+                    // console.log('activePoints[0]: %o', activePoints[0]);
+                    var index = activePoints[0].index;
+                    // console.log('index: %o', index);
+
+                    var chart = mychart.$context.chart;
+                    // console.log('chart: %o', chart);
+                    var datasets = chart.config._config.data.datasets;
+                    // console.log('datasets: %o', datasets);
+
+                    var mydatetime = datasets[0].data[index].x;
+                    var value = datasets[0].data[index].y;
+                    var id = datasets[1].data[index].y;
+                    // console.log('mydatetime: %o', mydatetime);
+                    // console.log('value: %o', value);
+                    // console.log('id: %o', id);
+
+
+                    var url = "http://192.168.0.73/event/api/event/delete.php?id=" + id;
+                    if (confirm("sure to want to delete point (value:" + value + ", date:" + mydatetime + ", id:" + id + ") ?")) {
+                        // console.log("going to delete point");
+                        const Http = new XMLHttpRequest();
+                        Http.open("GET", url);
+                        Http.send();
+                        Http.onreadystatechange = (e) => {
+                            console.log(Http.responseText)
+                        }
+                    } else {
+                        console.log("OK, no deletion this time");
+                    }
+                }
+            }
+        };
+
         function myConfig(labels, values, chart_type) {
             // var timeFormat = 'yyyy/MM/dd H:mm:ss';
             var timeFormat = 'yyyy/MM/dd';
@@ -89,7 +144,7 @@
             }
             var data_array_1a = a;
 
-            var xA = [{
+            var xA = {
                 type: "time",
                 time: {
                     //     format: timeFormat,
@@ -101,13 +156,13 @@
                     display: true,
                     labelString: 'Date1'
                 }
-            }];
-            var yA = [{
+            };
+            var yA = {
                 scaleLabel: {
                     display: true,
                     labelString: 'value'
                 }
-            }];
+            };
             var scales1 = {
                 xAxes: xA,
                 yAxes: yA
@@ -157,7 +212,7 @@
             nowStr = (new Date()).toLocaleTimeString("fr-BE", { hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
             var datetime2 = "LastSync: " + nowStr;
 
-            var xA = [{
+            var xA = {
                 type: "time",
                 time: {
                     // format: timeFormat,
@@ -180,13 +235,13 @@
                     display: true,
                     labelString: datetime2
                 }
-            }];
-            var yA = [{
+            };
+            var yA = {
                 scaleLabel: {
                     display: true,
                     labelString: values_unit
                 }
-            }];
+            };
             var scales1 = {
                 xAxes: xA,
                 yAxes: yA
@@ -246,7 +301,7 @@
             nowStr = (new Date()).toLocaleTimeString("fr-BE", { hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
             var datetime2 = "LastSync: " + nowStr;
 
-            var xA = [{
+            var xA = {
                 type: "time",
                 time: {
                     // format: timeFormat,
@@ -268,13 +323,13 @@
                     display: true,
                     labelString: datetime2
                 }
-            }];
-            var yA = [{
+            };
+            var yA = {
                 scaleLabel: {
                     display: true,
                     labelString: values_unit
                 }
-            }];
+            };
             var scales1 = {
                 xAxes: xA,
                 yAxes: yA
@@ -336,56 +391,54 @@
                 data2.push(b);
             }
 
-            var xA = [
-                {
-                    id: "bubble",
-                    type: "time",
-                    time: {
-                        unit: unit,
-                        // format: timeFormat,
-                        displayFormats: {
-                            day: "DD"
-                        },
-                        parser: 'yyyy-MM-dd H:m:s'
+            var xA = {
+                id: "bubble",
+                type: "time",
+                time: {
+                    unit: unit,
+                    // format: timeFormat,
+                    displayFormats: {
+                        day: "DD"
                     },
-                    offset: true,
-                    type: "category",
-                    distribution: "series",
-
-                    // gridLines: {
-                    //     offsetGridLines: false,
-                    //     drawTicks: true,
-                    //     display: true
-                    // },
-                    //stacked: true
+                    parser: 'yyyy-MM-dd H:m:s'
                 },
-                {
-                    id: "bar",
-                    offset: true,
-                    type: "time",
-                    type: "category",
-                    distribution: "series",
-                }
+                offset: true,
+                type: "category",
+                distribution: "series",
 
-            ];
-            var yA = [
-                {
-                    ticks: {
-                        beginAtZero: true,
-                    },
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'value'
-                    }
+                // gridLines: {
+                //     offsetGridLines: false,
+                //     drawTicks: true,
+                //     display: true
+                // },
+                //stacked: true
+            };
+            // {
+            //     id: "bar",
+            //     offset: true,
+            //     type: "time",
+            //     type: "category",
+            //     distribution: "series",
+            // }
+
+
+            var yA = {
+                ticks: {
+                    beginAtZero: true,
                 },
-                {
-                    id: 'ps4_5min',
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'value'
-                    }
+                scaleLabel: {
+                    display: true,
+                    labelString: 'value'
                 }
-            ];
+            };
+            // {
+            //     id: 'ps4_5min',
+            //     scaleLabel: {
+            //         display: true,
+            //         labelString: 'value'
+            //     }
+            // }
+
             var scales1 = {
                 xAxes: xA,
                 yAxes: yA
@@ -470,64 +523,46 @@
             //     data2.push(b);
             // }
 
-            var xA = [
-                {
-                    // scaleLabel: {
-                    //     display: true,
-                    //     labelString: 'Month-Day'
-                    // },
-                    // scaleLabel: {
-                    //     display:     true,
-                    //     labelString: 'Date'
-                    // },
-                    id: "xAxis_ID1",
-                    type: "time",
-                    time: {
-                        unit: unit,
-                        // format: timeFormat,
-                        displayFormats: {
-                            day: "DD"
-                        },
-                        parser: 'yyyy-MM-dd H:m:s'
+            var xA = {
+                id: "xAxis_ID1",
+                type: "time",
+                time: {
+                    unit: unit,
+                    // format: timeFormat,
+                    displayFormats: {
+                        day: "DD"
                     },
-                    offset: true,
-                    type: "category",
-                    distribution: "series",
-
-                    // gridLines: {
-                    //     offsetGridLines: false,
-                    //     drawTicks: true,
-                    //     display: true
-                    // },
-                    //stacked: true
+                    parser: 'yyyy-MM-dd H:m:s'
                 },
-                {
-                    id: "night_ID",
-                    offset: true,
-                    type: "time",
-                    type: "category",
-                    distribution: "series",
+                offset: true,
+                type: "category",
+                distribution: "series",
+
+                // gridLines: {
+                //     offsetGridLines: false,
+                //     drawTicks: true,
+                //     display: true
+                // },
+                //stacked: true
+            };
+            // ,
+            // {
+            //     id: "night_ID",
+            //     offset: true,
+            //     type: "time",
+            //     type: "category",
+            //     distribution: "series",
+            // }
+
+            var yA = {
+                ticks: {
+                    beginAtZero: true,
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Y1'
                 }
-
-            ];
-            var yA = [
-                {
-                    ticks: {
-                        beginAtZero: true,
-                    },
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Y1'
-                    }
-                },
-                // {
-                //     id: 'y_day_id',
-                //     scaleLabel: {
-                //         display: true,
-                //         labelString: 'Y2'
-                //     }
-                // }
-            ];
+            };
             var scales1 = {
                 xAxes: xA,
                 yAxes: yA
@@ -665,7 +700,7 @@
                 text: "canvas32"
             },
             scales: {
-                xAxes: [{
+                xAxes: {
                     type: "time",
 
                     time: {
@@ -689,13 +724,13 @@
                         display: true,
                         labelString: 'Date3'
                     }
-                }],
-                yAxes: [{
+                },
+                yAxes: {
                     scaleLabel: {
                         display: true,
                         labelString: 'value'
                     }
-                }]
+                }
             }
         };
         var config32 = {
@@ -775,7 +810,7 @@
         nowStr = (new Date()).toLocaleTimeString("fr-BE", { hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
         var datetime2 = "LastSync: " + nowStr;
 
-        var xA = [{
+        var xA = {
             type: "time",
             time: {
                 // format: timeFormat,
@@ -798,13 +833,13 @@
                 display: true,
                 labelString: datetime2
             }
-        }];
-        var yA = [{
+        };
+        var yA = {
             scaleLabel: {
                 display: true,
                 labelString: values_unit
             }
-        }];
+        };
         var scales1 = {
             xAxes: xA,
             yAxes: yA
@@ -829,10 +864,6 @@
             },
             options: options1
         };
-
-
-
-
 
         var data_frigo_normal_smart = {
             datasets: [
@@ -867,7 +898,7 @@
                 text: "Frigo 1h normal vs. smart"
             },
             scales: {
-                xAxes: [{
+                xAxes: {
                     type: "time",
                     time: {
                         format: timeFormat
@@ -876,13 +907,13 @@
                         display: true,
                         labelString: 'Date3'
                     }
-                }],
-                yAxes: [{
+                },
+                yAxes: {
                     scaleLabel: {
                         display: true,
                         labelString: 'value'
                     }
-                }]
+                }
             }
         };
         var config_frigo_normal_smart = {
@@ -1152,6 +1183,9 @@
 
         var ctx = document.getElementById("canvas_power_day").getContext("2d");
         var lineChartPowerDay = new Chart(ctx, config);
+        var canvas_power_day = document.getElementById("canvas_power_day");
+        enable_deletion(canvas_power_day, lineChartPowerDay);
+
 
         // import { Chart } from 'chart.js';
         // import { Chart } from './node_modules/chart.js';
@@ -1162,40 +1196,58 @@
         // import zoomPlugin from './node_modules/chartjs-plugin-zoom';
         // Chart.register(zoomPlugin);
 
-        var mycanvasday = document.getElementById("canvas_power_day");
-        // console.log('Item: %o', mycanvasday);
-        mycanvasday.onclick = function (evt) {
-            console.log("------------------");
-            console.log('lineChartPowerDay: %o', lineChartPowerDay);
-            var activePoints = lineChartPowerDay.getElementsAtEvent(evt);
-            var obj = activePoints;
-            console.log('Item: %o', obj);
-            
-            if (activePoints[0]) {
-                console.log("start");
-                obj = activePoints[0];
-                console.log('Item: %o', obj);
-                var chartData = activePoints[0]['_chart'].config.data;
-                console.log('chartData: %o', chartData);
-                var idx = activePoints[0]['_index'];
-                console.log('idx: %o', idx);
-                var label = chartData.labels[idx];
-                // console.log('label: %o', label);
-                var value = chartData.datasets[0].data[idx];
-                // console.log('value: %o', value);
-                var id = chartData.datasets[1].data[idx];
-                // console.log('id: %o', id);
+        // var mycanvasday = document.getElementById("canvas_power_day");
+        // // console.log('Item: %o', mycanvasday);
+        // mycanvasday.onclick = function (evt) {
+        //     console.log("------------------");
+        //     console.log('lineChartPowerDay: %o', lineChartPowerDay);
+        //     var activePoints = lineChartPowerDay.getElementsAtEventForMode(evt, 'index', { intersect: true }, false);
+        //     var obj = activePoints;
+        //     console.log('Item: %o', obj);
 
-                var url = "http://192.168.0.73/event/api/event/delete.php?id=" + id.y;
+        //     if (activePoints[0]) {
+        //         console.log("start");
+        //         obj = activePoints[0];
+        //         // console.log('activePoints[0]: %o', activePoints[0]);
+        //         var index = activePoints[0].index;
+        //         // console.log('index: %o', index);
 
-                const Http = new XMLHttpRequest();
-                Http.open("GET", url);
-                Http.send();
-                Http.onreadystatechange = (e) => {
-                    console.log(Http.responseText)
-                }
-            }
-        };
+        //         var chart = lineChartPowerDay.$context.chart;
+        //         // console.log('chart: %o', chart);
+        //         var datasets = chart.config._config.data.datasets;
+        //         // console.log('datasets: %o', datasets);
+
+        //         var mydatetime = datasets[0].data[index].x;
+        //         var value = datasets[0].data[index].y;
+        //         var id = datasets[1].data[index].y;
+        //         console.log('mydatetime: %o', mydatetime);
+        //         console.log('value: %o', value);
+        //         console.log('id: %o', id);
+
+
+        //         var url = "http://192.168.0.73/event/api/event/delete.php?id=" + id;
+        //         if (confirm("sure to want to delete point (value:" + value + ", date:" + mydatetime + ", id:" + id + ") ?")) {
+        //             console.log("going to delete point");
+        //             const Http = new XMLHttpRequest();
+        //             Http.open("GET", url);
+        //             Http.send();
+        //             Http.onreadystatechange = (e) => {
+        //                 console.log(Http.responseText)
+        //             }
+        //         } else {
+        //             console.log("OK, no deletion this time");
+        //         }
+
+
+
+        //         // const Http = new XMLHttpRequest();
+        //         // Http.open("GET", url);
+        //         // Http.send();
+        //         // Http.onreadystatechange = (e) => {
+        //         //     console.log(Http.responseText)
+        //         // }
+        //     }
+        // };
     </script>
 
     <canvas id="canvas_power_day_delta" width="900" height="300"></canvas>
@@ -1222,10 +1274,10 @@
         console.log("test");
         values = JSON.parse('{{ power_night_chart.values | tojson }}');
         var IDs = JSON.parse('{{ power_night_chart.IDs | tojson }}');
-        
+
         // console.log("toto" + values);
         // console.log("toto" + IDs);
-        
+
         labels = JSON.parse('{{ power_night_chart.labels | tojson }}');
         // values = {{ power_night_chart.values | safe }}
         // labels = {{ power_night_chart.labels | safe }}
@@ -1240,30 +1292,30 @@
         var ctx = document.getElementById("canvas_power_night").getContext("2d");
         var lineChart_power_night = new Chart(ctx, config);
 
-        var mycanvas_night = document.getElementById("canvas_power_night");
-        mycanvas_night.onclick = function (evt) {
-            // console.log("------------------");
-            // console.log('lineChart_power_night: %o', lineChart_power_night);
-            var activePoints = lineChart_power_night.getElementsAtEvent(evt);
-            if (activePoints[0]) {
-                var chartData = activePoints[0]['_chart'].config.data;
-                var idx = activePoints[0]['_index'];
-                // var label = chartData.labels[idx];
-                // var value = chartData.datasets[0].data[idx];
-                var id = chartData.datasets[1].data[idx];
+        var canvas_power_night = document.getElementById("canvas_power_night");
+        enable_deletion(canvas_power_night, lineChart_power_night);
 
-                var url = "http://192.168.0.73/event/api/event/delete.php?id=" + id.y;
+        // mycanvas_night.onclick = function (evt) {
+        //     console.log("------------------");
+        //     console.log('lineChart_power_night: %o', lineChart_power_night);
+        //     var activePoints = lineChart_power_night.getElementsAtEventForMode(evt);
+        //     if (activePoints[0]) {
+        //         var chartData = activePoints[0]['_chart'].config.data;
+        //         var idx = activePoints[0]['_index'];
+        //         // var label = chartData.labels[idx];
+        //         // var value = chartData.datasets[0].data[idx];
+        //         var id = chartData.datasets[1].data[idx];
 
-                const Http = new XMLHttpRequest();
-                Http.open("GET", url);
-                Http.send();
-                Http.onreadystatechange = (e) => {
-                    console.log(Http.responseText)
-                }
-            }
-        };
+        //         var url = "http://192.168.0.73/event/api/event/delete.php?id=" + id.y;
 
-
+        //         const Http = new XMLHttpRequest();
+        //         Http.open("GET", url);
+        //         Http.send();
+        //         Http.onreadystatechange = (e) => {
+        //             console.log(Http.responseText)
+        //         }
+        //     }
+        // };
 
     </script>
 
@@ -1355,7 +1407,7 @@
                     text: 'Chart.js Bar Chart'
                 },
                 scales: {
-                    xAxes: [{
+                    xAxes: {
                         type: 'time',
                         offset: true,
                         scaleLabel: {
@@ -1376,13 +1428,13 @@
                             display: true
                         },
                         stacked: true
-                    }],
-                    yAxes: [{
+                    },
+                    yAxes: {
                         ticks: {
                             beginAtZero: true
                         },
                         stacked: true
-                    }]
+                    }
                 }
             }
         });
@@ -1438,32 +1490,28 @@
             },
             options: {
                 scales: {
-                    xAxes: [
-                        {
-                            // id: "line",
-                            type: "time",
-                            // time: {
-                            //     unit: "month",
-                            //     displayFormats: {
-                            //         month: "MMM",
-                            //     },
-                            // },
-                            // distribution: "linear",
+                    xAxes: {
+                        // id: "line",
+                        type: "time",
+                        // time: {
+                        //     unit: "month",
+                        //     displayFormats: {
+                        //         month: "MMM",
+                        //     },
+                        // },
+                        // distribution: "linear",
+                    },
+                    // {
+                    //     id: "bar",
+                    //     offset: true,
+                    //     type: "category",
+                    //     distribution: "series",
+                    // }
+                    yAxes: {
+                        ticks: {
+                            beginAtZero: true,
                         },
-                        // {
-                        //     id: "bar",
-                        //     offset: true,
-                        //     type: "category",
-                        //     distribution: "series",
-                        // }
-                    ],
-                    yAxes: [
-                        {
-                            ticks: {
-                                beginAtZero: true,
-                            },
-                        },
-                    ],
+                    },
                 },
             },
         });
@@ -1520,32 +1568,29 @@
             },
             options: {
                 scales: {
-                    xAxes: [
-                        {
-                            id: "line",
-                            type: "time",
-                            time: {
-                                unit: "day",
-                                displayFormats: {
-                                    month: "DD",
-                                },
-                            },
-                            distribution: "linear",
-                        },
-                        {
-                            id: "bar",
-                            offset: true,
-                            type: "category",
-                            distribution: "series",
-                        }
-                    ],
-                    yAxes: [
-                        {
-                            ticks: {
-                                beginAtZero: true,
+                    xAxes: {
+                        id: "line",
+                        type: "time",
+                        time: {
+                            unit: "day",
+                            displayFormats: {
+                                month: "DD",
                             },
                         },
-                    ],
+                        distribution: "linear",
+                    },
+                    // {
+                    //     id: "bar",
+                    //     offset: true,
+                    //     type: "category",
+                    //     distribution: "series",
+                    // }
+                    yAxes:
+                    {
+                        ticks: {
+                            beginAtZero: true,
+                        },
+                    },
                 },
             },
         });
@@ -1625,7 +1670,7 @@
                 text: "Chart.js Time Scale"
             },
             scales: {
-                xAxes: [{
+                xAxes: {
                     type: "time",
                     time: {
                         format: timeFormat,
@@ -1635,13 +1680,13 @@
                         display: true,
                         labelString: 'Date3'
                     }
-                }],
-                yAxes: [{
+                },
+                yAxes: {
                     scaleLabel: {
                         display: true,
                         labelString: 'value'
                     }
-                }]
+                }
             }
         };
         var config3 = {
