@@ -267,6 +267,7 @@ def index():
     data = read_where("pool_pH", 60*10, "1900-01-01")
     events = data["events"]
     pool_ph_values = [float(event["text"]) for event in events]
+    pool_ph_ids = [event["id"] for event in events]
     pool_ph_labels = [event["time"] for event in events]
 
     elaps.elapsed_time("pool_pH")
@@ -274,6 +275,7 @@ def index():
     data = read_where("pool_Cl", 60*10, "1900-01-01")
     events = data["events"]
     pool_cl_values = [float(event["text"]) for event in events]
+    pool_cl_ids = [event["id"] for event in events]
     pool_cl_labels = [event["time"] for event in events]
 
     elaps.elapsed_time("pool_Cl")
@@ -282,7 +284,7 @@ def index():
     events = data["events"]
     events = remove_duplicates(events)
     power_day_values = [float(event["text"]) for event in events]
-    power_day_IDs = [float(event["id"]) for event in events]
+    power_day_ids = [float(event["id"]) for event in events]
     power_day_labels = [event["time"] for event in events]
 
     power_day_values = smoothen(power_day_values)
@@ -314,7 +316,7 @@ def index():
     data = read_where("power_night", 60*10, "1900-01-01")
     events = data["events"]
     power_night_values = [float(event["text"]) for event in events]
-    power_night_IDs = [float(event["id"]) for event in events]
+    power_night_ids = [float(event["id"]) for event in events]
     power_night_labels = [event["time"] for event in events]
 
     elaps.elapsed_time("power_night")
@@ -394,17 +396,17 @@ def index():
             self.unit = unit
             self.label = label
 
-    class MyChartValues_with_IDs:
+    class MyChartValuesWithIDs:
         """
         this class is just there to create an object containing all the parameters of a given chart,
         which will be handy to pass in one go all those values as an objects to the javascript
         that will need to process all those values
         """
 
-        def __init__(self, title, values, IDs, values_unit, labels, chart_type, unit, label):
+        def __init__(self, title, values, ids, values_unit, labels, chart_type, unit, label):
             self.title = title
             self.values = values
-            self.IDs = IDs
+            self.ids = ids
             self.values_unit = values_unit
             self.labels = labels
             self.chart_type = chart_type
@@ -455,10 +457,14 @@ def index():
         "frigo_10h", frigo_10h_values, "°C", frigo_10h_labels, "line", "hour", "temperature")
     frigo_24h_chart = MyChartValues(
         "frigo_24h", frigo_24h_values, "°C", frigo_24h_labels, "line", "hour", "temperature")
-    pool_ph_chart = MyChartValues(
-        "pool_ph", pool_ph_values, "pH", pool_ph_labels, "line", "hour", "pH")
-    pool_cl_chart = MyChartValues(
-        "pool_cl", pool_cl_values, "Cl", pool_cl_labels, "line", "hour", "Cl")
+    # pool_ph_chart = MyChartValues(
+    #     "pool_ph", pool_ph_values, "pH", pool_ph_labels, "line", "hour", "pH")
+    pool_ph_chart = MyChartValuesWithIDs(
+        "pool_ph", pool_ph_values, pool_ph_ids, "pH", pool_ph_labels, "line", "hour", "pool pH")
+    # pool_cl_chart = MyChartValues(
+    #     "pool_cl", pool_cl_values, "Cl", pool_cl_labels, "line", "hour", "Cl")
+    pool_cl_chart = MyChartValuesWithIDs(
+        "pool_cl", pool_cl_values, pool_cl_ids, "Cl", pool_cl_labels, "line", "hour", "pool Cl")
     power_chart = MyChartValues2Datasets(
         "power_2_datasets",
         power_day_values, power_day_labels, "line",
@@ -469,15 +475,17 @@ def index():
         power_night_labels, "line", "hour", "KwH day/night")
     # power_day_chart = MyChartValues(
     #     "power_day", power_day_values, "KwH", power_day_labels, "line", "hour", "KwH day")
-    power_day_chart = MyChartValues_with_IDs(
-        "power_day", power_day_values, power_day_IDs, "KwH", power_day_labels, "line", "hour", "KwH day")
+    power_day_chart = MyChartValuesWithIDs(
+        "power_day", power_day_values, power_day_ids, "KwH", power_day_labels,
+        "line", "hour", "KwH day")
     power_day_delta_chart = MyChartValues(
         "power_day_delta", power_day_delta_values, "kwH", power_day_delta_labels,
         "line", "hour", "KwH day Delta")
     # power_night_chart = MyChartValues(
     #     "power_night", power_night_values, "Cl", power_night_labels, "line", "hour", "KwH night")
-    power_night_chart = MyChartValues_with_IDs(
-        "power_night", power_night_values, power_night_IDs, "KwH", power_night_labels, "line", "hour", "KwH night")
+    power_night_chart = MyChartValuesWithIDs(
+        "power_night", power_night_values, power_night_ids, "KwH", power_night_labels,
+        "line", "hour", "KwH night")
     power_night_delta_chart = MyChartValues(
         "power_night_delta", power_night_delta_values, "kwH", power_night_delta_labels,
         "line", "hour", "KwH night Delta")

@@ -14,20 +14,20 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1"></script>
 
-
     <script
         src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@2.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+
+
+    <!-- <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
+    <script src="path/to/chartjs-plugin-zoom/dist/chartjs-plugin-zoom.min.js"></script> -->
+
 
     <!-- <script
         src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script> -->
 
 
-    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
-        crossorigin="anonymous"></script> -->
-
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/1.2.1/chartjs-plugin-zoom.min.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/1.2.1/chartjs-plugin-zoom.min.js"></script>
 
     <style type="text/css">
         .chartBox {
@@ -88,7 +88,7 @@
 
 
         function enable_deletion(mycanvas, mychart) {
-            console.log('Item: %o', mycanvas);
+            // console.log('Item: %o', mycanvas);
             mycanvas.onclick = function (evt) {
                 // console.log("------------------");
                 // console.log('mychart: %o', mychart);
@@ -114,12 +114,12 @@
                     var id = datasets[1].data[index].y;
                     // console.log('mydatetime: %o', mydatetime);
                     // console.log('value: %o', value);
-                    // console.log('id: %o', id);
+                    // console.log('id: %o', id);g
 
 
                     var url = "http://192.168.0.73/event/api/event/delete.php?id=" + id;
                     if (confirm("sure to want to delete point (value:" + value + ", date:" + mydatetime + ", id:" + id + ") ?")) {
-                        // console.log("going to delete point");
+                        console.log("going to delete point");
                         const Http = new XMLHttpRequest();
                         Http.open("GET", url);
                         Http.send();
@@ -129,6 +129,9 @@
                     } else {
                         console.log("OK, no deletion this time");
                     }
+
+
+
                 }
             }
         };
@@ -181,7 +184,7 @@
                 //type: "bar",
                 type: chart_type,
                 data: {
-                    labels: labels,    //{{ labels | safe }},
+                    labels: labels,
                     datasets: [
                         {
                             label: "temperature2",
@@ -261,7 +264,7 @@
                 //type: "bar",
                 type: chart_type,
                 data: {
-                    labels: labels,    //{{ labels | safe }},
+                    labels: labels,
                     datasets: [
                         {
                             label: label,
@@ -277,7 +280,7 @@
             return config1;
         }
 
-        function myConfig2_with_IDs(title, values, IDs, values_unit, labels, chart_type, unit, label) {
+        function myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label) {
             // var timeFormat = 'yyyy/MM/dd H:mm:ss';
             var timeFormat = 'yyyy/MM/dd';
             // var timeFormat = 'H:mm';
@@ -293,7 +296,7 @@
             var a = [];
             var b = [];
             for (i = 0; i < labels.length; i++) {
-                b = { x: labels[i], y: IDs[i] };
+                b = { x: labels[i], y: ids[i] };
                 a.push(b);
             }
             var data_array_2a = a;
@@ -348,7 +351,7 @@
                 //type: "bar",
                 type: chart_type,
                 data: {
-                    labels: labels,    //{{ labels | safe }},
+                    labels: labels,
                     datasets: [
                         {
                             label: label,
@@ -467,7 +470,7 @@
                 //type: "line",
                 type: "bar",
                 data: {
-                    labels: labels2,  //{{ labels | safe }},
+                    labels: labels2,
                     datasets: [
                         {
                             barPercentage: .7,
@@ -590,7 +593,7 @@
             var config = {
                 type: "line",
                 data: {
-                    labels: labels2,  //{{ labels | safe }},
+                    labels: labels2,
                     datasets: [
                         {
                             label: "Delta Day",
@@ -1032,8 +1035,11 @@
 
     <canvas id="canvas_pool_ph" width="900" height="300"></canvas>
     <script>
+
         values = JSON.parse('{{ pool_ph_chart.values | tojson }}');
+        var ids = JSON.parse('{{ pool_ph_chart.ids | tojson }}');
         labels = JSON.parse('{{ pool_ph_chart.labels | tojson }}');
+
         // values = {{ pool_ph_chart.values | safe }}
         // labels = {{ pool_ph_chart.labels | safe }}
         values_unit = "{{ pool_ph_chart.values_unit | safe }}"
@@ -1042,7 +1048,7 @@
         unit = "{{ pool_ph_chart.unit|safe }}"
         label = "{{ pool_ph_chart.label|safe }}"
 
-        config = myConfig2(title, values, values_unit, labels, chart_type, unit, label);
+        config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label);
 
         var ctx = document.getElementById("canvas_pool_ph").getContext("2d");
         var lineChart = new Chart(ctx, config);
@@ -1052,6 +1058,7 @@
     <canvas id="canvas_pool_cl" width="900" height="300"></canvas>
     <script>
         values = JSON.parse('{{ pool_cl_chart.values | tojson }}');
+        var ids = JSON.parse('{{ pool_cl_chart.ids | tojson }}');
         labels = JSON.parse('{{ pool_cl_chart.labels | tojson }}');
         // values = {{ pool_cl_chart.values | safe }}
         // labels = {{ pool_cl_chart.labels | safe }}
@@ -1061,10 +1068,14 @@
         unit = "{{ pool_cl_chart.unit|safe }}"
         label = "{{ pool_cl_chart.label|safe }}"
 
-        config = myConfig2(title, values, values_unit, labels, chart_type, unit, label);
+        config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label);
 
         var ctx = document.getElementById("canvas_pool_cl").getContext("2d");
-        var lineChart = new Chart(ctx, config);
+        var lineChart_pool_cl = new Chart(ctx, config);
+
+        var canvas_pool_cl = document.getElementById("canvas_pool_cl");
+        enable_deletion(canvas_pool_cl, lineChart_pool_cl);
+
     </script>
 
     <canvas id="canvas_power" width="900" height="250"></canvas>
@@ -1171,7 +1182,7 @@
         // alert(import.meta.url); // script URL
 
         values = JSON.parse('{{ power_day_chart.values | tojson }}');
-        var IDs = JSON.parse('{{ power_day_chart.IDs | tojson }}');
+        var ids = JSON.parse('{{ power_day_chart.ids | tojson }}');
         labels = JSON.parse('{{ power_day_chart.labels | tojson }}');
         values_unit = "{{ power_day_chart.values_unit | safe }}"
         title = "{{ power_day_chart.title|safe }}"
@@ -1179,7 +1190,7 @@
         unit = "{{ power_day_chart.unit|safe }}"
         label = "{{ power_day_chart.label|safe }}"
 
-        config = myConfig2_with_IDs(title, values, IDs, values_unit, labels, chart_type, unit, label);
+        config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label);
 
         var ctx = document.getElementById("canvas_power_day").getContext("2d");
         var lineChartPowerDay = new Chart(ctx, config);
@@ -1273,7 +1284,7 @@
     <script>
         console.log("test");
         values = JSON.parse('{{ power_night_chart.values | tojson }}');
-        var IDs = JSON.parse('{{ power_night_chart.IDs | tojson }}');
+        var ids = JSON.parse('{{ power_night_chart.ids | tojson }}');
 
         // console.log("toto" + values);
         // console.log("toto" + IDs);
@@ -1287,7 +1298,7 @@
         unit = "{{ power_night_chart.unit|safe }}"
         label = "{{ power_night_chart.label|safe }}"
 
-        config = myConfig2_with_IDs(title, values, IDs, values_unit, labels, chart_type, unit, label);
+        config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label);
 
         var ctx = document.getElementById("canvas_power_night").getContext("2d");
         var lineChart_power_night = new Chart(ctx, config);
@@ -1600,7 +1611,6 @@
     <canvas id="canvas_ps4_2_datasets" width="900" height="300"></canvas>
     <script>
         title = "{{ ps4_2_datasets_chart.title|safe }}"
-
         values1 = JSON.parse('{{ ps4_2_datasets_chart.values1 | tojson }}');
         labels1 = JSON.parse('{{ ps4_2_datasets_chart.labels1 | tojson }}');
         // labels1 = {{ ps4_2_datasets_chart.labels1 | safe }}
@@ -1638,6 +1648,7 @@
         }, {
             x: "10/01/2015", y: 178
         }];
+
         var data3 = {
             datasets: [
                 {
@@ -1746,6 +1757,7 @@
         //         // alert(url);
         //     }
         // };
+
     </script>
 
 
