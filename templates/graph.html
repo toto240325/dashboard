@@ -11,15 +11,47 @@
         integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 
     <title>My Title</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
-    <script
-        src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
         crossorigin="anonymous"></script>
 
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/1.2.1/chartjs-plugin-zoom.min.js"></script> -->
+
+    <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script> -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
+
+
+    <!-- <script
+    src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script> -->
+
+    <!-- <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@next/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/1.2.1/chartjs-plugin-zoom.min.js"
+        integrity="sha512-klQv6lz2YR+MecyFYMFRuU2eAl8IPRo6zHnsc9n142TJuJHS8CG0ix4Oq9na9ceeg1u5EkBfZsFcV3U7J51iew=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"
+        integrity="sha512-QSkVNOCYLtj73J4hbmVoOV6KVZuMluZlioC+trLpewV8qMjsWqlIQvkn1KGX2StWvPMdWGBqim1xlC8krl1EKQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@next/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+
+    <!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/1.2.1/chartjs-plugin-zoom.min.js"
+        integrity="sha512-klQv6lz2YR+MecyFYMFRuU2eAl8IPRo6zHnsc9n142TJuJHS8CG0ix4Oq9na9ceeg1u5EkBfZsFcV3U7J51iew=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"
+        integrity="sha512-UXumZrZNiOwnTcZSHLOfcTs0aos2MzBWHXOHOuB0J/R44QB0dwY5JgfbvljXcklVf65Gc4El6RjZ+lnwd2az2g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+
+
+
+
+
+
 
     <style type="text/css">
         .chartBox {
@@ -119,7 +151,7 @@
                     display: true,
                     text: "Chart.js Time Scale"
                 },
-                scales: scales1
+                // scales: scales1    //xxxx
             };
             var config1 = {
                 //type: "line",
@@ -157,7 +189,7 @@
             nowStr = (new Date()).toLocaleTimeString("fr-BE", { hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
             var datetime2 = "LastSync: " + nowStr;
 
-            var xA = [{
+            var xA = {
                 type: "time",
                 time: {
                     // format: timeFormat,
@@ -180,13 +212,13 @@
                     display: true,
                     labelString: datetime2
                 }
-            }];
-            var yA = [{
+            };
+            var yA = {
                 scaleLabel: {
                     display: true,
                     labelString: values_unit
                 }
-            }];
+            };
             var scales1 = {
                 xAxes: xA,
                 yAxes: yA
@@ -194,7 +226,6 @@
 
             var options1 = {
                 responsive: true,
-
                 title: {
                     display: true,
                     text: title
@@ -222,7 +253,7 @@
             return config1;
         }
 
-        function myConfig2_with_IDs(title, values, IDs, values_unit, labels, chart_type, unit, label) {
+        function myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label) {
             // var timeFormat = 'yyyy/MM/dd H:mm:ss';
             var timeFormat = 'yyyy/MM/dd';
             // var timeFormat = 'H:mm';
@@ -238,7 +269,7 @@
             var a = [];
             var b = [];
             for (i = 0; i < labels.length; i++) {
-                b = { x: labels[i], y: IDs[i] };
+                b = { x: labels[i], y: ids[i] };
                 a.push(b);
             }
             var data_array_2a = a;
@@ -246,10 +277,10 @@
             nowStr = (new Date()).toLocaleTimeString("fr-BE", { hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
             var datetime2 = "LastSync: " + nowStr;
 
-            var xA = [{
+            var xA = {
                 type: "time",
                 time: {
-                    // format: timeFormat,
+                    format: timeFormat,
                     displayFormats: {
                         'millisecond': 'MMM dd',
                         'second': 'MMM dd',
@@ -268,13 +299,13 @@
                     display: true,
                     labelString: datetime2
                 }
-            }];
-            var yA = [{
+            };
+            var yA = {
                 scaleLabel: {
                     display: true,
                     labelString: values_unit
                 }
-            }];
+            };
             var scales1 = {
                 xAxes: xA,
                 yAxes: yA
@@ -392,7 +423,7 @@
             };
 
             var options = {
-                scales: scales1,
+                // scales: scales1,    //   xxxx
                 // responsive: true,
                 // legend: {
                 //     position: 'top',
@@ -470,56 +501,53 @@
             //     data2.push(b);
             // }
 
-            var xA = [
-                {
-                    // scaleLabel: {
-                    //     display: true,
-                    //     labelString: 'Month-Day'
-                    // },
-                    // scaleLabel: {
-                    //     display:     true,
-                    //     labelString: 'Date'
-                    // },
-                    id: "xAxis_ID1",
-                    type: "time",
-                    time: {
-                        unit: unit,
-                        // format: timeFormat,
-                        displayFormats: {
-                            day: "DD"
-                        },
-                        parser: 'yyyy-MM-dd H:m:s'
+            var xA = {
+                // scaleLabel: {
+                //     display: true,
+                //     labelString: 'Month-Day'
+                // },
+                // scaleLabel: {
+                //     display:     true,
+                //     labelString: 'Date'
+                // },
+                id: "xAxis_ID1",
+                type: "time",
+                time: {
+                    unit: unit,
+                    // format: timeFormat,
+                    displayFormats: {
+                        day: "DD"
                     },
-                    offset: true,
-                    type: "category",
-                    distribution: "series",
-
-                    // gridLines: {
-                    //     offsetGridLines: false,
-                    //     drawTicks: true,
-                    //     display: true
-                    // },
-                    //stacked: true
+                    parser: 'yyyy-MM-dd H:m:s'
                 },
-                {
-                    id: "night_ID",
-                    offset: true,
-                    type: "time",
-                    type: "category",
-                    distribution: "series",
+                offset: true,
+                type: "category",
+                distribution: "series",
+
+                // gridLines: {
+                //     offsetGridLines: false,
+                //     drawTicks: true,
+                //     display: true
+                // },
+                //stacked: true
+            };
+            // {
+            //     id: "night_ID",
+            //     offset: true,
+            //     type: "time",
+            //     type: "category",
+            //     distribution: "series",
+            // }
+
+            var yA =
+            {
+                ticks: {
+                    beginAtZero: true,
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Y1'
                 }
-
-            ];
-            var yA = [
-                {
-                    ticks: {
-                        beginAtZero: true,
-                    },
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Y1'
-                    }
-                },
                 // {
                 //     id: 'y_day_id',
                 //     scaleLabel: {
@@ -527,10 +555,10 @@
                 //         labelString: 'Y2'
                 //     }
                 // }
-            ];
+            };
             var scales1 = {
                 xAxes: xA,
-                yAxes: yA
+                // yAxes: yA
             };
 
             var options = {
@@ -607,11 +635,11 @@
         ctx.stroke();
     </script> -->
 
-    <canvas id="canvas32"></canvas>
     <button type="button" onclick="alert('Hello world!')">Click Me!</button>
 
-    <script>
+    <canvas id="canvas32" width="900" height="200"></canvas>
 
+    <script>
         values = JSON.parse('{{ frigo_1h_chart.values | tojson }}');
         //console.log(values);
         values_unit = "{{ frigo_1h_chart.values_unit|safe }}"
@@ -650,7 +678,7 @@
                     borderColor: 'red'
                 },
                 {
-                    label: "UK Dates2 ",
+                    label: "UK Dates3 ",
                     data: data32,
                     fill: false,
                     borderColor: 'blue'
@@ -664,13 +692,16 @@
                 display: true,
                 text: "Chart.js Time Scale"
             },
-            scales: {
-                xAxes: [{
+            scales: {       //xxxx
+                // xAxis: {
+                //     // The axis for this scale is determined from the first letter of the id as `'x'`
+                //     // It is recommended to specify `position` and / or `axis` explicitly.
+                //     // type: 'time',
+                // }
+                xAxes: {
                     type: "time",
-
                     time: {
                         // format: timeFormat,
-
                         displayFormats: {
                             'millisecond': 'MMM dd',
                             'second': 'MMM dd',
@@ -689,13 +720,13 @@
                         display: true,
                         labelString: 'Date3'
                     }
-                }],
-                yAxes: [{
+                },
+                yAxes: {
                     scaleLabel: {
                         display: true,
                         labelString: 'value'
                     }
-                }]
+                }
             }
         };
         var config32 = {
@@ -769,13 +800,10 @@
         data_smart = a;
         var timeFormat = 'yyyy-MM-dd hh:mm:ss';
 
-
-
-
         nowStr = (new Date()).toLocaleTimeString("fr-BE", { hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
         var datetime2 = "LastSync: " + nowStr;
 
-        var xA = [{
+        var xA = {
             type: "time",
             time: {
                 // format: timeFormat,
@@ -798,13 +826,13 @@
                 display: true,
                 labelString: datetime2
             }
-        }];
-        var yA = [{
+        };
+        var yA = {
             scaleLabel: {
                 display: true,
                 labelString: values_unit
             }
-        }];
+        };
         var scales1 = {
             xAxes: xA,
             yAxes: yA
@@ -831,9 +859,6 @@
         };
 
 
-
-
-
         var data_frigo_normal_smart = {
             datasets: [
                 {
@@ -858,7 +883,7 @@
                 display: true,
                 text: "Frigo 1h normal vs. smart"
             },
-            scales: scales1
+            // scales: scales1    //xxxx
         };
 
         var options_frigo_normal_smart = {
@@ -867,7 +892,7 @@
                 text: "Frigo 1h normal vs. smart"
             },
             scales: {
-                xAxes: [{
+                xAxes: {
                     type: "time",
                     time: {
                         format: timeFormat
@@ -876,20 +901,20 @@
                         display: true,
                         labelString: 'Date3'
                     }
-                }],
-                yAxes: [{
+                },
+                yAxes: {
                     scaleLabel: {
                         display: true,
                         labelString: 'value'
                     }
-                }]
+                }
             }
         };
         var config_frigo_normal_smart = {
             type: 'line',
             data: data_frigo_normal_smart,
-            // options: options_frigo_normal_smart
-            options: options1
+            options: options_frigo_normal_smart
+            // options: options1
         };
 
 
@@ -1020,6 +1045,7 @@
 
     <canvas id="canvas_pool_cl" width="900" height="300"></canvas>
     <script>
+        console.log("test pool_cl");
         values = JSON.parse('{{ pool_cl_chart.values | tojson }}');
         labels = JSON.parse('{{ pool_cl_chart.labels | tojson }}');
         // values = {{ pool_cl_chart.values | safe }}
@@ -1039,7 +1065,6 @@
     <canvas id="canvas_power" width="900" height="250"></canvas>
     <script>
         title = "{{ power_chart.title|safe }}"
-        // console.log("title : " + title)
 
         values1 = JSON.parse('{{ power_chart.values1 | tojson }}');
         labels1 = JSON.parse('{{ power_chart.labels1 | tojson }}');
@@ -1066,81 +1091,13 @@
         var lineChart = new Chart(ctx, config);
     </script>
 
-
-    <div style="width:75%;"><canvas id="canvas4"></canvas>
-    </div>
-    <script>
-        const labels4 = [
-            'January',
-            'February',
-            'March',
-            'April',
-            'May',
-            'June',
-        ];
-        data1 = [0, 10, 5, 2, 20, 30, 45];
-        data2 = [5, 15, 15, 22, 21, 30, 40];
-
-        const datafull4 = {
-            labels: labels4,
-            datasets: [{
-                label: 'My second dataset',
-                data: data1,
-            },
-            {
-                label: 'My third dataset',
-                data: data2,
-            }]
-        };
-
-        const config4 = {
-            type: 'line',
-            data: datafull4,
-            options: {
-                title: {
-                    display: true,
-                    text: "canvas4"
-                }
-            }
-        };
-
-        const myChart4 = new Chart(
-            document.getElementById('canvas4'),
-            config4
-        );
-        // var mycanvas = document.getElementById("canvas4");
-        // console.log('Item: %o', mycanvas);
-        // mycanvas.onclick = function (evt) {
-        //     console.log("--------------------");
-        //     console.log('mychart4: %o', myChart4);
-        //     var activePoints = myChart4.getElementsAtEvent(evt);
-        //     if (activePoints[0]) {
-        //         console.log(" activePoints");
-        //         obj = activePoints[0];
-        //         console.log('Item: %o', obj);
-        //         var chartData = activePoints[0]['_chart'].config.data;
-        //         console.log('chartData: %o', chartData);
-        //         var idx = activePoints[0]['_index'];
-        //         console.log('idx: %o', idx);
-        //         var label = chartData.labels[idx];
-        //         console.log('label: %o', label);
-        //         var value = chartData.datasets[0].data[idx];
-        //         console.log('value: %o', value);
-
-        //         var url = "http://example.com/?label=" + label + "&value=" + value;
-        //         // console.log(url);
-        //         // alert(url);
-        //     }
-        // };
-
-    </script>
-
     <canvas id="canvas_power_day" width="900" height="300"></canvas>
     <script type="module">
+        console.log("test pd");
         // alert(import.meta.url); // script URL
 
         values = JSON.parse('{{ power_day_chart.values | tojson }}');
-        var IDs = JSON.parse('{{ power_day_chart.IDs | tojson }}');
+        var ids = JSON.parse('{{ power_day_chart.ids | tojson }}');
         labels = JSON.parse('{{ power_day_chart.labels | tojson }}');
         values_unit = "{{ power_day_chart.values_unit | safe }}"
         title = "{{ power_day_chart.title|safe }}"
@@ -1148,7 +1105,7 @@
         unit = "{{ power_day_chart.unit|safe }}"
         label = "{{ power_day_chart.label|safe }}"
 
-        config = myConfig2_with_IDs(title, values, IDs, values_unit, labels, chart_type, unit, label);
+        config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label);
 
         var ctx = document.getElementById("canvas_power_day").getContext("2d");
         var lineChartPowerDay = new Chart(ctx, config);
@@ -1165,12 +1122,12 @@
         var mycanvasday = document.getElementById("canvas_power_day");
         // console.log('Item: %o', mycanvasday);
         mycanvasday.onclick = function (evt) {
-            console.log("------------------");
-            console.log('lineChartPowerDay: %o', lineChartPowerDay);
+            // console.log("------------------");
+            // console.log('lineChartPowerDay: %o', lineChartPowerDay);
             var activePoints = lineChartPowerDay.getElementsAtEvent(evt);
             var obj = activePoints;
             console.log('Item: %o', obj);
-            
+
             if (activePoints[0]) {
                 console.log("start");
                 obj = activePoints[0];
@@ -1187,12 +1144,16 @@
                 // console.log('id: %o', id);
 
                 var url = "http://192.168.0.73/event/api/event/delete.php?id=" + id.y;
-
-                const Http = new XMLHttpRequest();
-                Http.open("GET", url);
-                Http.send();
-                Http.onreadystatechange = (e) => {
-                    console.log(Http.responseText)
+                if (confirm("sure to want to delete point ?")) {
+                    console.log("going to delete point");
+                    const Http = new XMLHttpRequest();
+                    Http.open("GET", url);
+                    Http.send();
+                    Http.onreadystatechange = (e) => {
+                        console.log(Http.responseText)
+                    }
+                } else {
+                    console.log("OK, no deletion this time");
                 }
             }
         };
@@ -1219,13 +1180,13 @@
 
     <canvas id="canvas_power_night" width="900" height="300"></canvas>
     <script>
-        console.log("test");
+        console.log("test pn");
         values = JSON.parse('{{ power_night_chart.values | tojson }}');
-        var IDs = JSON.parse('{{ power_night_chart.IDs | tojson }}');
-        
+        var ids = JSON.parse('{{ power_night_chart.ids | tojson }}');
+
         // console.log("toto" + values);
-        // console.log("toto" + IDs);
-        
+        // console.log("toto" + ids);
+
         labels = JSON.parse('{{ power_night_chart.labels | tojson }}');
         // values = {{ power_night_chart.values | safe }}
         // labels = {{ power_night_chart.labels | safe }}
@@ -1235,7 +1196,7 @@
         unit = "{{ power_night_chart.unit|safe }}"
         label = "{{ power_night_chart.label|safe }}"
 
-        config = myConfig2_with_IDs(title, values, IDs, values_unit, labels, chart_type, unit, label);
+        config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label);
 
         var ctx = document.getElementById("canvas_power_night").getContext("2d");
         var lineChart_power_night = new Chart(ctx, config);
@@ -1253,12 +1214,16 @@
                 var id = chartData.datasets[1].data[idx];
 
                 var url = "http://192.168.0.73/event/api/event/delete.php?id=" + id.y;
-
-                const Http = new XMLHttpRequest();
-                Http.open("GET", url);
-                Http.send();
-                Http.onreadystatechange = (e) => {
-                    console.log(Http.responseText)
+                if (confirm("sure to want to delete point ?")) {
+                    console.log("going to delete point");
+                    const Http = new XMLHttpRequest();
+                    Http.open("GET", url);
+                    Http.send();
+                    Http.onreadystatechange = (e) => {
+                        console.log(Http.responseText)
+                    }
+                } else {
+                    console.log("OK, no deletion this time");
                 }
             }
         };
@@ -1354,36 +1319,36 @@
                     display: true,
                     text: 'Chart.js Bar Chart'
                 },
-                scales: {
-                    xAxes: [{
-                        type: 'time',
-                        offset: true,
-                        scaleLabel: {
-                            display: true,
-                            labelString: 'Year-Month'
-                        },
-                        time: {
-                            // min: '2014-12-01' ,
-                            // max: '2015-12-01',
-                            unit: 'month',
-                            displayFormats: {
-                                month: "MMM yy"
-                            }
-                        },
-                        gridLines: {
-                            offsetGridLines: false,
-                            drawTicks: true,
-                            display: true
-                        },
-                        stacked: true
-                    }],
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: true
-                        },
-                        stacked: true
-                    }]
-                }
+                // scales: {   //xxxx
+                //     xAxes: [{
+                //         type: 'time',
+                //         offset: true,
+                //         scaleLabel: {
+                //             display: true,
+                //             labelString: 'Year-Month'
+                //         },
+                //         time: {
+                //             // min: '2014-12-01' ,
+                //             // max: '2015-12-01',
+                //             unit: 'month',
+                //             displayFormats: {
+                //                 month: "MMM yy"
+                //             }
+                //         },
+                //         gridLines: {
+                //             offsetGridLines: false,
+                //             drawTicks: true,
+                //             display: true
+                //         },
+                //         stacked: true
+                //     }],
+                //     yAxes: [{
+                //         ticks: {
+                //             beginAtZero: true
+                //         },
+                //         stacked: true
+                //     }]
+                // }
             }
         });
     </script>
@@ -1438,32 +1403,29 @@
             },
             options: {
                 scales: {
-                    xAxes: [
-                        {
-                            // id: "line",
-                            type: "time",
-                            // time: {
-                            //     unit: "month",
-                            //     displayFormats: {
-                            //         month: "MMM",
-                            //     },
-                            // },
-                            // distribution: "linear",
-                        },
-                        // {
-                        //     id: "bar",
-                        //     offset: true,
-                        //     type: "category",
-                        //     distribution: "series",
-                        // }
-                    ],
-                    yAxes: [
-                        {
-                            ticks: {
-                                beginAtZero: true,
+                    xAxes: {
+                        id: "line",
+                        type: "time",
+                        time: {
+                            unit: "month",
+                            displayFormats: {
+                                month: "MMM",
                             },
                         },
-                    ],
+                        distribution: "linear",
+                    },
+                    // {
+                    //     id: "bar",
+                    //     offset: true,
+                    //     type: "category",
+                    //     distribution: "series",
+                    // }
+                    yAxes:
+                    {
+                        ticks: {
+                            beginAtZero: true,
+                        },
+                    },
                 },
             },
         });
@@ -1520,32 +1482,28 @@
             },
             options: {
                 scales: {
-                    xAxes: [
-                        {
-                            id: "line",
-                            type: "time",
-                            time: {
-                                unit: "day",
-                                displayFormats: {
-                                    month: "DD",
-                                },
-                            },
-                            distribution: "linear",
-                        },
-                        {
-                            id: "bar",
-                            offset: true,
-                            type: "category",
-                            distribution: "series",
-                        }
-                    ],
-                    yAxes: [
-                        {
-                            ticks: {
-                                beginAtZero: true,
+                    xAxes: {
+                        id: "line",
+                        type: "time",
+                        time: {
+                            unit: "day",
+                            displayFormats: {
+                                month: "DD",
                             },
                         },
-                    ],
+                        distribution: "linear",
+                    },
+                    // {
+                    //     id: "bar",
+                    //     offset: true,
+                    //     type: "category",
+                    //     distribution: "series",
+                    // }
+                    yAxes: {
+                        ticks: {
+                            beginAtZero: true,
+                        },
+                    },
                 },
             },
         });
@@ -1581,17 +1539,22 @@
         var lineChart = new Chart(ctx, config);
     </script>
 
+
+
+
+
     <canvas id="canvas3"></canvas>
     <script>
+        console.log("canvas3");
         var timeFormat = 'dd/MM/yyyy';
         var data31 = [{
-            x: "04/01/2014", y: 175
+            x: "2014-01-14", y: 175
         }, {
-            x: "10/01/2014", y: 175
+            x: "2014-06-14", y: 155
         }, {
-            x: "04/01/2015", y: 178
+            x: "2015-04-15", y: 178
         }, {
-            x: "10/01/2015", y: 178
+            x: "2015-12-15", y: 165
         }];
         var data3 = {
             datasets: [
@@ -1603,14 +1566,23 @@
                 },
                 {
                     label: "UK Dates2 ",
+                    // data: [{
+                    //     x: "01/04/2014", y: 175
+                    // }, {
+                    //     x: "01/05/2014", y: 175
+                    // }, {
+                    //     x: "01/09/2015", y: 178
+                    // }, {
+                    //     x: "01/10/2015", y: 178
+                    // }],
                     data: [{
-                        x: "01/04/2014", y: 175
+                        x: "2014-04-14", y: 175
                     }, {
-                        x: "01/10/2014", y: 175
+                        x: "2014-05-14", y: 175
                     }, {
-                        x: "01/04/2015", y: 178
+                        x: "2015-09-15", y: 178
                     }, {
-                        x: "01/10/2015", y: 178
+                        x: "2015-10-15", y: 178
                     }],
                     fill: false,
                     borderColor: 'blue'
@@ -1624,24 +1596,25 @@
                 display: true,
                 text: "Chart.js Time Scale"
             },
-            scales: {
-                xAxes: [{
+            scales: {   //xxxx
+                xAxes: {
                     type: "time",
                     time: {
-                        format: timeFormat,
-                        // tooltipFormat: 'll'
+                        unit: "day",
+                        //     //     format: timeFormat,
+                        //     //     tooltipFormat: 'll'
                     },
                     scaleLabel: {
                         display: true,
                         labelString: 'Date3'
                     }
-                }],
-                yAxes: [{
+                },
+                yAxes: {
                     scaleLabel: {
                         display: true,
                         labelString: 'value'
                     }
-                }]
+                }
             }
         };
         var config3 = {

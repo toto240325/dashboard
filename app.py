@@ -163,7 +163,11 @@ def average_events(events):
                 delta_date_secs = diff_date_secs(time1, time2)
                 # print(delta_date_secs)
                 if delta_date_secs == 0:
-                    print("!!!!!!!!!!!!!!!!!!!!!! ooops !")
+                    print("!!!!!!!!!!!!!!!!!!!!!! !")
+                    print("!!!!!!!!!!!!!!!!!!!!!! this is going to hurt... !")
+                    print(f"time1 : {time1} - time2 : {time2}")
+                    print("!!!!!!!!!!!!!!!!!!!!!!")
+
                 kwh_per_h = delta_kwh / (delta_date_secs/3600)
                 # replacing initial events by 2 events starting at the beginning and end of the
                 # period and with a value of the average consumption in kwh during that period
@@ -195,7 +199,7 @@ class ElapsedTime:
         i = len(self.mytimes)
         diff_secs = self.mytimes[i-1] - self.mytimes[i-2]
         msg = f'delta{i-1} {point} : {round(diff_secs,2)}'
-        # print(msg)
+        print(msg)
         logging.info(msg)
 
 
@@ -282,7 +286,7 @@ def index():
     events = data["events"]
     events = remove_duplicates(events)
     power_day_values = [float(event["text"]) for event in events]
-    power_day_IDs = [float(event["id"]) for event in events]
+    power_day_id = [float(event["id"]) for event in events]
     power_day_labels = [event["time"] for event in events]
 
     power_day_values = smoothen(power_day_values)
@@ -314,7 +318,7 @@ def index():
     data = read_where("power_night", 60*10, "1900-01-01")
     events = data["events"]
     power_night_values = [float(event["text"]) for event in events]
-    power_night_IDs = [float(event["id"]) for event in events]
+    power_night_id = [float(event["id"]) for event in events]
     power_night_labels = [event["time"] for event in events]
 
     elaps.elapsed_time("power_night")
@@ -394,17 +398,17 @@ def index():
             self.unit = unit
             self.label = label
 
-    class MyChartValues_with_IDs:
+    class MyChartValuesWithIDs:
         """
         this class is just there to create an object containing all the parameters of a given chart,
         which will be handy to pass in one go all those values as an objects to the javascript
         that will need to process all those values
         """
 
-        def __init__(self, title, values, IDs, values_unit, labels, chart_type, unit, label):
+        def __init__(self, title, values, ids, values_unit, labels, chart_type, unit, label):
             self.title = title
             self.values = values
-            self.IDs = IDs
+            self.ids = ids
             self.values_unit = values_unit
             self.labels = labels
             self.chart_type = chart_type
@@ -469,15 +473,17 @@ def index():
         power_night_labels, "line", "hour", "KwH day/night")
     # power_day_chart = MyChartValues(
     #     "power_day", power_day_values, "KwH", power_day_labels, "line", "hour", "KwH day")
-    power_day_chart = MyChartValues_with_IDs(
-        "power_day", power_day_values, power_day_IDs, "KwH", power_day_labels, "line", "hour", "KwH day")
+    power_day_chart = MyChartValuesWithIDs(
+        "power_day", power_day_values, power_day_id, "KwH",
+        power_day_labels, "line", "hour", "KwH day")
     power_day_delta_chart = MyChartValues(
         "power_day_delta", power_day_delta_values, "kwH", power_day_delta_labels,
         "line", "hour", "KwH day Delta")
     # power_night_chart = MyChartValues(
     #     "power_night", power_night_values, "Cl", power_night_labels, "line", "hour", "KwH night")
-    power_night_chart = MyChartValues_with_IDs(
-        "power_night", power_night_values, power_night_IDs, "KwH", power_night_labels, "line", "hour", "KwH night")
+    power_night_chart = MyChartValuesWithIDs(
+        "power_night", power_night_values, power_night_id, "KwH",
+        power_night_labels, "line", "hour", "KwH night")
     power_night_delta_chart = MyChartValues(
         "power_night_delta", power_night_delta_values, "kwH", power_night_delta_labels,
         "line", "hour", "KwH night Delta")
@@ -584,7 +590,7 @@ if __name__ == "__main__":
     # then
     # http://192.168.0.52:5000/
 
-    init_logger('INFO')
+    init_logger('DEBUG')
     logging.info(
         "--------------------------------------------------------------------------")
     logging.info("Starting Dashboard")
