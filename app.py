@@ -286,7 +286,7 @@ def index():
     events = data["events"]
     events = remove_duplicates(events)
     power_day_values = [float(event["text"]) for event in events]
-    power_day_id = [float(event["id"]) for event in events]
+    power_day_ids = [float(event["id"]) for event in events]
     power_day_labels = [event["time"] for event in events]
 
     power_day_values = smoothen(power_day_values)
@@ -318,7 +318,7 @@ def index():
     data = read_where("power_night", 60*10, "1900-01-01")
     events = data["events"]
     power_night_values = [float(event["text"]) for event in events]
-    power_night_id = [float(event["id"]) for event in events]
+    power_night_ids = [float(event["id"]) for event in events]
     power_night_labels = [event["time"] for event in events]
 
     elaps.elapsed_time("power_night")
@@ -474,7 +474,7 @@ def index():
     # power_day_chart = MyChartValues(
     #     "power_day", power_day_values, "KwH", power_day_labels, "line", "hour", "KwH day")
     power_day_chart = MyChartValuesWithIDs(
-        "power_day", power_day_values, power_day_id, "KwH",
+        "power_day", power_day_values, power_day_ids, "KwH",
         power_day_labels, "line", "hour", "KwH day")
     power_day_delta_chart = MyChartValues(
         "power_day_delta", power_day_delta_values, "kwH", power_day_delta_labels,
@@ -482,7 +482,7 @@ def index():
     # power_night_chart = MyChartValues(
     #     "power_night", power_night_values, "Cl", power_night_labels, "line", "hour", "KwH night")
     power_night_chart = MyChartValuesWithIDs(
-        "power_night", power_night_values, power_night_id, "KwH",
+        "power_night", power_night_values, power_night_ids, "KwH",
         power_night_labels, "line", "hour", "KwH night")
     power_night_delta_chart = MyChartValues(
         "power_night_delta", power_night_delta_values, "kwH", power_night_delta_labels,
