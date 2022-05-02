@@ -80,12 +80,18 @@
         </div>
     </nav>
 
+    <!-- <script type="module">
+        import { Chart } from 'chart.js';
+        import zoomPlugin from 'chartjs-plugin-zoom';
+
+        Chart.register(zoomPlugin);
+
+    </script> -->
     <script>
         'use strict';
         setTimeout(function () {
             window.location.reload(1);
         }, 10 * 60 * 1000);
-
 
         function enable_deletion(mycanvas, mychart) {
             // console.log('Item: %o', mycanvas);
@@ -129,9 +135,6 @@
                     } else {
                         console.log("OK, no deletion this time");
                     }
-
-
-
                 }
             }
         };
@@ -252,12 +255,24 @@
 
             var options1 = {
                 responsive: true,
-
                 title: {
                     display: true,
                     text: title
                 },
-                scales: scales1
+                scales: scales1,
+                plugins: {
+                    zoom: {
+                        zoom: {
+                            wheel: {
+                                enabled: true,
+                            },
+                            pinch: {
+                                enabled: true
+                            },
+                            mode: 'xy',
+                        }
+                    }
+                }
             };
             var config1 = {
                 //type: "line",
@@ -344,7 +359,20 @@
                     display: true,
                     text: title
                 },
-                scales: scales1
+                scales: scales1,
+                plugins: {
+                    zoom: {
+                        zoom: {
+                            wheel: {
+                                enabled: true,
+                            },
+                            pinch: {
+                                enabled: true
+                            },
+                            mode: 'xy',
+                        }
+                    }
+                }
             };
             var config1 = {
                 //type: "line",
