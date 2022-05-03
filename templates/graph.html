@@ -132,6 +132,15 @@
                         Http.onreadystatechange = (e) => {
                             console.log(Http.responseText)
                         }
+                        console.log("popping index %i", index);
+                        console.log('before : datasets[0].data : %', datasets[0].data);
+                        var spliced = mychart.data.datasets[0].data.splice(index,1);
+
+                        // datasets[0].data.pop(index);
+                        console.log('after : datasets[0].data : %', datasets[0].data);
+                        mychart.data.datasets[1].data.pop(index);
+                        mychart.update();
+                        console.log("chart updated ?");
                     } else {
                         console.log("OK, no deletion this time");
                     }
@@ -143,18 +152,23 @@
         var zoom_plugin = {
             pan: {
                 enabled: true,
-                mode: 'xy',
+                mode: 'x',
                 threshold: 10
             },
             zoom: {
                 wheel: {
                     enabled: true,
+                    // speed: 0.1,
                     modifierKey: 'shift'
+                },
+                drag: {
+                    enabled: true,
+                    modifierKey: 'alt'
                 },
                 pinch: {
                     enabled: true
                 },
-                mode: 'xy',
+                mode: 'x',
             }
         };
 
@@ -1035,32 +1049,11 @@
         config = myConfig2(title, values, values_unit, labels, chart_type, unit, label);
 
         var ctx = document.getElementById("canvas_frigo_10h").getContext("2d");
-        var lineChart = new Chart(ctx, config);
+        var lineChart_frigo_10h = new Chart(ctx, config);
 
-        // var mycanvas = document.getElementById("canvas_frigo_10h");
-        // // console.log('Item: %o', mycanvas);
-        // mycanvas.onclick = function (evt) {
-        //     console.log("clicked !");
-        //     console.log('lineChart: %o', lineChart);
-        //     var activePoints = lineChart.getElementsAtEvent(evt);
-        //     if (activePoints[0]) {
-        //         console.log("start");
-        //         obj = activePoints[0];
-        //         // console.log('Item: %o', obj);
-        //         var chartData = activePoints[0]['_chart'].config.data;
-        //         console.log('chartData: %o', chartData);
-        //         var idx = activePoints[0]['_index'];
-        //         console.log('idx: %o', idx);
-        //         var label = chartData.labels[idx];
-        //         console.log('label: %o', label);
-        //         var value = chartData.datasets[0].data[idx];
-        //         console.log('value: %o', value);
+        // allows to swipe up and down on smartPhone/touchScreen
+        lineChart_frigo_10h.canvas.style.touchAction = "pan-y";
 
-        //         var url = "http://example.com/?label=" + label + "&value=" + value;
-        //         // console.log(url);
-        //         // alert(url);
-        //     }
-        // };
     </script>
 
     <canvas id="canvas_frigo_24h" width="900" height="250"></canvas>
@@ -1078,7 +1071,11 @@
         config = myConfig2(title, values, values_unit, labels, chart_type, unit, label);
 
         var ctx = document.getElementById("canvas_frigo_24h").getContext("2d");
-        var lineChart = new Chart(ctx, config);
+        var lineChart_frigo_24h = new Chart(ctx, config);
+
+        // allows to swipe up and down on smartPhone/touchScreen
+        lineChart_frigo_24h.canvas.style.touchAction = "pan-y";
+
     </script>
 
     <canvas id="canvas_pool_ph" width="900" height="300"></canvas>
@@ -1100,6 +1097,9 @@
 
         var ctx = document.getElementById("canvas_pool_ph").getContext("2d");
         var lineChart_pool_ph = new Chart(ctx, config);
+
+        // allows to swipe up and down on smartPhone/touchScreen
+        lineChart_pool_ph.canvas.style.touchAction = "pan-y";
 
         var canvas_pool_ph = document.getElementById("canvas_pool_ph");
         enable_deletion(canvas_pool_ph, lineChart_pool_ph);
@@ -1125,6 +1125,9 @@
 
         var ctx = document.getElementById("canvas_pool_cl").getContext("2d");
         var lineChart_pool_cl = new Chart(ctx, config);
+
+        // allows to swipe up and down on smartPhone/touchScreen
+        lineChart_pool_cl.canvas.style.touchAction = "pan-y";
 
         var canvas_pool_cl = document.getElementById("canvas_pool_cl");
         enable_deletion(canvas_pool_cl, lineChart_pool_cl);
@@ -1451,7 +1454,7 @@
             }]
         };
         var ctx = document.getElementById("canvas_bar").getContext("2d");
-        new Chart(ctx, {
+        var my_bar_chart = new Chart(ctx, {
             type: 'bar',
             data: barChartData,
             options: {
@@ -1502,6 +1505,29 @@
                 }
             }
         });
+
+        var canvas_bar = document.getElementById("canvas_bar");
+        canvas_bar.onclick = function (evt) {
+            index = 2;
+            console.log("my_bar_chart : %o", my_bar_chart);
+            console.log("my_bar_chart.data: %o", my_bar_chart.data);
+            alert("test");
+            console.log("popping index %i", index);
+            console.log("popping element with value %i and label %s", my_bar_chart.data.datasets[0].data[index],my_bar_chart.data.datasets[0].label[index]);
+            console.log('before : datasets[0].data : %', my_bar_chart.data.datasets[0].data);
+            //console.log("popped : %o", my_bar_chart.data.datasets[0].data.pop(index));
+            console.log("splicing");
+            var spliced = my_bar_chart.data.datasets[0].data.splice(index,1);
+            var spliced = my_bar_chart.data.labels.splice(index,1);
+            console.log("index : %o", index);
+
+
+            // datasets[0].data.pop(index);
+            console.log('after : datasets[0].data : %', my_bar_chart.data.datasets[0].data);
+            my_bar_chart.update();
+            console.log("chart updated ?");
+        };
+
     </script>
 
     <canvas id="canvas_bar2" width="900" height="300"></canvas>

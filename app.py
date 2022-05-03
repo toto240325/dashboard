@@ -473,16 +473,12 @@ def index():
     power_chart = MyChartValues2(
         "power day/night", power_day_values, power_night_values, "KwH", power_day_labels,
         power_night_labels, "line", "hour", "KwH day/night")
-    # power_day_chart = MyChartValues(
-    #     "power_day", power_day_values, "KwH", power_day_labels, "line", "hour", "KwH day")
     power_day_chart = MyChartValuesWithIDs(
         "power_day", power_day_values, power_day_ids, "KwH", power_day_labels,
         "line", "hour", "KwH day")
     power_day_delta_chart = MyChartValues(
         "power_day_delta", power_day_delta_values, "kwH", power_day_delta_labels,
         "line", "hour", "KwH day Delta")
-    # power_night_chart = MyChartValues(
-    #     "power_night", power_night_values, "Cl", power_night_labels, "line", "hour", "KwH night")
     power_night_chart = MyChartValuesWithIDs(
         "power_night", power_night_values, power_night_ids, "KwH", power_night_labels,
         "line", "hour", "KwH night")
