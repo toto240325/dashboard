@@ -139,6 +139,25 @@
             }
         };
 
+
+        var zoom_plugin = {
+            pan: {
+                enabled: true,
+                mode: 'xy',
+                threshold: 10
+            },
+            zoom: {
+                wheel: {
+                    enabled: true,
+                    modifierKey: 'shift'
+                },
+                pinch: {
+                    enabled: true
+                },
+                mode: 'xy',
+            }
+        };
+
         function myConfig(labels, values, chart_type) {
             // var timeFormat = 'yyyy/MM/dd H:mm:ss';
             var timeFormat = 'yyyy/MM/dd';
@@ -261,17 +280,7 @@
                 },
                 scales: scales1,
                 plugins: {
-                    zoom: {
-                        zoom: {
-                            wheel: {
-                                enabled: true,
-                            },
-                            pinch: {
-                                enabled: true
-                            },
-                            mode: 'xy',
-                        }
-                    }
+                    zoom: zoom_plugin
                 }
             };
             var config1 = {
@@ -361,17 +370,28 @@
                 },
                 scales: scales1,
                 plugins: {
-                    zoom: {
-                        zoom: {
-                            wheel: {
-                                enabled: true,
-                            },
-                            pinch: {
-                                enabled: true
-                            },
-                            mode: 'xy',
-                        }
-                    }
+                    zoom: zoom_plugin
+                    
+                    // {
+                    //     pan: {
+                    //         enabled: true,
+                    //         mode: 'xy',
+                    //         threshold: 10
+                    //     },
+                    //     zoom: {
+                    //         wheel: {
+                    //             enabled: true,
+                    //             modifierKey: 'shift'
+                    //         },
+                    //         pinch: {
+                    //             enabled: true
+                    //         },
+                    //         mode: 'xy',
+                    //     }
+                    // }
+
+
+
                 }
             };
             var config1 = {
@@ -1079,7 +1099,11 @@
         config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label);
 
         var ctx = document.getElementById("canvas_pool_ph").getContext("2d");
-        var lineChart = new Chart(ctx, config);
+        var lineChart_pool_ph = new Chart(ctx, config);
+
+        var canvas_pool_ph = document.getElementById("canvas_pool_ph");
+        enable_deletion(canvas_pool_ph, lineChart_pool_ph);
+
     </script>
 
 
@@ -1088,6 +1112,7 @@
         values = JSON.parse('{{ pool_cl_chart.values | tojson }}');
         var ids = JSON.parse('{{ pool_cl_chart.ids | tojson }}');
         labels = JSON.parse('{{ pool_cl_chart.labels | tojson }}');
+
         // values = {{ pool_cl_chart.values | safe }}
         // labels = {{ pool_cl_chart.labels | safe }}
         values_unit = "{{ pool_cl_chart.values_unit | safe }}"
