@@ -134,7 +134,7 @@
                         }
                         console.log("popping index %i", index);
                         console.log('before : datasets[0].data : %', datasets[0].data);
-                        var spliced = mychart.data.datasets[0].data.splice(index,1);
+                        var spliced = mychart.data.datasets[0].data.splice(index, 1);
 
                         // datasets[0].data.pop(index);
                         console.log('after : datasets[0].data : %', datasets[0].data);
@@ -385,7 +385,7 @@
                 scales: scales1,
                 plugins: {
                     zoom: zoom_plugin
-                    
+
                     // {
                     //     pan: {
                     //         enabled: true,
@@ -707,7 +707,7 @@
         ctx.stroke();
     </script> -->
 
-    <canvas id="canvas32"></canvas>
+    <canvas id="canvas32" width="900" height="350"></canvas>
     <button type="button" onclick="alert('Hello world!')">Click Me!</button>
 
     <script>
@@ -833,7 +833,7 @@
         // };
     </script>
 
-    <canvas id="canvas_frigo_with_smart" width="900" height="200" style="border:1px solid #d3d3d3;"></canvas>
+    <canvas id="canvas_frigo_with_smart" width="900" height="350" style="border:1px solid #d3d3d3;"></canvas>
 
     <script>
         values = JSON.parse('{{ frigo_1h_chart.values | tojson }}');
@@ -1134,7 +1134,7 @@
 
     </script>
 
-    <canvas id="canvas_power" width="900" height="250"></canvas>
+    <!-- <canvas id="canvas_power" width="900" height="250"></canvas>
     <script>
         title = "{{ power_chart.title|safe }}"
         // console.log("title : " + title)
@@ -1163,9 +1163,9 @@
         var ctx = document.getElementById("canvas_power").getContext("2d");
         var lineChart = new Chart(ctx, config);
     </script>
+ -->
 
-
-    <div style="width:75%;"><canvas id="canvas4"></canvas>
+    <!-- <div style="width:75%;"><canvas id="canvas4"></canvas>
     </div>
     <script>
         const labels4 = [
@@ -1231,7 +1231,7 @@
         //     }
         // };
 
-    </script>
+    </script> -->
 
     <canvas id="canvas_power_day" width="900" height="300"></canvas>
     <script type="module">
@@ -1249,9 +1249,13 @@
         config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label);
 
         var ctx = document.getElementById("canvas_power_day").getContext("2d");
-        var lineChartPowerDay = new Chart(ctx, config);
+        var power_day_chart = new Chart(ctx, config);
         var canvas_power_day = document.getElementById("canvas_power_day");
-        enable_deletion(canvas_power_day, lineChartPowerDay);
+        enable_deletion(canvas_power_day, power_day_chart);
+
+        // allows to swipe up and down on smartPhone/touchScreen
+        power_day_chart.canvas.style.touchAction = "pan-y";
+
 
 
         // import { Chart } from 'chart.js';
@@ -1332,7 +1336,11 @@
         config = myConfig2(title, values, values_unit, labels, chart_type, unit, label);
 
         var ctx = document.getElementById("canvas_power_day_delta").getContext("2d");
-        var lineChart_power_day_delta = new Chart(ctx, config);
+        var power_day_delta_chart = new Chart(ctx, config);
+
+        // allows to swipe up and down on smartPhone/touchScreen
+        power_day_delta_chart.canvas.style.touchAction = "pan-y";
+
     </script>
 
 
@@ -1357,32 +1365,13 @@
         config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label);
 
         var ctx = document.getElementById("canvas_power_night").getContext("2d");
-        var lineChart_power_night = new Chart(ctx, config);
+        var power_night_chart = new Chart(ctx, config);
 
         var canvas_power_night = document.getElementById("canvas_power_night");
-        enable_deletion(canvas_power_night, lineChart_power_night);
+        enable_deletion(canvas_power_night, power_night_chart);
 
-        // mycanvas_night.onclick = function (evt) {
-        //     console.log("------------------");
-        //     console.log('lineChart_power_night: %o', lineChart_power_night);
-        //     var activePoints = lineChart_power_night.getElementsAtEventForMode(evt);
-        //     if (activePoints[0]) {
-        //         var chartData = activePoints[0]['_chart'].config.data;
-        //         var idx = activePoints[0]['_index'];
-        //         // var label = chartData.labels[idx];
-        //         // var value = chartData.datasets[0].data[idx];
-        //         var id = chartData.datasets[1].data[idx];
-
-        //         var url = "http://192.168.0.73/event/api/event/delete.php?id=" + id.y;
-
-        //         const Http = new XMLHttpRequest();
-        //         Http.open("GET", url);
-        //         Http.send();
-        //         Http.onreadystatechange = (e) => {
-        //             console.log(Http.responseText)
-        //         }
-        //     }
-        // };
+        // allows to swipe up and down on smartPhone/touchScreen
+        power_night_chart.canvas.style.touchAction = "pan-y";
 
     </script>
 
@@ -1401,9 +1390,12 @@
         config = myConfig2(title, values, values_unit, labels, chart_type, unit, label);
 
         var ctx = document.getElementById("canvas_power_night_delta").getContext("2d");
-        var lineChart = new Chart(ctx, config);
-    </script>
+        var power_night_delta_chart = new Chart(ctx, config);
 
+        // allows to swipe up and down on smartPhone/touchScreen
+        power_night_delta_chart.canvas.style.touchAction = "pan-y";
+
+    </script>
 
     <canvas id="canvas_ps4" width="900" height="300"></canvas>
     <script>
@@ -1513,12 +1505,12 @@
             console.log("my_bar_chart.data: %o", my_bar_chart.data);
             alert("test");
             console.log("popping index %i", index);
-            console.log("popping element with value %i and label %s", my_bar_chart.data.datasets[0].data[index],my_bar_chart.data.datasets[0].label[index]);
+            console.log("popping element with value %i and label %s", my_bar_chart.data.datasets[0].data[index], my_bar_chart.data.datasets[0].label[index]);
             console.log('before : datasets[0].data : %', my_bar_chart.data.datasets[0].data);
             //console.log("popped : %o", my_bar_chart.data.datasets[0].data.pop(index));
             console.log("splicing");
-            var spliced = my_bar_chart.data.datasets[0].data.splice(index,1);
-            var spliced = my_bar_chart.data.labels.splice(index,1);
+            var spliced = my_bar_chart.data.datasets[0].data.splice(index, 1);
+            var spliced = my_bar_chart.data.labels.splice(index, 1);
             console.log("index : %o", index);
 
 
