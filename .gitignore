@@ -9,3 +9,6 @@ templates/test_zip.py
 logs.logs
 tmp_unit_tests.txt
 logs.log
+tmp.html
+templates/graph_js2.html
+package-lock.json
