@@ -132,15 +132,15 @@
                         Http.onreadystatechange = (e) => {
                             console.log(Http.responseText)
                         }
-                        console.log("popping index %i", index);
-                        console.log('before : datasets[0].data : %', datasets[0].data);
+                        // console.log("popping index %i", index);
+                        // console.log('before : datasets[0].data : %', datasets[0].data);
                         var spliced = mychart.data.datasets[0].data.splice(index, 1);
 
                         // datasets[0].data.pop(index);
-                        console.log('after : datasets[0].data : %', datasets[0].data);
+                        // console.log('after : datasets[0].data : %', datasets[0].data);
                         mychart.data.datasets[1].data.pop(index);
                         mychart.update();
-                        console.log("chart updated ?");
+                        console.log("char/t updated ?");
                     } else {
                         console.log("OK, no deletion this time");
                     }
@@ -1346,7 +1346,7 @@
 
     <canvas id="canvas_power_night" width="900" height="300"></canvas>
     <script>
-        console.log("test");
+        // console.log("test");
         values = JSON.parse('{{ power_night_chart.values | tojson }}');
         var ids = JSON.parse('{{ power_night_chart.ids | tojson }}');
 
@@ -1586,7 +1586,7 @@
                     xAxes: {
                         grid: {
                             color: (context) => {
-                                console.log("context.tick : %o",context);
+                                // console.log("context.tick : %o",context);
                                 // if (context.tick.value === 12) {
                                 //     return 'rgba(75,192,192,1)';
                                 // } else {
