@@ -1362,10 +1362,10 @@
         unit = "{{ power_night_chart.unit|safe }}"
         label = "{{ power_night_chart.label|safe }}"
 
-        config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label);
+        config_power_night = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label);
 
         var ctx = document.getElementById("canvas_power_night").getContext("2d");
-        var power_night_chart = new Chart(ctx, config);
+        var power_night_chart = new Chart(ctx, config_power_night);
 
         var canvas_power_night = document.getElementById("canvas_power_night");
         enable_deletion(canvas_power_night, power_night_chart);
@@ -1435,18 +1435,8 @@
 
     <canvas id="canvas_bar" width="900" height="300"></canvas>
     <script>
-        var barChartData = {
-            labels: ["2015-01-01", "2015-02-01", "2015-03-01", "2015-04-01", "2015-05-01", "2015-07-01"],
-            datasets: [{/*from  w w w  . de mo 2 s . com*/
-                categoryPercentage: .5,
-                barPercentage: 1,
-                label: 'Dataset 1',
-                backgroundColor: "rgba(220,220,220,0.5)",
-                data: [10, 4, 5, 7, 2, 3]
-            }]
-        };
-        var ctx = document.getElementById("canvas_bar").getContext("2d");
-        var my_bar_chart = new Chart(ctx, {
+
+        var config_canvas_bar = {
             type: 'bar',
             data: barChartData,
             options: {
@@ -1467,6 +1457,16 @@
                 },
                 scales: {
                     xAxes: {
+                        // grid: {
+                        //     color: (context) => {
+                        //         console.log("context.tick : %o",context);
+                        //         // if (context.tick.value === 12) {
+                        //         //     return 'rgba(75,192,192,1)';
+                        //         // } else {
+                        //         //     return 'rgba(0,0,0,0.1)';
+                        //         // }
+                        //     }
+                        // },
                         type: 'time',
                         offset: true,
                         scaleLabel: {
@@ -1496,7 +1496,20 @@
                     }
                 }
             }
-        });
+        };
+
+        var barChartData = {
+            labels: ["2015-01-01", "2015-02-01", "2015-03-01", "2015-04-01", "2015-05-01", "2015-07-01"],
+            datasets: [{/*from  w w w  . de mo 2 s . com*/
+                categoryPercentage: .5,
+                barPercentage: 1,
+                label: 'Dataset 1',
+                backgroundColor: "rgba(220,220,220,0.5)",
+                data: [10, 4, 5, 7, 2, 3]
+            }]
+        };
+        var ctx = document.getElementById("canvas_bar").getContext("2d");
+        var my_bar_chart = new Chart(ctx, config_canvas_bar);
 
         var canvas_bar = document.getElementById("canvas_bar");
         canvas_bar.onclick = function (evt) {
@@ -1512,7 +1525,6 @@
             var spliced = my_bar_chart.data.datasets[0].data.splice(index, 1);
             var spliced = my_bar_chart.data.labels.splice(index, 1);
             console.log("index : %o", index);
-
 
             // datasets[0].data.pop(index);
             console.log('after : datasets[0].data : %', my_bar_chart.data.datasets[0].data);
@@ -1542,8 +1554,7 @@
             { x: "2017-12-01", y: 6 },
         ];
 
-        var ctx = document.getElementById("canvas_bar2").getContext("2d");
-        var myChart = new Chart(ctx, {
+        var config_canvas_bar2 = {
             type: "bar",
             data: {
                 //labels: ["2017-08", "2017-09", "2017-10", "2017-11", "2017-12"],
@@ -1573,6 +1584,23 @@
             options: {
                 scales: {
                     xAxes: {
+                        grid: {
+                            color: (context) => {
+                                console.log("context.tick : %o",context);
+                                // if (context.tick.value === 12) {
+                                //     return 'rgba(75,192,192,1)';
+                                // } else {
+                                //     return 'rgba(0,0,0,0.1)';
+                                //      return 'green';
+                                // }
+                            }
+                        },
+                        // gridLines: {
+                        //     // offsetGridLines: false,
+                        //     drawTicks: true,
+                        //     display: true
+                        // },
+
                         // id: "line",
                         type: "time",
                         // time: {
@@ -1595,8 +1623,18 @@
                         },
                     },
                 },
+                plugins: {
+                    zoom: zoom_plugin
+                }
             },
-        });
+        };
+
+        var ctx = document.getElementById("canvas_bar2").getContext("2d");
+        var myChart = new Chart(ctx, config_canvas_bar2);
+        
+        // allows to swipe up and down on smartPhone/touchScreen
+        lineChart_frigo_10h.canvas.style.touchAction = "pan-y";
+
     </script>
 
 
