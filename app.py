@@ -280,7 +280,7 @@ def index():
 
     elaps.elapsed_time("pool_Cl")
 
-    data = read_where("power_day", 60*10, "1900-01-01")
+    data = read_where("power_day", 30*24*3, "1900-01-01")
     events = data["events"]
     events = remove_duplicates(events)
     power_day_values = [float(event["text"]) for event in events]
@@ -291,29 +291,16 @@ def index():
 
     elaps.elapsed_time("power_day")
 
-    data = read_where("power_day", 60*10, "1900-01-01")
+    data = read_where("power_day", 30*24*3, "1900-01-01")
     events = data["events"]
     events = remove_duplicates(events)
-
-    # power_day_delta_values = [float(event["text"]) for event in events]
-    # values = [float(event["text"]) for event in events]
-    # prev_value = values[0]
-    # delta_values = []
-    # for value in values:
-    #     delta_values.append(value - prev_value)
-    #     prev_value = value
-
-    # power_day_delta_values = delta_values
-    # power_day_delta_labels = [event["time"] for event in events]
-
-    # ---------------
 
     power_day_delta_values, power_day_delta_labels = average_events(events)
     power_day_delta_values = smoothen(power_day_delta_values)
 
     elaps.elapsed_time("power_day_delta")
 
-    data = read_where("power_night", 60*10, "1900-01-01")
+    data = read_where("power_night", 30*24*3, "1900-01-01")
     events = data["events"]
     power_night_values = [float(event["text"]) for event in events]
     power_night_ids = [float(event["id"]) for event in events]
@@ -321,7 +308,7 @@ def index():
 
     elaps.elapsed_time("power_night")
 
-    data = read_where("power_night", 60*10, "1900-01-01")
+    data = read_where("power_night", 30*24*3, "1900-01-01")
     events = data["events"]
     events = remove_duplicates(events)
 

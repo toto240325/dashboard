@@ -122,6 +122,14 @@
                     // console.log('value: %o', value);
                     // console.log('id: %o', id);g
 
+                    // for (i = -1; i < 2; i++) {
+                    //     var val2 = mychart.data.datasets[0].data[index+i].y;
+                    //     var lab2 = mychart.data.datasets[0].data[index+i].x;
+                    //     var id2 = mychart.data.datasets[1].data[index+i].y;
+                    //     console.log("" + i + " val:" + val2 + ", date:" + lab2 + ", id:" + id2);
+                    // }
+
+
 
                     var url = "http://192.168.0.73/event/api/event/delete.php?id=" + id;
                     if (confirm("sure to want to delete point (value:" + value + ", date:" + mydatetime + ", id:" + id + ") ?")) {
@@ -132,13 +140,12 @@
                         Http.onreadystatechange = (e) => {
                             console.log(Http.responseText)
                         }
-                        // console.log("popping index %i", index);
+                        console.log("splicing index %i", index);
                         // console.log('before : datasets[0].data : %', datasets[0].data);
                         var spliced = mychart.data.datasets[0].data.splice(index, 1);
+                        var spliced = mychart.data.datasets[1].data.splice(index, 1);
 
-                        // datasets[0].data.pop(index);
                         // console.log('after : datasets[0].data : %', datasets[0].data);
-                        mychart.data.datasets[1].data.pop(index);
                         mychart.update();
                         console.log("char/t updated ?");
                     } else {
@@ -1631,7 +1638,7 @@
 
         var ctx = document.getElementById("canvas_bar2").getContext("2d");
         var myChart = new Chart(ctx, config_canvas_bar2);
-        
+
         // allows to swipe up and down on smartPhone/touchScreen
         lineChart_frigo_10h.canvas.style.touchAction = "pan-y";
 
