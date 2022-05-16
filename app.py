@@ -195,7 +195,7 @@ class ElapsedTime:
         i = len(self.mytimes)
         diff_secs = self.mytimes[i-1] - self.mytimes[i-2]
         msg = f'delta{i-1} {point} : {round(diff_secs,2)}'
-        # print(msg)
+        print(msg)
         logging.info(msg)
 
 
