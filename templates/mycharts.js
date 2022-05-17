@@ -261,9 +261,11 @@ function myConfig2(title, values, values_unit, labels, chart_type, unit, label) 
 }
 
 function myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label) {
+
     // var timeFormat = 'yyyy/MM/dd H:mm:ss';
     var timeFormat = 'yyyy/MM/dd';
     // var timeFormat = 'H:mm';
+    var nowStr = (new Date()).toLocaleTimeString("fr-BE", { hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
 
     var a = [];
     var b = [];
@@ -353,9 +355,6 @@ function myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type,
             //         mode: 'xy',
             //     }
             // }
-
-
-
         }
     };
     var config1 = {
@@ -768,211 +767,270 @@ function myConfig_2_datasets2(
 // //     }
 // // };
 
+// get_scales1 ==================================================
 
-var values = JSON.parse('{{ frigo_1h_chart.values | tojson }}');
-//console.log(values);
-var values_unit = "{{ frigo_1h_chart.values_unit|safe }}"
-var labels = JSON.parse('{{ frigo_1h_chart.labels | tojson }}');
-var title = "{{ frigo_1h_chart.title|safe }}"
-var chart_type = "{{ frigo_1h_chart.chart_type|safe }}"
-var unit = "{{ frigo_1h_chart.unit|safe }}"
-var label = "{{ frigo_1h_chart.label|safe }}"
+function get_scales1(unit, values_unit) {
+    var timeFormat = 'yyyy-MM-dd hh:mm:ss';
+    var nowStr = (new Date()).toLocaleTimeString("fr-BE", { hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+    var datetime2 = "LastSync: " + nowStr;
 
-var a = [];
-for (let i = 0; i < labels.length; i++) {
-    let b = { x: labels[i], y: values[i] };
-    a.push(b);
-    // console.log(b);
-}
-var data_normal = a;
-
-var values_smart = JSON.parse('{{ frigo_1h_smart_chart.values | tojson }}');
-var labels_smart = JSON.parse('{{ frigo_1h_smart_chart.labels | tojson }}');
-var values_unit_smart = "{{ frigo_1h_smart_chart.values_unit|safe }}"
-var title_smart = "{{ frigo_1h_smart_chart.title|safe }}"
-var chart_type_smart = "{{ frigo_1h_smart_chart.chart_type|safe }}"
-var unit_smart = "{{ frigo_1h_smart_chart.unit|safe }}"
-var labels_smart = "{{ frigo_1h_smart_chart.label|safe }}"
-
-var a = [];
-for (let i = 0; i < labels_smart.length; i++) {
-    let b = { x: labels_smart[i], y: values_smart[i] };
-    a.push(b);
-}
-var data_smart = a;
-var timeFormat = 'yyyy-MM-dd hh:mm:ss';
-
-var nowStr = (new Date()).toLocaleTimeString("fr-BE", { hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
-var datetime2 = "LastSync: " + nowStr;
-
-var xA = {
-    type: "time",
-    time: {
-        // format: timeFormat,
-
-        displayFormats: {
-            'millisecond': 'MMM dd',
-            'second': 'MMM dd',
-            'minute': 'H:mm',
-            'hour': 'H:mm',
-            'day': 'dd/MM',
-            'week': 'MMM dd',
-            'month': 'MMM dd',
-            'quarter': 'MMM dd',
-            'year': 'MMM dd',
-        },
-        unit: unit,
-        parser: 'yyyy-MM-dd H:m:s'
-    },
-    scaleLabel: {
-        display: true,
-        labelString: datetime2
-    }
-};
-var yA = {
-    scaleLabel: {
-        display: true,
-        labelString: values_unit
-    }
-};
-var scales1 = {
-    xAxes: xA,
-    yAxes: yA
-};
-
-
-var config1 = {
-    //type: "line",
-    //type: "bar",
-    type: chart_type,
-    data: {
-        labels: labels,    //{{ labels | safe }},
-        datasets: [
-            {
-                label: label,
-                data: [],
-                fill: false,
-                borderColor: "rgb(75, 192, 192)",
-                lineTension: 0.1
-            }
-        ]
-    },
-    options: options1
-};
-
-var data_frigo_normal_smart = {
-    datasets: [
-        {
-            label: "Normal",
-            data: data_normal,
-            fill: false,
-            borderColor: 'red'
-        },
-        {
-            label: "Smart2",
-            data: data_smart,
-            fill: false,
-            borderColor: 'blue'
-        }
-    ]
-};
-// console.log(data3);
-
-
-var options1 = {
-    scales: scales1,
-    plugins: {
-        legend: {
-            display: true,
-            position: 'top',
-            align: 'end',
-            // reverse: true
-        },
-        title: {
-            text: "Frigo 1h normal vs. smart",
-            display: true
-        }
-    }
-};
-
-var options_frigo_normal_smart = {
-    title: {
-        display: true,
-        text: "Frigo 1h normal vs. smart"
-    },
-    scales: {
-        xAxes: {
-            type: "time",
-            time: {
-                format: timeFormat
+    var xA = {
+        type: "time",
+        time: {
+            // format: timeFormat,
+            displayFormats: {
+                'millisecond': 'MMM dd',
+                'second': 'MMM dd',
+                'minute': 'H:mm',
+                'hour': 'H:mm',
+                'day': 'dd/MM',
+                'week': 'MMM dd',
+                'month': 'MMM dd',
+                'quarter': 'MMM dd',
+                'year': 'MMM dd',
             },
-            scaleLabel: {
-                display: true,
-                labelString: 'Date3'
-            }
+            unit: unit,
+            parser: 'yyyy-MM-dd H:m:s'
         },
-        yAxes: {
-            scaleLabel: {
-                display: true,
-                labelString: 'value'
-            }
+        scaleLabel: {
+            display: true,
+            labelString: datetime2
         }
-    }
-};
+    };
+    var yA = {
+        scaleLabel: {
+            display: true,
+            labelString: values_unit
+        }
+    };
+    var scales1 = {
+        xAxes: xA,
+        yAxes: yA
+    };
+    return scales1;
+}
 
-const horizontalArbitraryLine = {
-    id: 'horizontalArbitraryLine',
+var scales1 = get_scales1(unit, values_unit);
+
+
+// horizontalArbitraryLinePlugin =======================================
+
+const horizontalArbitraryLinePlugin = {
+    id: 'horizontalArbitraryLinePlugin',
     beforeDraw(chart, args, options) {
-        console.log("in beforeDraw of %s", chart.canvas.id);
+        // console.log("in beforeDraw of %s", chart.canvas.id);
         // console.log("chart: %o", chart)
         // console.log("canvas: %s", chart.canvas.id)
-        const { ctx, chartArea: { top, right, bottom, left, width, height }, scales: { x, y } } = chart;
+        const { ctx, chartArea: { top, right, bottom, left, width, height }, scales: { xAxes, yAxes } } = chart;
         ctx.save();
 
-        ctx.strokeStyle = 'red';
-        ctx.strokeRect(0, 200, 500, 5);
+        // console.log("yAxes : %o",yAxes)
 
-        ctx.beginPath();
-        ctx.moveTo(0, 100);
-        ctx.lineTo(width, 100);
+        var ypix = yAxes.getPixelForValue(3);
         ctx.strokeStyle = 'green';
-        ctx.stroke();
+        ctx.strokeRect(left, ypix, left + width, 0);
 
+        var ypix = yAxes.getPixelForValue(1.5);
+        ctx.strokeStyle = 'green';
+        ctx.strokeRect(left, ypix, left + width, 0);
+
+        // ctx.beginPath();
+        // ctx.moveTo(left, 100);
+        // ctx.lineTo(left+width, 100);
+        // ctx.strokeStyle = 'green';
+        // ctx.stroke();
     },
-    afterDraw(chart, args, options) {
-        console.log("in afterDraw of %s", chart.canvas.id);
+    // afterDraw(chart, args, options) {
+    //     console.log("in afterDraw of %s", chart.canvas.id);
+    // }
+}
+
+// this is to register this plugin for ALL chart, not only for one instance
+// Chart.register(horizontalArbitraryLinePlugin);
+
+// get_rawdata ===================================================
+// kind can be {"normal_1h", "smart_1h", "10h", "24h", "pool_ph", "pool_cl", "power_day", "power_night"}
+
+function get_rawdata(kind) {
+
+    var values, values_unit, labels, title, chart_type, unit, label, ids;
+    ids = [];
+    switch (kind) {
+        case "normal_1h":
+            values = JSON.parse('{{ frigo_1h_chart.values | tojson }}');
+            //console.log(values);
+            values_unit = "{{ frigo_1h_chart.values_unit|safe }}"
+            labels = JSON.parse('{{ frigo_1h_chart.labels | tojson }}');
+            title = "{{ frigo_1h_chart.title|safe }}"
+            chart_type = "{{ frigo_1h_chart.chart_type|safe }}"
+            unit = "{{ frigo_1h_chart.unit|safe }}"
+            label = "{{ frigo_1h_chart.label|safe }}"
+            break;
+        case "smart_1h":
+            values = JSON.parse('{{ frigo_1h_smart_chart.values | tojson }}');
+            //console.log(values);
+            values_unit = "{{ frigo_1h_smart_chart.values_unit|safe }}"
+            labels = JSON.parse('{{ frigo_1h_smart_chart.labels | tojson }}');
+            title = "{{ frigo_1h_smart_chart.title|safe }}"
+            chart_type = "{{ frigo_1h_smart_chart.chart_type|safe }}"
+            unit = "{{ frigo_1h_smart_chart.unit|safe }}"
+            label = "{{ frigo_1h_smart_chart.label|safe }}"
+            break;
+        case "10h":
+            values = JSON.parse('{{ frigo_10h_chart.values | tojson }}');
+            values_unit = "{{ frigo_10h_chart.values_unit|safe }}"
+            labels = JSON.parse('{{ frigo_10h_chart.labels | tojson }}');
+            title = "{{ frigo_10h_chart.title|safe }}"
+            chart_type = "{{ frigo_10h_chart.chart_type|safe }}"
+            unit = "{{ frigo_10h_chart.unit|safe }}"
+            label = "{{ frigo_10h_chart.label|safe }}"
+            break;
+        case "24h":
+            values = JSON.parse('{{ frigo_24h_chart.values | tojson }}');
+            values_unit = "{{ frigo_24h_chart.values_unit|safe }}"
+            labels = JSON.parse('{{ frigo_24h_chart.labels | tojson }}');
+            title = "{{ frigo_24h_chart.title|safe }}"
+            chart_type = "{{ frigo_24h_chart.chart_type|safe }}"
+            unit = "{{ frigo_24h_chart.unit|safe }}"
+            label = "{{ frigo_24h_chart.label|safe }}"
+            break;
+        case "pool_ph":
+            values = JSON.parse('{{ pool_ph_chart.values | tojson }}');
+            ids = JSON.parse('{{ pool_ph_chart.ids | tojson }}');
+            labels = JSON.parse('{{ pool_ph_chart.labels | tojson }}');
+            values_unit = "{{ pool_ph_chart.values_unit | safe }}"
+            title = "{{ pool_ph_chart.title|safe }}"
+            chart_type = "{{ pool_ph_chart.chart_type|safe }}"
+            unit = "{{ pool_ph_chart.unit|safe }}"
+            label = "{{ pool_ph_chart.label|safe }}"
+            break;
+        case "pool_cl":
+            values = JSON.parse('{{ pool_cl_chart.values | tojson }}');
+            ids = JSON.parse('{{ pool_cl_chart.ids | tojson }}');
+            labels = JSON.parse('{{ pool_cl_chart.labels | tojson }}');
+            values_unit = "{{ pool_cl_chart.values_unit | safe }}"
+            title = "{{ pool_cl_chart.title|safe }}"
+            chart_type = "{{ pool_cl_chart.chart_type|safe }}"
+            unit = "{{ pool_cl_chart.unit|safe }}"
+            label = "{{ pool_cl_chart.label|safe }}"
+            break;
+        case "power_day":
+            values = JSON.parse('{{ power_day_chart.values | tojson }}');
+            ids = JSON.parse('{{ power_day_chart.ids | tojson }}');
+            labels = JSON.parse('{{ power_day_chart.labels | tojson }}');
+            values_unit = "{{ power_day_chart.values_unit | safe }}"
+            title = "{{ power_day_chart.title|safe }}"
+            chart_type = "{{ power_day_chart.chart_type|safe }}"
+            unit = "{{ power_day_chart.unit|safe }}"
+            label = "{{ power_day_chart.label|safe }}"
+            break;
+        case "power_night":
+            values = JSON.parse('{{ power_night_chart.values | tojson }}');
+            ids = JSON.parse('{{ power_night_chart.ids | tojson }}');
+            labels = JSON.parse('{{ power_night_chart.labels | tojson }}');
+            values_unit = "{{ power_night_chart.values_unit | safe }}"
+            title = "{{ power_night_chart.title|safe }}"
+            chart_type = "{{ power_night_chart.chart_type|safe }}"
+            unit = "{{ power_night_chart.unit|safe }}"
+            label = "{{ power_night_chart.label|safe }}"
+            break;
+        default:
+            alert("get_rawdata - kind : " + kind);
+            break;
     }
 
+    var data_array = [];
+    for (let i = 0; i < labels.length; i++) {
+        let b = { x: labels[i], y: values[i] };
+        data_array.push(b);
+    }
+    return { values, values_unit, labels, title, chart_type, unit, label, data_array, ids }
 }
+
+
+function get_data_frigo_normal_smart(data_normal, data_smart) {
+    var data_frigo_normal_smart = {
+        datasets: [
+            {
+                label: "Normal",
+                data: data_normal,
+                fill: false,
+                borderColor: 'red'
+            },
+            {
+                label: "Smart2",
+                data: data_smart,
+                fill: false,
+                borderColor: 'blue'
+            }
+        ]
+    };
+    // console.log(data3);
+    return data_frigo_normal_smart;
+
+}
+
+function options_frigo_normal_smart() {
+    return options_frigo_normal_smart = {
+        scales: scales1,
+        plugins: {
+            legend: {
+                display: true,
+                position: 'top',
+                align: 'end',
+                // reverse: true
+            },
+            title: {
+                text: "Frigo 1h normal vs. smart",
+                display: true
+            }
+        }
+    };
+}
+
+// frigo_normal_smart ===============================================
+
+var raw_data, values, values_unit, labels, title, chart_type, unit, label, data_normal, data_smart, data_array;
+
+raw_data = get_rawdata("normal_1h");
+values = raw_data.values;
+values_unit = raw_data.values_unit;
+labels = raw_data.labels;
+title = raw_data.title;
+chart_type = raw_data.chart_type;
+unit = raw_data.unit;
+label = raw_data.label;
+data_normal = raw_data.data_array;
+
+raw_data = get_rawdata("smart_1h");
+data_smart = raw_data.data_array;
+
+var data_frigo_normal_smart = get_data_frigo_normal_smart(data_normal, data_smart);
 
 var config_frigo_normal_smart = {
     type: 'line',
     data: data_frigo_normal_smart,
-    // options: options_frigo_normal_smart
-    options: options1,
-    plugins: [horizontalArbitraryLine]
+    options: options_frigo_normal_smart(),
+    plugins: [horizontalArbitraryLinePlugin]
 };
-
-// this is to register this plugin for ALL chart, not only for one instance
-// Chart.register(horizontalArbitraryLine);
 
 new Chart(
     document.getElementById('canvas_frigo_with_smart'),
     config_frigo_normal_smart
 );
 
+// frigo_10h ===============================================
 
+raw_data = get_rawdata("10h");
 
-
-values = JSON.parse('{{ frigo_10h_chart.values | tojson }}');
-labels = JSON.parse('{{ frigo_10h_chart.labels | tojson }}');
-// values = {{ frigo_10h_chart.values | safe }}
-// labels = {{ frigo_10h_chart.labels | safe }}
-values_unit = "{{ frigo_10h_chart.values_unit | safe }}"
-title = "{{ frigo_10h_chart.title|safe }}"
-chart_type = "{{ frigo_10h_chart.chart_type|safe }}"
-unit = "{{ frigo_10h_chart.unit|safe }}"
-label = "{{ frigo_10h_chart.label|safe }}"
+values = raw_data.values;
+values_unit = raw_data.values_unit;
+labels = raw_data.labels;
+title = raw_data.title;
+chart_type = raw_data.chart_type;
+unit = raw_data.unit;
+label = raw_data.label;
+data_array = raw_data.data_array;
 
 var config = myConfig2(title, values, values_unit, labels, chart_type, unit, label);
 
@@ -982,18 +1040,18 @@ var lineChart_frigo_10h = new Chart(ctx, config);
 // allows to swipe up and down on smartPhone/touchScreen
 lineChart_frigo_10h.canvas.style.touchAction = "pan-y";
 
+// frigo_24h ========================================================
 
+raw_data = get_rawdata("24h");
 
-
-values = JSON.parse('{{ frigo_24h_chart.values | tojson }}');
-labels = JSON.parse('{{ frigo_24h_chart.labels | tojson }}');
-// values = {{ frigo_24h_chart.values | safe }}
-// labels = {{ frigo_24h_chart.labels | safe }}
-values_unit = "{{ frigo_24h_chart.values_unit | safe }}"
-title = "{{ frigo_24h_chart.title|safe }}"
-chart_type = "{{ frigo_24h_chart.chart_type|safe }}"
-unit = "{{ frigo_24h_chart.unit|safe }}"
-label = "{{ frigo_24h_chart.label|safe }}"
+values = raw_data.values;
+values_unit = raw_data.values_unit;
+labels = raw_data.labels;
+title = raw_data.title;
+chart_type = raw_data.chart_type;
+unit = raw_data.unit;
+label = raw_data.label;
+data_array = raw_data.data_array;
 
 var config = myConfig2(title, values, values_unit, labels, chart_type, unit, label);
 
@@ -1004,20 +1062,19 @@ var lineChart_frigo_24h = new Chart(ctx, config);
 lineChart_frigo_24h.canvas.style.touchAction = "pan-y";
 
 
+// pool_ph ========================================================
 
+raw_data = get_rawdata("pool_ph");
 
-
-values = JSON.parse('{{ pool_ph_chart.values | tojson }}');
-var ids = JSON.parse('{{ pool_ph_chart.ids | tojson }}');
-labels = JSON.parse('{{ pool_ph_chart.labels | tojson }}');
-
-// values = {{ pool_ph_chart.values | safe }}
-// labels = {{ pool_ph_chart.labels | safe }}
-values_unit = "{{ pool_ph_chart.values_unit | safe }}"
-title = "{{ pool_ph_chart.title|safe }}"
-chart_type = "{{ pool_ph_chart.chart_type|safe }}"
-unit = "{{ pool_ph_chart.unit|safe }}"
-label = "{{ pool_ph_chart.label|safe }}"
+values = raw_data.values;
+ids = raw_data.ids;
+values_unit = raw_data.values_unit;
+labels = raw_data.labels;
+title = raw_data.title;
+chart_type = raw_data.chart_type;
+unit = raw_data.unit;
+label = raw_data.label;
+data_array = raw_data.data_array;
 
 var config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label);
 
@@ -1030,57 +1087,77 @@ lineChart_pool_ph.canvas.style.touchAction = "pan-y";
 var canvas_pool_ph = document.getElementById("canvas_pool_ph");
 enable_deletion(canvas_pool_ph, lineChart_pool_ph);
 
+// pool_cl ========================================================
 
+raw_data = get_rawdata("pool_cl");
 
-
-
-values = JSON.parse('{{ pool_cl_chart.values | tojson }}');
-var ids = JSON.parse('{{ pool_cl_chart.ids | tojson }}');
-labels = JSON.parse('{{ pool_cl_chart.labels | tojson }}');
-
-// values = {{ pool_cl_chart.values | safe }}
-// labels = {{ pool_cl_chart.labels | safe }}
-values_unit = "{{ pool_cl_chart.values_unit | safe }}"
-title = "{{ pool_cl_chart.title|safe }}"
-chart_type = "{{ pool_cl_chart.chart_type|safe }}"
-unit = "{{ pool_cl_chart.unit|safe }}"
-label = "{{ pool_cl_chart.label|safe }}"
+values = raw_data.values;
+ids = raw_data.ids;
+values_unit = raw_data.values_unit;
+labels = raw_data.labels;
+title = raw_data.title;
+chart_type = raw_data.chart_type;
+unit = raw_data.unit;
+label = raw_data.label;
+data_array = raw_data.data_array;
 
 var config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label);
 
 var ctx = document.getElementById("canvas_pool_cl").getContext("2d");
 var lineChart_pool_cl = new Chart(ctx, config);
 
-// allows to swipe up and down on smartPhone/touchScreen
+// allows to swipe up and down on smartclone/touchScreen
 lineChart_pool_cl.canvas.style.touchAction = "pan-y";
 
 var canvas_pool_cl = document.getElementById("canvas_pool_cl");
 enable_deletion(canvas_pool_cl, lineChart_pool_cl);
 
+// power_day ========================================================
 
+raw_data = get_rawdata("power_day");
 
-
-
-// alert(import.meta.url); // script URL
-
-values = JSON.parse('{{ power_day_chart.values | tojson }}');
-var ids = JSON.parse('{{ power_day_chart.ids | tojson }}');
-labels = JSON.parse('{{ power_day_chart.labels | tojson }}');
-values_unit = "{{ power_day_chart.values_unit | safe }}"
-title = "{{ power_day_chart.title|safe }}"
-chart_type = "{{ power_day_chart.chart_type|safe }}"
-unit = "{{ power_day_chart.unit|safe }}"
-label = "{{ power_day_chart.label|safe }}"
+values = raw_data.values;
+ids = raw_data.ids;
+values_unit = raw_data.values_unit;
+labels = raw_data.labels;
+title = raw_data.title;
+chart_type = raw_data.chart_type;
+unit = raw_data.unit;
+label = raw_data.label;
+data_array = raw_data.data_array;
 
 var config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label);
 
 var ctx = document.getElementById("canvas_power_day").getContext("2d");
-var power_day_chart = new Chart(ctx, config);
-var canvas_power_day = document.getElementById("canvas_power_day");
-enable_deletion(canvas_power_day, power_day_chart);
+var lineChart_power_day = new Chart(ctx, config);
 
 // allows to swipe up and down on smartPhone/touchScreen
-power_day_chart.canvas.style.touchAction = "pan-y";
+lineChart_power_day.canvas.style.touchAction = "pan-y";
+
+var canvas_power_day = document.getElementById("canvas_power_day");
+enable_deletion(canvas_power_day, lineChart_power_day);
+
+
+
+
+// values = JSON.parse('{{ power_day_chart.values | tojson }}');
+// var ids = JSON.parse('{{ power_day_chart.ids | tojson }}');
+// labels = JSON.parse('{{ power_day_chart.labels | tojson }}');
+// values_unit = "{{ power_day_chart.values_unit | safe }}"
+// title = "{{ power_day_chart.title|safe }}"
+// chart_type = "{{ power_day_chart.chart_type|safe }}"
+// unit = "{{ power_day_chart.unit|safe }}"
+// label = "{{ power_day_chart.label|safe }}"
+
+// var config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label);
+
+// var ctx = document.getElementById("canvas_power_day").getContext("2d");
+// var power_day_chart = new Chart(ctx, config);
+// var canvas_power_day = document.getElementById("canvas_power_day");
+// enable_deletion(canvas_power_day, power_day_chart);
+
+// // allows to swipe up and down on smartPhone/touchScreen
+// power_day_chart.canvas.style.touchAction = "pan-y";
 
 
 

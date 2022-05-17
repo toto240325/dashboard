@@ -85,7 +85,6 @@
 
     <!-- <script type="text/javascript" src="{{ url_for('static', filename='mycharts.js') }}"></script> -->
 
-
     <!-- <canvas id="myCanvas" width="200" height="100" style="border:1px solid #d3d3d3;">
         Your browser does not support the HTML canvas tag.</canvas>
 
@@ -104,125 +103,15 @@
         <canvas id="canvas_frigo_with_smart" width="900" height="350" style="border:1px solid #d3d3d3;"></canvas>
     </div>
 
-
-    <!-- <canvas id="canvas_frigo_1h" width="900" height="400" style="border:1px solid #d3d3d3;"></canvas>
-    <script>
-        // values = {{ frigo_1h_chart.values | safe }}
-        values = JSON.parse('{{ frigo_1h_chart.values | tojson }}');
-        values_unit = "{{ frigo_1h_chart.values_unit|safe }}"
-        // labels = {{ frigo_1h_chart.labels | safe }}
-        labels = JSON.parse('{{ frigo_1h_chart.labels | tojson }}');
-        title = "{{ frigo_1h_chart.title|safe }}"
-        chart_type = "{{ frigo_1h_chart.chart_type|safe }}"
-        unit = "{{ frigo_1h_chart.unit|safe }}"
-        label = "{{ frigo_1h_chart.label|safe }}"
-
-        config = myConfig2(title, values, values_unit, labels, chart_type, unit, label);
-
-        var ctx = document.getElementById("canvas_frigo_1h").getContext("2d");
-        // ctx.font = "30px Arial";
-        // ctx.fillText("Hello World", 10, 50);
-        var lineChart = new Chart(ctx, config);
-    </script>
-
-    <div class="chartBox2">
-        <canvas id="canvas_frigo_smart_1h" width="900" height="400"></canvas>
-    </div>
-
-    <script>
-        // values = {{ frigo_1h_smart_chart.values | safe }}
-        values = JSON.parse('{{ frigo_1h_smart_chart.values | tojson }}');
-        labels = JSON.parse('{{ frigo_1h_smart_chart.labels | tojson }}');
-        values_unit = "{{ frigo_1h_smart_chart.values_unit|safe }}"
-        // labels = {{ frigo_1h_smart_chart.labels | safe }}
-        title = "{{ frigo_1h_smart_chart.title|safe }}"
-        chart_type = "{{ frigo_1h_smart_chart.chart_type|safe }}"
-        unit = "{{ frigo_1h_smart_chart.unit|safe }}"
-        label = "{{ frigo_1h_smart_chart.label|safe }}"
-
-        config = myConfig2(title, values, values_unit, labels, chart_type, unit, label);
-
-        var ctx = document.getElementById("canvas_frigo_smart_1h").getContext("2d");
-        var lineChart = new Chart(ctx, config);
-    </script> -->
-
     <div class="chartBox">
         <canvas id="canvas_frigo_10h" width="900" height="350"></canvas>
     </div>
 
-    <!-- <script>
-        values = JSON.parse('{{ frigo_10h_chart.values | tojson }}');
-        labels = JSON.parse('{{ frigo_10h_chart.labels | tojson }}');
-        // values = {{ frigo_10h_chart.values | safe }}
-        // labels = {{ frigo_10h_chart.labels | safe }}
-        values_unit = "{{ frigo_10h_chart.values_unit | safe }}"
-        title = "{{ frigo_10h_chart.title|safe }}"
-        chart_type = "{{ frigo_10h_chart.chart_type|safe }}"
-        unit = "{{ frigo_10h_chart.unit|safe }}"
-        label = "{{ frigo_10h_chart.label|safe }}"
-
-        config = myConfig2(title, values, values_unit, labels, chart_type, unit, label);
-
-        var ctx = document.getElementById("canvas_frigo_10h").getContext("2d");
-        var lineChart_frigo_10h = new Chart(ctx, config);
-
-        // allows to swipe up and down on smartPhone/touchScreen
-        lineChart_frigo_10h.canvas.style.touchAction = "pan-y";
-
-    </script> -->
-
     <canvas id="canvas_frigo_24h" width="900" height="250"></canvas>
-    <!-- <script>
-        values = JSON.parse('{{ frigo_24h_chart.values | tojson }}');
-        labels = JSON.parse('{{ frigo_24h_chart.labels | tojson }}');
-        // values = {{ frigo_24h_chart.values | safe }}
-        // labels = {{ frigo_24h_chart.labels | safe }}
-        values_unit = "{{ frigo_24h_chart.values_unit | safe }}"
-        title = "{{ frigo_24h_chart.title|safe }}"
-        chart_type = "{{ frigo_24h_chart.chart_type|safe }}"
-        unit = "{{ frigo_24h_chart.unit|safe }}"
-        label = "{{ frigo_24h_chart.label|safe }}"
-
-        config = myConfig2(title, values, values_unit, labels, chart_type, unit, label);
-
-        var ctx = document.getElementById("canvas_frigo_24h").getContext("2d");
-        var lineChart_frigo_24h = new Chart(ctx, config);
-
-        // allows to swipe up and down on smartPhone/touchScreen
-        lineChart_frigo_24h.canvas.style.touchAction = "pan-y";
-
-    </script> -->
-
     <canvas id="canvas_pool_ph" width="900" height="300"></canvas>
-    <!-- <script>
-
-        values = JSON.parse('{{ pool_ph_chart.values | tojson }}');
-        var ids = JSON.parse('{{ pool_ph_chart.ids | tojson }}');
-        labels = JSON.parse('{{ pool_ph_chart.labels | tojson }}');
-
-        // values = {{ pool_ph_chart.values | safe }}
-        // labels = {{ pool_ph_chart.labels | safe }}
-        values_unit = "{{ pool_ph_chart.values_unit | safe }}"
-        title = "{{ pool_ph_chart.title|safe }}"
-        chart_type = "{{ pool_ph_chart.chart_type|safe }}"
-        unit = "{{ pool_ph_chart.unit|safe }}"
-        label = "{{ pool_ph_chart.label|safe }}"
-
-        config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label);
-
-        var ctx = document.getElementById("canvas_pool_ph").getContext("2d");
-        var lineChart_pool_ph = new Chart(ctx, config);
-
-        // allows to swipe up and down on smartPhone/touchScreen
-        lineChart_pool_ph.canvas.style.touchAction = "pan-y";
-
-        var canvas_pool_ph = document.getElementById("canvas_pool_ph");
-        enable_deletion(canvas_pool_ph, lineChart_pool_ph);
-
-    </script> -->
-
-
     <canvas id="canvas_pool_cl" width="900" height="300"></canvas>
+
+
     <!-- <script>
         values = JSON.parse('{{ pool_cl_chart.values | tojson }}');
         var ids = JSON.parse('{{ pool_cl_chart.ids | tojson }}');
@@ -347,6 +236,8 @@
         // };
 
     </script> -->
+
+    <!-- frigo_10h ======================================================== -->
 
     <canvas id="canvas_power_day" width="900" height="300"></canvas>
 
@@ -1042,8 +933,6 @@
         {% include "mycharts.js" %}
     </script>
     {% endblock %}
-
-
 
 </body>
 
