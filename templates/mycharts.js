@@ -934,6 +934,24 @@ function get_rawdata(kind) {
             unit = "{{ power_night_chart.unit|safe }}"
             label = "{{ power_night_chart.label|safe }}"
             break;
+        case "power_day_delta":
+            values = JSON.parse('{{ power_day_delta_chart.values | tojson }}');
+            labels = JSON.parse('{{ power_day_delta_chart.labels | tojson }}');
+            values_unit = "{{ power_day_delta_chart.values_unit | safe }}"
+            title = "{{ power_day_delta_chart.title|safe }}"
+            chart_type = "{{ power_day_delta_chart.chart_type|safe }}"
+            unit = "{{ power_day_delta_chart.unit|safe }}"
+            label = "{{ power_day_delta_chart.label|safe }}"
+            break;
+        case "power_night_delta":
+            values = JSON.parse('{{ power_night_delta_chart.values | tojson }}');
+            labels = JSON.parse('{{ power_night_delta_chart.labels | tojson }}');
+            values_unit = "{{ power_night_delta_chart.values_unit | safe }}"
+            title = "{{ power_night_delta_chart.title|safe }}"
+            chart_type = "{{ power_night_delta_chart.chart_type|safe }}"
+            unit = "{{ power_night_delta_chart.unit|safe }}"
+            label = "{{ power_night_delta_chart.label|safe }}"
+            break;
         default:
             alert("get_rawdata - kind : " + kind);
             break;
@@ -990,7 +1008,7 @@ function options_frigo_normal_smart() {
 
 // frigo_normal_smart ===============================================
 
-var raw_data, values, values_unit, labels, title, chart_type, unit, label, data_normal, data_smart, data_array;
+var raw_data, values, values_unit, labels, title, chart_type, unit, label, data_normal, data_smart, data_array, ids;
 
 raw_data = get_rawdata("normal_1h");
 values = raw_data.values;
@@ -1137,7 +1155,82 @@ lineChart_power_day.canvas.style.touchAction = "pan-y";
 var canvas_power_day = document.getElementById("canvas_power_day");
 enable_deletion(canvas_power_day, lineChart_power_day);
 
+// // power_day_delta ========================================================
 
+raw_data = get_rawdata("power_day_delta");
+
+values = raw_data.values;
+ids = raw_data.ids;
+values_unit = raw_data.values_unit;
+labels = raw_data.labels;
+title = raw_data.title;
+chart_type = raw_data.chart_type;
+unit = raw_data.unit;
+label = raw_data.label;
+data_array = raw_data.data_array;
+
+var config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label);
+
+var ctx = document.getElementById("canvas_power_day_delta").getContext("2d");
+var lineChart_power_day_delta = new Chart(ctx, config);
+
+// allows to swipe up and down on smartPhone/touchScreen
+lineChart_power_day_delta.canvas.style.touchAction = "pan-y";
+
+var canvas_power_day_delta = document.getElementById("canvas_power_day_delta");
+enable_deletion(canvas_power_day_delta, lineChart_power_day_delta);
+
+
+// power_night ========================================================
+
+raw_data = get_rawdata("power_night");
+
+values = raw_data.values;
+ids = raw_data.ids;
+values_unit = raw_data.values_unit;
+labels = raw_data.labels;
+title = raw_data.title;
+chart_type = raw_data.chart_type;
+unit = raw_data.unit;
+label = raw_data.label;
+data_array = raw_data.data_array;
+
+var config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label);
+
+var ctx = document.getElementById("canvas_power_night").getContext("2d");
+var lineChart_power_night = new Chart(ctx, config);
+
+// allows to swipe up and down on smartPhone/touchScreen
+lineChart_power_night.canvas.style.touchAction = "pan-y";
+
+var canvas_power_night = document.getElementById("canvas_power_night");
+enable_deletion(canvas_power_night, lineChart_power_night);
+
+
+// // power_night_delta ========================================================
+
+raw_data = get_rawdata("power_night_delta");
+
+values = raw_data.values;
+ids = raw_data.ids;
+values_unit = raw_data.values_unit;
+labels = raw_data.labels;
+title = raw_data.title;
+chart_type = raw_data.chart_type;
+unit = raw_data.unit;
+label = raw_data.label;
+data_array = raw_data.data_array;
+
+var config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label);
+
+var ctx = document.getElementById("canvas_power_night_delta").getContext("2d");
+var lineChart_power_night_delta = new Chart(ctx, config);
+
+// allows to swipe up and down on smartPhone/touchScreen
+lineChart_power_night_delta.canvas.style.touchAction = "pan-y";
+
+var canvas_power_night_delta = document.getElementById("canvas_power_night_delta");
+enable_deletion(canvas_power_night_delta, lineChart_power_night_delta);
 
 
 // values = JSON.parse('{{ power_day_chart.values | tojson }}');
@@ -1225,75 +1318,75 @@ enable_deletion(canvas_power_day, lineChart_power_day);
 
 
 
-// console.log("test");
-values = JSON.parse('{{ power_night_chart.values | tojson }}');
-var ids = JSON.parse('{{ power_night_chart.ids | tojson }}');
+// // console.log("test");
+// values = JSON.parse('{{ power_night_chart.values | tojson }}');
+// var ids = JSON.parse('{{ power_night_chart.ids | tojson }}');
 
-// console.log("toto" + values);
-// console.log("toto" + IDs);
+// // console.log("toto" + values);
+// // console.log("toto" + IDs);
 
-labels = JSON.parse('{{ power_night_chart.labels | tojson }}');
-// values = {{ power_night_chart.values | safe }}
-// labels = {{ power_night_chart.labels | safe }}
-values_unit = "{{ power_night_chart.values_unit | safe }}"
-title = "{{ power_night_chart.title|safe }}"
-chart_type = "{{ power_night_chart.chart_type|safe }}"
-unit = "{{ power_night_chart.unit|safe }}"
-label = "{{ power_night_chart.label|safe }}"
+// labels = JSON.parse('{{ power_night_chart.labels | tojson }}');
+// // values = {{ power_night_chart.values | safe }}
+// // labels = {{ power_night_chart.labels | safe }}
+// values_unit = "{{ power_night_chart.values_unit | safe }}"
+// title = "{{ power_night_chart.title|safe }}"
+// chart_type = "{{ power_night_chart.chart_type|safe }}"
+// unit = "{{ power_night_chart.unit|safe }}"
+// label = "{{ power_night_chart.label|safe }}"
 
-var config_power_night = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label);
+// var config_power_night = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label);
 
-var ctx = document.getElementById("canvas_power_night").getContext("2d");
-var power_night_chart = new Chart(ctx, config_power_night);
+// var ctx = document.getElementById("canvas_power_night").getContext("2d");
+// var power_night_chart = new Chart(ctx, config_power_night);
 
-var canvas_power_night = document.getElementById("canvas_power_night");
-enable_deletion(canvas_power_night, power_night_chart);
+// var canvas_power_night = document.getElementById("canvas_power_night");
+// enable_deletion(canvas_power_night, power_night_chart);
 
-// allows to swipe up and down on smartPhone/touchScreen
-power_night_chart.canvas.style.touchAction = "pan-y";
-
-
-
-
-
-values = JSON.parse('{{ power_day_delta_chart.values | tojson }}');
-labels = JSON.parse('{{ power_day_delta_chart.labels | tojson }}');
-// values = {{ power_day_delta_chart.values | safe }}
-// labels = {{ power_day_delta_chart.labels | safe }}"
-values_unit = "{{ power_day_delta_chart.values_unit | safe }}"
-title = "{{ power_day_delta_chart.title|safe }}"
-chart_type = "{{ power_day_delta_chart.chart_type|safe }}"
-unit = "{{ power_day_delta_chart.unit|safe }}"
-label = "{{ power_day_delta_chart.label|safe }}"
-
-var config = myConfig2(title, values, values_unit, labels, chart_type, unit, label);
-
-var ctx = document.getElementById("canvas_power_day_delta").getContext("2d");
-var power_day_delta_chart = new Chart(ctx, config);
-
-// allows to swipe up and down on smartPhone/touchScreen
-power_day_delta_chart.canvas.style.touchAction = "pan-y";
+// // allows to swipe up and down on smartPhone/touchScreen
+// power_night_chart.canvas.style.touchAction = "pan-y";
 
 
 
 
-values = JSON.parse('{{ power_night_delta_chart.values | tojson }}');
-labels = JSON.parse('{{ power_night_delta_chart.labels | tojson }}');
-// values = {{ power_night_delta_chart.values | safe }}
-// labels = {{ power_night_delta_chart.labels | safe }}
-values_unit = "{{ power_night_delta_chart.values_unit | safe }}"
-title = "{{ power_night_delta_chart.title|safe }}"
-chart_type = "{{ power_night_delta_chart.chart_type|safe }}"
-unit = "{{ power_night_delta_chart.unit|safe }}"
-label = "{{ power_night_delta_chart.label|safe }}"
 
-var config = myConfig2(title, values, values_unit, labels, chart_type, unit, label);
+// values = JSON.parse('{{ power_day_delta_chart.values | tojson }}');
+// labels = JSON.parse('{{ power_day_delta_chart.labels | tojson }}');
+// // values = {{ power_day_delta_chart.values | safe }}
+// // labels = {{ power_day_delta_chart.labels | safe }}"
+// values_unit = "{{ power_day_delta_chart.values_unit | safe }}"
+// title = "{{ power_day_delta_chart.title|safe }}"
+// chart_type = "{{ power_day_delta_chart.chart_type|safe }}"
+// unit = "{{ power_day_delta_chart.unit|safe }}"
+// label = "{{ power_day_delta_chart.label|safe }}"
 
-var ctx = document.getElementById("canvas_power_night_delta").getContext("2d");
-var power_night_delta_chart = new Chart(ctx, config);
+// var config = myConfig2(title, values, values_unit, labels, chart_type, unit, label);
 
-// allows to swipe up and down on smartPhone/touchScreen
-power_night_delta_chart.canvas.style.touchAction = "pan-y";
+// var ctx = document.getElementById("canvas_power_day_delta").getContext("2d");
+// var power_day_delta_chart = new Chart(ctx, config);
+
+// // allows to swipe up and down on smartPhone/touchScreen
+// power_day_delta_chart.canvas.style.touchAction = "pan-y";
+
+
+
+
+// values = JSON.parse('{{ power_night_delta_chart.values | tojson }}');
+// labels = JSON.parse('{{ power_night_delta_chart.labels | tojson }}');
+// // values = {{ power_night_delta_chart.values | safe }}
+// // labels = {{ power_night_delta_chart.labels | safe }}
+// values_unit = "{{ power_night_delta_chart.values_unit | safe }}"
+// title = "{{ power_night_delta_chart.title|safe }}"
+// chart_type = "{{ power_night_delta_chart.chart_type|safe }}"
+// unit = "{{ power_night_delta_chart.unit|safe }}"
+// label = "{{ power_night_delta_chart.label|safe }}"
+
+// var config = myConfig2(title, values, values_unit, labels, chart_type, unit, label);
+
+// var ctx = document.getElementById("canvas_power_night_delta").getContext("2d");
+// var power_night_delta_chart = new Chart(ctx, config);
+
+// // allows to swipe up and down on smartPhone/touchScreen
+// power_night_delta_chart.canvas.style.touchAction = "pan-y";
 
 
 

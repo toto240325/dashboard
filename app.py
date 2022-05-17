@@ -444,12 +444,8 @@ def index():
         "frigo_10h", frigo_10h_values, "°C", frigo_10h_labels, "line", "hour", "temperature")
     frigo_24h_chart = MyChartValues(
         "frigo_24h", frigo_24h_values, "°C", frigo_24h_labels, "line", "hour", "temperature")
-    # pool_ph_chart = MyChartValues(
-    #     "pool_ph", pool_ph_values, "pH", pool_ph_labels, "line", "hour", "pH")
     pool_ph_chart = MyChartValuesWithIDs(
         "pool_ph", pool_ph_values, pool_ph_ids, "pH", pool_ph_labels, "line", "hour", "pool pH")
-    # pool_cl_chart = MyChartValues(
-    #     "pool_cl", pool_cl_values, "Cl", pool_cl_labels, "line", "hour", "Cl")
     pool_cl_chart = MyChartValuesWithIDs(
         "pool_cl", pool_cl_values, pool_cl_ids, "Cl", pool_cl_labels, "line", "hour", "pool Cl")
     power_chart = MyChartValues2Datasets(
