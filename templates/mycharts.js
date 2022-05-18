@@ -999,7 +999,7 @@ function options_frigo_normal_smart() {
                 // reverse: true
             },
             title: {
-                text: "Frigo 1h normal vs. smart",
+                text: "Frigo 1h normal vs. smart2",
                 display: true
             }
         }
