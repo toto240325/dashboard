@@ -965,6 +965,7 @@ function get_rawdata(kind) {
     return { values, values_unit, labels, title, chart_type, unit, label, data_array, ids }
 }
 
+// chart config for frigo_normal_smart ==============================
 
 function get_data_frigo_normal_smart(data_normal, data_smart) {
     var data_frigo_normal_smart = {
@@ -988,7 +989,7 @@ function get_data_frigo_normal_smart(data_normal, data_smart) {
 
 }
 
-function options_frigo_normal_smart() {
+function options_frigo_normal_smart(title) {
     return options_frigo_normal_smart = {
         scales: scales1,
         plugins: {
@@ -999,12 +1000,59 @@ function options_frigo_normal_smart() {
                 // reverse: true
             },
             title: {
-                text: "Frigo 1h normal vs. smart",
+                text: title,
                 display: true
             }
         }
     };
 }
+
+// chart config for pool_ph_cl ==============================
+
+function get_data_pool_ph_cl(data_pool_ph, data_pool_cl) {
+    var data_pool_ph_cl = {
+        datasets: [
+            {
+                label: "pH",
+                data: data_pool_ph,
+                fill: false,
+                borderColor: 'red'
+            },
+            {
+                label: "Cl",
+                data: data_pool_cl,
+                fill: false,
+                borderColor: 'blue'
+            }
+        ]
+    };
+    // console.log(data3);
+    return data_pool_ph_cl;
+
+}
+
+function options_pool_ph_cl(title) {
+    return options_pool_ph_cl = {
+        scales: scales1,
+        plugins: {
+            legend: {
+                display: true,
+                position: 'top',
+                align: 'end',
+                // reverse: true
+            },
+            title: {
+                text: title,
+                display: true
+            },
+            zoom: zoom_plugin()
+        }
+
+
+
+    };
+}
+
 
 // frigo_normal_smart ===============================================
 
@@ -1028,7 +1076,7 @@ var data_frigo_normal_smart = get_data_frigo_normal_smart(data_normal, data_smar
 var config_frigo_normal_smart = {
     type: 'line',
     data: data_frigo_normal_smart,
-    options: options_frigo_normal_smart(),
+    options: options_frigo_normal_smart("Frigo Normal vs. Smart"),
     plugins: [horizontalArbitraryLinePlugin]
 };
 
@@ -1037,26 +1085,26 @@ new Chart(
     config_frigo_normal_smart
 );
 
-// frigo_10h ===============================================
+// // frigo_10h ===============================================
 
-raw_data = get_rawdata("10h");
+// raw_data = get_rawdata("10h");
 
-values = raw_data.values;
-values_unit = raw_data.values_unit;
-labels = raw_data.labels;
-title = raw_data.title;
-chart_type = raw_data.chart_type;
-unit = raw_data.unit;
-label = raw_data.label;
-data_array = raw_data.data_array;
+// values = raw_data.values;
+// values_unit = raw_data.values_unit;
+// labels = raw_data.labels;
+// title = raw_data.title;
+// chart_type = raw_data.chart_type;
+// unit = raw_data.unit;
+// label = raw_data.label;
+// data_array = raw_data.data_array;
 
-var config = myConfig2(title, values, values_unit, labels, chart_type, unit, label);
+// var config = myConfig2(title, values, values_unit, labels, chart_type, unit, label);
 
-var ctx = document.getElementById("canvas_frigo_10h").getContext("2d");
-var lineChart_frigo_10h = new Chart(ctx, config);
+// var ctx = document.getElementById("canvas_frigo_10h").getContext("2d");
+// var lineChart_frigo_10h = new Chart(ctx, config);
 
-// allows to swipe up and down on smartPhone/touchScreen
-lineChart_frigo_10h.canvas.style.touchAction = "pan-y";
+// // allows to swipe up and down on smartPhone/touchScreen
+// lineChart_frigo_10h.canvas.style.touchAction = "pan-y";
 
 // frigo_24h ========================================================
 
@@ -1129,6 +1177,47 @@ lineChart_pool_cl.canvas.style.touchAction = "pan-y";
 
 var canvas_pool_cl = document.getElementById("canvas_pool_cl");
 enable_deletion(canvas_pool_cl, lineChart_pool_cl);
+
+// pool_ph_cl ========================================================
+
+raw_data = get_rawdata("pool_ph");
+
+values = raw_data.values;
+ids = raw_data.ids;
+values_unit = raw_data.values_unit;
+labels = raw_data.labels;
+title = raw_data.title;
+chart_type = raw_data.chart_type;
+unit = raw_data.unit;
+label = raw_data.label;
+var data_array_pool_ph = raw_data.data_array;
+
+for (let i = 0; i < data_array_pool_ph.length; i++) {
+    data_array_pool_ph[i].y *= 100;
+}
+
+
+raw_data = get_rawdata("pool_cl");
+var data_array_pool_cl = raw_data.data_array;
+
+var data_pool_ph_cl = get_data_pool_ph_cl(data_array_pool_ph, data_array_pool_cl);
+
+var config_pool_ph_cl = {
+    type: 'line',
+    data: data_pool_ph_cl,
+    options: options_pool_ph_cl("Pool pH/Cl"),
+    // plugins: [horizontalArbitraryLinePlugin]
+};
+
+var ctx = document.getElementById("canvas_pool_ph_cl").getContext("2d");
+var lineChart_pool_ph_cl = new Chart(ctx, config_pool_ph_cl);
+
+// allows to swipe up and down on smartclone/touchScreen
+lineChart_pool_ph_cl.canvas.style.touchAction = "pan-y";
+
+var canvas_pool_ph_cl = document.getElementById("canvas_pool_ph_cl");
+enable_deletion(canvas_pool_ph_cl, lineChart_pool_ph_cl);
+
 
 // power_day ========================================================
 
@@ -1207,7 +1296,7 @@ var canvas_power_night = document.getElementById("canvas_power_night");
 enable_deletion(canvas_power_night, lineChart_power_night);
 
 
-// // power_night_delta ========================================================
+// power_night_delta =====================================================
 
 raw_data = get_rawdata("power_night_delta");
 
@@ -1233,163 +1322,7 @@ var canvas_power_night_delta = document.getElementById("canvas_power_night_delta
 enable_deletion(canvas_power_night_delta, lineChart_power_night_delta);
 
 
-// values = JSON.parse('{{ power_day_chart.values | tojson }}');
-// var ids = JSON.parse('{{ power_day_chart.ids | tojson }}');
-// labels = JSON.parse('{{ power_day_chart.labels | tojson }}');
-// values_unit = "{{ power_day_chart.values_unit | safe }}"
-// title = "{{ power_day_chart.title|safe }}"
-// chart_type = "{{ power_day_chart.chart_type|safe }}"
-// unit = "{{ power_day_chart.unit|safe }}"
-// label = "{{ power_day_chart.label|safe }}"
-
-// var config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label);
-
-// var ctx = document.getElementById("canvas_power_day").getContext("2d");
-// var power_day_chart = new Chart(ctx, config);
-// var canvas_power_day = document.getElementById("canvas_power_day");
-// enable_deletion(canvas_power_day, power_day_chart);
-
-// // allows to swipe up and down on smartPhone/touchScreen
-// power_day_chart.canvas.style.touchAction = "pan-y";
-
-
-
-// import { Chart } from 'chart.js';
-// import { Chart } from './node_modules/chart.js';
-// import Chart from 'https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js';
-// parse = require('https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js');
-
-
-// import zoomPlugin from './node_modules/chartjs-plugin-zoom';
-// Chart.register(zoomPlugin);
-
-// var mycanvasday = document.getElementById("canvas_power_day");
-// // console.log('Item: %o', mycanvasday);
-// mycanvasday.onclick = function (evt) {
-//     console.log("------------------");
-//     console.log('lineChartPowerDay: %o', lineChartPowerDay);
-//     var activePoints = lineChartPowerDay.getElementsAtEventForMode(evt, 'index', { intersect: true }, false);
-//     var obj = activePoints;
-//     console.log('Item: %o', obj);
-
-//     if (activePoints[0]) {
-//         console.log("start");
-//         obj = activePoints[0];
-//         // console.log('activePoints[0]: %o', activePoints[0]);
-//         var index = activePoints[0].index;
-//         // console.log('index: %o', index);
-
-//         var chart = lineChartPowerDay.$context.chart;
-//         // console.log('chart: %o', chart);
-//         var datasets = chart.config._config.data.datasets;
-//         // console.log('datasets: %o', datasets);
-
-//         var mydatetime = datasets[0].data[index].x;
-//         var value = datasets[0].data[index].y;
-//         var id = datasets[1].data[index].y;
-//         console.log('mydatetime: %o', mydatetime);
-//         console.log('value: %o', value);
-//         console.log('id: %o', id);
-
-
-//         var url = "http://192.168.0.73/event/api/event/delete.php?id=" + id;
-//         if (confirm("sure to want to delete point (value:" + value + ", date:" + mydatetime + ", id:" + id + ") ?")) {
-//             console.log("going to delete point");
-//             const Http = new XMLHttpRequest();
-//             Http.open("GET", url);
-//             Http.send();
-//             Http.onreadystatechange = (e) => {
-//                 console.log(Http.responseText)
-//             }
-//         } else {
-//             console.log("OK, no deletion this time");
-//         }
-
-
-
-//         // const Http = new XMLHttpRequest();
-//         // Http.open("GET", url);
-//         // Http.send();
-//         // Http.onreadystatechange = (e) => {
-//         //     console.log(Http.responseText)
-//         // }
-//     }
-// };
-
-
-
-// // console.log("test");
-// values = JSON.parse('{{ power_night_chart.values | tojson }}');
-// var ids = JSON.parse('{{ power_night_chart.ids | tojson }}');
-
-// // console.log("toto" + values);
-// // console.log("toto" + IDs);
-
-// labels = JSON.parse('{{ power_night_chart.labels | tojson }}');
-// // values = {{ power_night_chart.values | safe }}
-// // labels = {{ power_night_chart.labels | safe }}
-// values_unit = "{{ power_night_chart.values_unit | safe }}"
-// title = "{{ power_night_chart.title|safe }}"
-// chart_type = "{{ power_night_chart.chart_type|safe }}"
-// unit = "{{ power_night_chart.unit|safe }}"
-// label = "{{ power_night_chart.label|safe }}"
-
-// var config_power_night = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label);
-
-// var ctx = document.getElementById("canvas_power_night").getContext("2d");
-// var power_night_chart = new Chart(ctx, config_power_night);
-
-// var canvas_power_night = document.getElementById("canvas_power_night");
-// enable_deletion(canvas_power_night, power_night_chart);
-
-// // allows to swipe up and down on smartPhone/touchScreen
-// power_night_chart.canvas.style.touchAction = "pan-y";
-
-
-
-
-
-// values = JSON.parse('{{ power_day_delta_chart.values | tojson }}');
-// labels = JSON.parse('{{ power_day_delta_chart.labels | tojson }}');
-// // values = {{ power_day_delta_chart.values | safe }}
-// // labels = {{ power_day_delta_chart.labels | safe }}"
-// values_unit = "{{ power_day_delta_chart.values_unit | safe }}"
-// title = "{{ power_day_delta_chart.title|safe }}"
-// chart_type = "{{ power_day_delta_chart.chart_type|safe }}"
-// unit = "{{ power_day_delta_chart.unit|safe }}"
-// label = "{{ power_day_delta_chart.label|safe }}"
-
-// var config = myConfig2(title, values, values_unit, labels, chart_type, unit, label);
-
-// var ctx = document.getElementById("canvas_power_day_delta").getContext("2d");
-// var power_day_delta_chart = new Chart(ctx, config);
-
-// // allows to swipe up and down on smartPhone/touchScreen
-// power_day_delta_chart.canvas.style.touchAction = "pan-y";
-
-
-
-
-// values = JSON.parse('{{ power_night_delta_chart.values | tojson }}');
-// labels = JSON.parse('{{ power_night_delta_chart.labels | tojson }}');
-// // values = {{ power_night_delta_chart.values | safe }}
-// // labels = {{ power_night_delta_chart.labels | safe }}
-// values_unit = "{{ power_night_delta_chart.values_unit | safe }}"
-// title = "{{ power_night_delta_chart.title|safe }}"
-// chart_type = "{{ power_night_delta_chart.chart_type|safe }}"
-// unit = "{{ power_night_delta_chart.unit|safe }}"
-// label = "{{ power_night_delta_chart.label|safe }}"
-
-// var config = myConfig2(title, values, values_unit, labels, chart_type, unit, label);
-
-// var ctx = document.getElementById("canvas_power_night_delta").getContext("2d");
-// var power_night_delta_chart = new Chart(ctx, config);
-
-// // allows to swipe up and down on smartPhone/touchScreen
-// power_night_delta_chart.canvas.style.touchAction = "pan-y";
-
-
-
+// ps4 =====================================================
 
 values = JSON.parse('{{ ps4_chart.values | tojson }}');
 labels = JSON.parse('{{ ps4_chart.labels | tojson }}');
@@ -1406,7 +1339,7 @@ var config = myConfig2(title, values, values_unit, labels, chart_type, unit, lab
 var ctx = document.getElementById("canvas_ps4").getContext("2d");
 var lineChart = new Chart(ctx, config);
 
-
+// ps4_2 =====================================================
 
 title = "{{ ps4_chart.title|safe }}"
 values = JSON.parse('{{ ps4_2_chart.values | tojson }}');
@@ -1424,8 +1357,7 @@ var ctx = document.getElementById("canvas_ps4_2").getContext("2d");
 var lineChart = new Chart(ctx, config);
 
 
-
-
+// canvas_bar =====================================================
 
 var config_canvas_bar = {
     type: 'bar',
@@ -1523,7 +1455,7 @@ canvas_bar.onclick = function (evt) {
     console.log("chart updated ?");
 };
 
-
+// canvas_bar =====================================================
 
 title = "{{ ps4_2_datasets_chart.title|safe }}"
 values1 = JSON.parse('{{ ps4_2_datasets_chart.values1 | tojson }}');
@@ -1551,10 +1483,7 @@ var ctx = document.getElementById("canvas_ps4_2_datasets").getContext("2d");
 var lineChart = new Chart(ctx, config);
 
 
-
-
-
-
+// canvas_bar2 - stocks =====================================================
 
 const dailyStock = [
     { x: "2017-07-25", y: 1 },
@@ -1656,15 +1585,7 @@ var myChart = new Chart(ctx, config_canvas_bar2);
 lineChart_frigo_10h.canvas.style.touchAction = "pan-y";
 
 
-
-
-
-
-
-
-
-
-
+// dailyStock2 =====================================================
 
 const dailyStock2 = [
     { x: "2017-08-02 10:00", y: 1 },
@@ -1740,8 +1661,3 @@ var myChart2 = new Chart(ctx2, {
         },
     },
 });
-
-
-
-
-

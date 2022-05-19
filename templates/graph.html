@@ -83,365 +83,39 @@
     </nav>
 
 
-    <!-- <script type="text/javascript" src="{{ url_for('static', filename='mycharts.js') }}"></script> -->
-
-    <!-- <canvas id="myCanvas" width="200" height="100" style="border:1px solid #d3d3d3;">
-        Your browser does not support the HTML canvas tag.</canvas>
-
-    <script>
-        var c = document.getElementById("myCanvas");
-        var ctx = c.getContext("2d");
-        ctx.moveTo(0, 0);
-        ctx.lineTo(200, 100);
-        ctx.stroke();
-    </script> -->
-
-    <!-- <canvas id="canvas32" width="900" height="350"></canvas> -->
     <button type="button" onclick="alert('Hello world!')">Click Me!</button>
 
     <div class="chartBox">
         <canvas id="canvas_frigo_with_smart" width="900" height="350" style="border:1px solid #d3d3d3;"></canvas>
     </div>
 
-    <div class="chartBox">
+    <!-- <div class="chartBox">
         <canvas id="canvas_frigo_10h" width="900" height="350"></canvas>
-    </div>
+    </div> -->
 
     <canvas id="canvas_frigo_24h" width="900" height="250"></canvas>
+
     <canvas id="canvas_pool_ph" width="900" height="300"></canvas>
+
     <canvas id="canvas_pool_cl" width="900" height="300"></canvas>
 
-
-    <!-- <script>
-        values = JSON.parse('{{ pool_cl_chart.values | tojson }}');
-        var ids = JSON.parse('{{ pool_cl_chart.ids | tojson }}');
-        labels = JSON.parse('{{ pool_cl_chart.labels | tojson }}');
-
-        // values = {{ pool_cl_chart.values | safe }}
-        // labels = {{ pool_cl_chart.labels | safe }}
-        values_unit = "{{ pool_cl_chart.values_unit | safe }}"
-        title = "{{ pool_cl_chart.title|safe }}"
-        chart_type = "{{ pool_cl_chart.chart_type|safe }}"
-        unit = "{{ pool_cl_chart.unit|safe }}"
-        label = "{{ pool_cl_chart.label|safe }}"
-
-        config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label);
-
-        var ctx = document.getElementById("canvas_pool_cl").getContext("2d");
-        var lineChart_pool_cl = new Chart(ctx, config);
-
-        // allows to swipe up and down on smartPhone/touchScreen
-        lineChart_pool_cl.canvas.style.touchAction = "pan-y";
-
-        var canvas_pool_cl = document.getElementById("canvas_pool_cl");
-        enable_deletion(canvas_pool_cl, lineChart_pool_cl);
-
-    </script>
- -->
-    <!-- <canvas id="canvas_power" width="900" height="250"></canvas>
-    <script>
-        title = "{{ power_chart.title|safe }}"
-        // console.log("title : " + title)
-
-        values1 = JSON.parse('{{ power_chart.values1 | tojson }}');
-        labels1 = JSON.parse('{{ power_chart.labels1 | tojson }}');
-        // labels1 = {{ power_chart.labels1 | safe }}
-        // values1 = {{ power_chart.values1 | safe }}
-        chart_type1 = "{{ power_chart.chart_type1|safe }}"
-
-        values2 = JSON.parse('{{ power_chart.values2 | tojson }}');
-        labels2 = JSON.parse('{{ power_chart.labels2 | tojson }}');
-        // labels2 = {{ power_chart.labels2 | safe }}
-        // values2 = {{ power_chart.values2 | safe }}
-        chart_type2 = "{{ power_chart.chart_type2|safe }}"
-
-        unit = "{{ power_chart.unit|safe }}"
-
-        config = myConfig_2_datasets2(
-            title,
-            labels1, values1, chart_type1,
-            labels2, values2, chart_type2,
-            unit);
-        //console.log(config);
-
-        var ctx = document.getElementById("canvas_power").getContext("2d");
-        var lineChart = new Chart(ctx, config);
-    </script>
- -->
-
-    <!-- <div style="width:75%;"><canvas id="canvas4"></canvas>
-    </div>
-    <script>
-        const labels4 = [
-            'January',
-            'February',
-            'March',
-            'April',
-            'May',
-            'June',
-        ];
-        data1 = [0, 10, 5, 2, 20, 30, 45];
-        data2 = [5, 15, 15, 22, 21, 30, 40];
-
-        const datafull4 = {
-            labels: labels4,
-            datasets: [{
-                label: 'My second dataset',
-                data: data1,
-            },
-            {
-                label: 'My third dataset',
-                data: data2,
-            }]
-        };
-
-        const config4 = {
-            type: 'line',
-            data: datafull4,
-            options: {
-                title: {
-                    display: true,
-                    text: "canvas4"
-                }
-            }
-        };
-
-        const myChart4 = new Chart(
-            document.getElementById('canvas4'),
-            config4
-        );
-        // var mycanvas = document.getElementById("canvas4");
-        // console.log('Item: %o', mycanvas);
-        // mycanvas.onclick = function (evt) {
-        //     console.log("--------------------");
-        //     console.log('mychart4: %o', myChart4);
-        //     var activePoints = myChart4.getElementsAtEvent(evt);
-        //     if (activePoints[0]) {
-        //         console.log(" activePoints");
-        //         obj = activePoints[0];
-        //         console.log('Item: %o', obj);
-        //         var chartData = activePoints[0]['_chart'].config.data;
-        //         console.log('chartData: %o', chartData);
-        //         var idx = activePoints[0]['_index'];
-        //         console.log('idx: %o', idx);
-        //         var label = chartData.labels[idx];
-        //         console.log('label: %o', label);
-        //         var value = chartData.datasets[0].data[idx];
-        //         console.log('value: %o', value);
-
-        //         var url = "http://example.com/?label=" + label + "&value=" + value;
-        //         // console.log(url);
-        //         // alert(url);
-        //     }
-        // };
-
-    </script> -->
-
-    <!-- frigo_10h ======================================================== -->
+    <canvas id="canvas_pool_ph_cl" width="900" height="300"></canvas>
 
     <canvas id="canvas_power_day" width="900" height="300"></canvas>
 
-    <!-- <script type="module">
-        // alert(import.meta.url); // script URL
-
-        values = JSON.parse('{{ power_day_chart.values | tojson }}');
-        var ids = JSON.parse('{{ power_day_chart.ids | tojson }}');
-        labels = JSON.parse('{{ power_day_chart.labels | tojson }}');
-        values_unit = "{{ power_day_chart.values_unit | safe }}"
-        title = "{{ power_day_chart.title|safe }}"
-        chart_type = "{{ power_day_chart.chart_type|safe }}"
-        unit = "{{ power_day_chart.unit|safe }}"
-        label = "{{ power_day_chart.label|safe }}"
-
-        config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label);
-
-        var ctx = document.getElementById("canvas_power_day").getContext("2d");
-        var power_day_chart = new Chart(ctx, config);
-        var canvas_power_day = document.getElementById("canvas_power_day");
-        enable_deletion(canvas_power_day, power_day_chart);
-
-        // allows to swipe up and down on smartPhone/touchScreen
-        power_day_chart.canvas.style.touchAction = "pan-y";
-
-
-
-        // import { Chart } from 'chart.js';
-        // import { Chart } from './node_modules/chart.js';
-        // import Chart from 'https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js';
-        // parse = require('https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js');
-
-
-        // import zoomPlugin from './node_modules/chartjs-plugin-zoom';
-        // Chart.register(zoomPlugin);
-
-        // var mycanvasday = document.getElementById("canvas_power_day");
-        // // console.log('Item: %o', mycanvasday);
-        // mycanvasday.onclick = function (evt) {
-        //     console.log("------------------");
-        //     console.log('lineChartPowerDay: %o', lineChartPowerDay);
-        //     var activePoints = lineChartPowerDay.getElementsAtEventForMode(evt, 'index', { intersect: true }, false);
-        //     var obj = activePoints;
-        //     console.log('Item: %o', obj);
-
-        //     if (activePoints[0]) {
-        //         console.log("start");
-        //         obj = activePoints[0];
-        //         // console.log('activePoints[0]: %o', activePoints[0]);
-        //         var index = activePoints[0].index;
-        //         // console.log('index: %o', index);
-
-        //         var chart = lineChartPowerDay.$context.chart;
-        //         // console.log('chart: %o', chart);
-        //         var datasets = chart.config._config.data.datasets;
-        //         // console.log('datasets: %o', datasets);
-
-        //         var mydatetime = datasets[0].data[index].x;
-        //         var value = datasets[0].data[index].y;
-        //         var id = datasets[1].data[index].y;
-        //         console.log('mydatetime: %o', mydatetime);
-        //         console.log('value: %o', value);
-        //         console.log('id: %o', id);
-
-
-        //         var url = "http://192.168.0.73/event/api/event/delete.php?id=" + id;
-        //         if (confirm("sure to want to delete point (value:" + value + ", date:" + mydatetime + ", id:" + id + ") ?")) {
-        //             console.log("going to delete point");
-        //             const Http = new XMLHttpRequest();
-        //             Http.open("GET", url);
-        //             Http.send();
-        //             Http.onreadystatechange = (e) => {
-        //                 console.log(Http.responseText)
-        //             }
-        //         } else {
-        //             console.log("OK, no deletion this time");
-        //         }
-
-
-
-        //         // const Http = new XMLHttpRequest();
-        //         // Http.open("GET", url);
-        //         // Http.send();
-        //         // Http.onreadystatechange = (e) => {
-        //         //     console.log(Http.responseText)
-        //         // }
-        //     }
-        // };
-    </script> -->
-
     <canvas id="canvas_power_night" width="900" height="300"></canvas>
-    <!-- <script>
-        // console.log("test");
-        values = JSON.parse('{{ power_night_chart.values | tojson }}');
-        var ids = JSON.parse('{{ power_night_chart.ids | tojson }}');
-
-        // console.log("toto" + values);
-        // console.log("toto" + IDs);
-
-        labels = JSON.parse('{{ power_night_chart.labels | tojson }}');
-        // values = {{ power_night_chart.values | safe }}
-        // labels = {{ power_night_chart.labels | safe }}
-        values_unit = "{{ power_night_chart.values_unit | safe }}"
-        title = "{{ power_night_chart.title|safe }}"
-        chart_type = "{{ power_night_chart.chart_type|safe }}"
-        unit = "{{ power_night_chart.unit|safe }}"
-        label = "{{ power_night_chart.label|safe }}"
-
-        config_power_night = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label);
-
-        var ctx = document.getElementById("canvas_power_night").getContext("2d");
-        var power_night_chart = new Chart(ctx, config_power_night);
-
-        var canvas_power_night = document.getElementById("canvas_power_night");
-        enable_deletion(canvas_power_night, power_night_chart);
-
-        // allows to swipe up and down on smartPhone/touchScreen
-        power_night_chart.canvas.style.touchAction = "pan-y";
-
-    </script> -->
 
     <canvas id="canvas_power_day_delta" width="900" height="300"></canvas>
-    <!-- <script>
-        values = JSON.parse('{{ power_day_delta_chart.values | tojson }}');
-        labels = JSON.parse('{{ power_day_delta_chart.labels | tojson }}');
-        // values = {{ power_day_delta_chart.values | safe }}
-        // labels = {{ power_day_delta_chart.labels | safe }}"
-        values_unit = "{{ power_day_delta_chart.values_unit | safe }}"
-        title = "{{ power_day_delta_chart.title|safe }}"
-        chart_type = "{{ power_day_delta_chart.chart_type|safe }}"
-        unit = "{{ power_day_delta_chart.unit|safe }}"
-        label = "{{ power_day_delta_chart.label|safe }}"
-
-        config = myConfig2(title, values, values_unit, labels, chart_type, unit, label);
-
-        var ctx = document.getElementById("canvas_power_day_delta").getContext("2d");
-        var power_day_delta_chart = new Chart(ctx, config);
-
-        // allows to swipe up and down on smartPhone/touchScreen
-        power_day_delta_chart.canvas.style.touchAction = "pan-y";
-
-    </script>
- -->
 
     <canvas id="canvas_power_night_delta" width="900" height="300"></canvas>
-    <!-- <script>
-        values = JSON.parse('{{ power_night_delta_chart.values | tojson }}');
-        labels = JSON.parse('{{ power_night_delta_chart.labels | tojson }}');
-        // values = {{ power_night_delta_chart.values | safe }}
-        // labels = {{ power_night_delta_chart.labels | safe }}
-        values_unit = "{{ power_night_delta_chart.values_unit | safe }}"
-        title = "{{ power_night_delta_chart.title|safe }}"
-        chart_type = "{{ power_night_delta_chart.chart_type|safe }}"
-        unit = "{{ power_night_delta_chart.unit|safe }}"
-        label = "{{ power_night_delta_chart.label|safe }}"
-
-        config = myConfig2(title, values, values_unit, labels, chart_type, unit, label);
-
-        var ctx = document.getElementById("canvas_power_night_delta").getContext("2d");
-        var power_night_delta_chart = new Chart(ctx, config);
-
-        // allows to swipe up and down on smartPhone/touchScreen
-        power_night_delta_chart.canvas.style.touchAction = "pan-y";
-
-    </script> -->
 
     <canvas id="canvas_ps4" width="900" height="300"></canvas>
-    <!-- <script>
-        values = JSON.parse('{{ ps4_chart.values | tojson }}');
-        labels = JSON.parse('{{ ps4_chart.labels | tojson }}');
-        // values = {{ ps4_chart.values | safe }}
-        // labels = {{ ps4_chart.labels | safe }}
-        values_unit = "{{ ps4_chart.values_unit|safe }}"
-        title = "{{ ps4_chart.title|safe }}"
-        chart_type = "{{ ps4_chart.chart_type|safe }}"
-        unit = "{{ ps4_chart.unit|safe }}"
-        label = "{{ ps4_chart.label|safe }}"
-
-        config = myConfig2(title, values, values_unit, labels, chart_type, unit, label);
-
-        var ctx = document.getElementById("canvas_ps4").getContext("2d");
-        var lineChart = new Chart(ctx, config);
-    </script> -->
 
     <canvas id="canvas_ps4_2" width="900" height="300"></canvas>
-    <!-- <script>
-        title = "{{ ps4_chart.title|safe }}"
-        values = JSON.parse('{{ ps4_2_chart.values | tojson }}');
-        labels = JSON.parse('{{ ps4_2_chart.labels | tojson }}');
-        // values = {{ ps4_2_chart.values | safe }}
-        // labels = {{ ps4_2_chart.labels | safe }}
-        values_unit = "{{ ps4_2_chart.values_unit|safe }}"
-        chart_type = "{{ ps4_2_chart.chart_type|safe }}"
-        unit = "{{ ps4_chart.unit|safe }}"
-        label = "{{ ps4_chart.label|safe }}"
 
-        config = myConfig2(title, values, values_unit, labels, chart_type, unit, label);
-
-        var ctx = document.getElementById("canvas_ps4_2").getContext("2d");
-        var lineChart = new Chart(ctx, config);
-    </script>
- -->
     <canvas id="canvas_bar" width="900" height="300"></canvas>
-    <script>
+
+<script>
 
         var config_canvas_bar = {
             type: 'bar',
