@@ -99,7 +99,7 @@ function zoom_plugin() {
 }
 
 
-function myConfig(labels, values, chart_type) {
+function myConfig(labels, values, chart_type, unit, values_unit, date_last_data) {
     // var timeFormat = 'yyyy/MM/dd H:mm:ss';
     var timeFormat = 'yyyy/MM/dd';
 
@@ -110,38 +110,38 @@ function myConfig(labels, values, chart_type) {
     }
     var data_array_1a = a;
 
-    var xA = {
-        type: "time",
-        time: {
-            //     format: timeFormat,
-            //     // unit: 'day',
-            parser: 'yyyy-MM-dd H:m:s'
-            //     tooltipFormat: 'll'
-        },
-        scaleLabel: {
-            display: true,
-            labelString: 'Date1'
-        }
-    };
-    var yA = {
-        scaleLabel: {
-            display: true,
-            labelString: 'value'
-        }
-    };
-    var scales1 = {
-        xAxes: xA,
-        yAxes: yA
-    };
+    // var xA = {
+    //     type: "time",
+    //     time: {
+    //         //     format: timeFormat,
+    //         //     // unit: 'day',
+    //         parser: 'yyyy-MM-dd H:m:s'
+    //         //     tooltipFormat: 'll'
+    //     },
+    //     title: {
+    //         display: true,
+    //         text: 'Date1'
+    //     }
+    // };
+    // var yA = {
+    //     title: {
+    //         display: true,
+    //         text: 'value'
+    //     }
+    // };
+    // var scales1 = {
+    //     xAxes: xA,
+    //     yAxes: yA
+    // };
 
     var options1 = {
         responsive: true,
-        scales: scales1,
+        scales: get_scales1(unit, values_unit, date_last_data),
         plugins: {
             legend: {
                 display: true,
                 position: 'top',
-                align: 'end',
+                align: 'center',
                 // reverse: true
             },
             title: {
@@ -172,10 +172,11 @@ function myConfig(labels, values, chart_type) {
     return config1;
 }
 
-function myConfig2(title, values, values_unit, labels, chart_type, unit, label) {
+function myConfig2(title, values, values_unit, labels, chart_type, unit, label, date_last_data) {
     // var timeFormat = 'yyyy/MM/dd H:mm:ss';
     var timeFormat = 'yyyy/MM/dd';
     // var timeFormat = 'H:mm';
+    var nowStr = (new Date()).toLocaleTimeString("fr-BE", { hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
 
     var a = [];
     for (let i = 0; i < labels.length; i++) {
@@ -184,56 +185,18 @@ function myConfig2(title, values, values_unit, labels, chart_type, unit, label) 
     }
     var data_array_1a = a;
 
-    var nowStr = (new Date()).toLocaleTimeString("fr-BE", { hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
-    var datetime2 = "LastSync: " + nowStr;
-
-    var xA = {
-        type: "time",
-        time: {
-            // format: timeFormat,
-
-            displayFormats: {
-                'millisecond': 'MMM dd',
-                'second': 'MMM dd',
-                'minute': 'H:mm',
-                'hour': 'H:mm',
-                'day': 'dd/MM',
-                'week': 'MMM dd',
-                'month': 'MMM dd',
-                'quarter': 'MMM dd',
-                'year': 'MMM dd',
-            },
-            unit: unit,
-            parser: 'yyyy-MM-dd H:m:s'
-        },
-        scaleLabel: {
-            display: true,
-            labelString: datetime2
-        }
-    };
-    var yA = {
-        scaleLabel: {
-            display: true,
-            labelString: values_unit
-        }
-    };
-    var scales1 = {
-        xAxes: xA,
-        yAxes: yA
-    };
-
     var options1 = {
         responsive: true,
-        scales: scales1,
+        scales: get_scales1(unit, values_unit, date_last_data),
         plugins: {
             legend: {
                 display: true,
                 position: 'top',
-                align: 'end',
+                align: 'center',
                 // reverse: true
             },
             title: {
-                text: title,
+                text: title + " (" + date_last_data + ")",
                 display: true
             },
             zoom: zoom_plugin()
@@ -260,7 +223,7 @@ function myConfig2(title, values, values_unit, labels, chart_type, unit, label) 
     return config1;
 }
 
-function myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label) {
+function myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label, date_last_data) {
 
     // var timeFormat = 'yyyy/MM/dd H:mm:ss';
     var timeFormat = 'yyyy/MM/dd';
@@ -283,83 +246,28 @@ function myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type,
     }
     var data_array_2a = a;
 
-    var owStr = (new Date()).toLocaleTimeString("fr-BE", { hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
-    var datetime2 = "LastSync: " + nowStr;
-
-    var xA = {
-        type: "time",
-        time: {
-            // format: timeFormat,
-            displayFormats: {
-                'millisecond': 'MMM dd',
-                'second': 'MMM dd',
-                'minute': 'H:mm',
-                'hour': 'H:mm',
-                'day': 'dd/MM',
-                'week': 'MMM dd',
-                'month': 'MMM dd',
-                'quarter': 'MMM dd',
-                'year': 'MMM dd',
-            },
-            unit: unit,
-            parser: 'yyyy-MM-dd H:m:s'
-        },
-        scaleLabel: {
-            display: true,
-            labelString: datetime2
-        }
-    };
-    var yA = {
-        scaleLabel: {
-            display: true,
-            labelString: values_unit
-        }
-    };
-    var scales1 = {
-        xAxes: xA,
-        yAxes: yA
-    };
+    // var nowStr = (new Date()).toLocaleTimeString("fr-BE", { hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
 
     var options1 = {
         // responsive: true,
-        scales: scales1,
+        scales: get_scales1(unit, values_unit, date_last_data),
         plugins: {
             plugins: {
                 legend: {
                     display: true,
                     position: 'top',
-                    align: 'end',
+                    align: 'center',
                     // reverse: true
                 },
                 title: {
-                    text: title,
+                    text: title + " (" + date_last_data + ")",
                     display: true
                 }
             },
             zoom: zoom_plugin()
-
-            // {
-            //     pan: {
-            //         enabled: true,
-            //         mode: 'xy',
-            //         threshold: 10
-            //     },
-            //     zoom: {
-            //         wheel: {
-            //             enabled: true,
-            //             modifierKey: 'shift'
-            //         },
-            //         pinch: {
-            //             enabled: true
-            //         },
-            //         mode: 'xy',
-            //     }
-            // }
         }
     };
     var config1 = {
-        //type: "line",
-        //type: "bar",
         type: chart_type,
         data: {
             labels: labels,
@@ -440,16 +348,16 @@ function myConfig_2_datasets(
         ticks: {
             beginAtZero: true,
         },
-        scaleLabel: {
+        title: {
             display: true,
-            labelString: 'value'
+            text: 'value'
         }
     };
     // {
     //     id: 'ps4_5min',
-    //     scaleLabel: {
+    //     title: {
     //         display: true,
-    //         labelString: 'value'
+    //         text: 'value'
     //     }
     // }
 
@@ -460,21 +368,9 @@ function myConfig_2_datasets(
 
     var options = {
         scales: scales1,
-        // responsive: true,
-        // legend: {
-        //     position: 'top',
-        // },
-        // elements: {
-        //     rectangle: {
-        //         borderWidth: 2,
-        //         borderColor: 'rgb(0, 255, 0)',
-        //         borderSkipped: 'bottom'
-        //     }
-        // }
     };
-    //console.log(options);
+
     var config = {
-        //type: "line",
         type: "bar",
         data: {
             labels: labels2,
@@ -568,9 +464,9 @@ function myConfig_2_datasets2(
         ticks: {
             beginAtZero: true,
         },
-        scaleLabel: {
+        title: {
             display: true,
-            labelString: 'Y1'
+            text: 'Y1'
         }
     };
     var scales1 = {
@@ -592,7 +488,7 @@ function myConfig_2_datasets2(
             legend: {
                 display: true,
                 position: 'top',
-                align: 'end',
+                align: 'center',
                 // reverse: true
             },
             title: {
@@ -646,172 +542,46 @@ function myConfig_2_datasets2(
 }
 
 
-
-// values = JSON.parse('{{ frigo_1h_chart.values | tojson }}');
-// //console.log(values);
-// values_unit = "{{ frigo_1h_chart.values_unit|safe }}"
-// labels = JSON.parse('{{ frigo_1h_chart.labels | tojson }}');
-// title = "{{ frigo_1h_chart.title|safe }}"
-// chart_type = "{{ frigo_1h_chart.chart_type|safe }}"
-// unit = "{{ frigo_1h_chart.unit|safe }}"
-// label = "{{ frigo_1h_chart.label|safe }}"
-
-// var a = [];
-// for (i = 0; i < labels.length; i++) {
-//     b = { x: labels[i], y: values[i] };
-//     a.push(b);
-//     // console.log(b);
-// }
-// data32 = a;
-
-// // var timeFormat = 'dd/MM/yyyy';
-// var timeFormat = 'yyyy-MM-dd hh:mm:ss';
-// var data31 = [{
-//     x: "04/01/2014", y: 175
-// }, {
-//     x: "10/01/2014", y: 175
-// }, {
-//     x: "04/01/2015", y: 178
-// }, {
-//     x: "10/01/2015", y: 178
-// }];
-// var chart_data32 = {
-//     datasets: [
-//         {
-//             label: "US Dates",
-//             // data: data31,
-//             data: data32,
-//             fill: false,
-//             borderColor: 'red'
-//         },
-//         {
-//             label: "UK Dates2 ",
-//             data: data32,
-//             fill: false,
-//             borderColor: 'blue'
-//         }
-//     ]
-// };
-// // console.log(data3);
-// var options32 = {
-//     responsive: true,
-//     title: {
-//         display: true,
-//         text: "canvas32"
-//     },
-//     scales: {
-//         xAxes: {
-//             type: "time",
-
-//             time: {
-//                 // format: timeFormat,
-
-//                 displayFormats: {
-//                     'millisecond': 'MMM dd',
-//                     'second': 'MMM dd',
-//                     'minute': 'H:mm',
-//                     'hour': 'H:mm',
-//                     'day': 'dd/MM',
-//                     'week': 'MMM dd',
-//                     'month': 'MMM dd',
-//                     'quarter': 'MMM dd',
-//                     'year': 'MMM dd',
-//                 },
-//                 unit: unit,
-//                 parser: 'yyyy-MM-dd H:m:s'
-//             },
-//             scaleLabel: {
-//                 display: true,
-//                 labelString: 'Date3'
-//             }
-//         },
-//         yAxes: {
-//             scaleLabel: {
-//                 display: true,
-//                 labelString: 'value'
-//             }
-//         }
-//     }
-// };
-// // var config32 = {
-// //     type: 'line',
-// //     data: chart_data32,
-// //     options: options32
-// //     // options: {}
-// // };
-
-// // const myChart32 = new Chart(
-// //     document.getElementById('canvas32'),
-// //     config32
-// // );
-
-// // var mycanvas32 = document.getElementById("canvas32");
-// // mycanvas32.onclick = function (evt) {
-// //     var activePoints = myChart32.getElementsAtEvent(evt);
-// //     if (activePoints[0]) {
-// //         console.log("start");
-// //         obj = activePoints[0];
-// //         console.log('Item: %o', obj);
-// //         var chartData = activePoints[0]['_chart'].config.data;
-// //         console.log('chartData: %o', chartData);
-// //         var idx = activePoints[0]['_index'];
-// //         console.log('idx: %o', idx);
-// //         var label = chartData.labels[idx];
-// //         console.log('label: %o', label);
-// //         var value = chartData.datasets[0].data[idx];
-// //         console.log('value: %o', value);
-
-// //         var url = "http://example.com/?label=" + label + "&value=" + value;
-// //         // console.log(url);
-// //         // alert(url);
-// //     }
-// // };
-
 // get_scales1 ==================================================
 
-function get_scales1(unit, values_unit) {
+function get_scales1(unit, values_unit, date_last_data) {
     var timeFormat = 'yyyy-MM-dd hh:mm:ss';
     var nowStr = (new Date()).toLocaleTimeString("fr-BE", { hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
-    var datetime2 = "LastSync: " + nowStr;
+    var datetime2 = "LastSync: " + date_last_data;
 
-    var xA = {
-        type: "time",
-        time: {
-            // format: timeFormat,
-            displayFormats: {
-                'millisecond': 'MMM dd',
-                'second': 'MMM dd',
-                'minute': 'H:mm',
-                'hour': 'H:mm',
-                'day': 'dd/MM',
-                'week': 'MMM dd',
-                'month': 'MMM dd',
-                'quarter': 'MMM dd',
-                'year': 'MMM dd',
-            },
-            unit: unit,
-            parser: 'yyyy-MM-dd H:m:s'
-        },
-        scaleLabel: {
-            display: true,
-            labelString: datetime2
-        }
-    };
-    var yA = {
-        scaleLabel: {
-            display: true,
-            labelString: values_unit
-        }
-    };
     var scales1 = {
-        xAxes: xA,
-        yAxes: yA
+        xAxes: {
+            type: "time",
+            time: {
+                // format: timeFormat,
+                displayFormats: {
+                    'millisecond': 'MMM dd',
+                    'second': 'MMM dd',
+                    'minute': 'H:mm',
+                    'hour': 'H:mm',
+                    'day': 'dd/MM',
+                    'week': 'MMM dd',
+                    'month': 'MMM dd',
+                    'quarter': 'MMM dd',
+                    'year': 'MMM dd',
+                },
+                unit: unit,
+                parser: 'yyyy-MM-dd H:m:s'
+            },
+            title: {
+                display: true,
+                text: datetime2
+            }
+        },
+        yAxes: {
+            title: {
+                display: true,
+                text: values_unit
+            }
+        }
     };
     return scales1;
 }
-
-var scales1 = get_scales1(unit, values_unit);
-
 
 // horizontalArbitraryLinePlugin =======================================
 
@@ -887,6 +657,7 @@ function get_rawdata(kind) {
             break;
         case "24h":
             values = JSON.parse('{{ frigo_24h_chart.values | tojson }}');
+            ids = JSON.parse('{{ frigo_24h_chart.ids | tojson }}');
             values_unit = "{{ frigo_24h_chart.values_unit|safe }}"
             labels = JSON.parse('{{ frigo_24h_chart.labels | tojson }}');
             title = "{{ frigo_24h_chart.title|safe }}"
@@ -962,7 +733,9 @@ function get_rawdata(kind) {
         let b = { x: labels[i], y: values[i] };
         data_array.push(b);
     }
-    return { values, values_unit, labels, title, chart_type, unit, label, data_array, ids }
+    var date_last_data = data_array[data_array.length-1].x;
+
+    return { values, values_unit, labels, title, chart_type, unit, label, data_array, ids, date_last_data }
 }
 
 // chart config for frigo_normal_smart ==============================
@@ -986,17 +759,16 @@ function get_data_frigo_normal_smart(data_normal, data_smart) {
     };
     // console.log(data3);
     return data_frigo_normal_smart;
-
 }
 
-function options_frigo_normal_smart(title) {
+function options_frigo_normal_smart(title,unit, values_unit, date_last_data) {
     return options_frigo_normal_smart = {
-        scales: scales1,
+        scales: get_scales1(unit, values_unit, date_last_data),
         plugins: {
             legend: {
                 display: true,
                 position: 'top',
-                align: 'end',
+                align: 'center',
                 // reverse: true
             },
             title: {
@@ -1028,17 +800,16 @@ function get_data_pool_ph_cl(data_pool_ph, data_pool_cl) {
     };
     // console.log(data3);
     return data_pool_ph_cl;
-
 }
 
-function options_pool_ph_cl(title) {
+function options_pool_ph_cl(title, unit, values_unit, date_last_data) {
     return options_pool_ph_cl = {
-        scales: scales1,
+        scales: get_scales1(unit, values_unit, date_last_data),
         plugins: {
             legend: {
                 display: true,
                 position: 'top',
-                align: 'end',
+                align: 'center',
                 // reverse: true
             },
             title: {
@@ -1047,16 +818,13 @@ function options_pool_ph_cl(title) {
             },
             zoom: zoom_plugin()
         }
-
-
-
     };
 }
 
-
 // frigo_normal_smart ===============================================
 
-var raw_data, values, values_unit, labels, title, chart_type, unit, label, data_normal, data_smart, data_array, ids;
+var raw_data, values, values_unit, labels, title, chart_type, unit, label, data_normal, 
+    data_smart, data_array, ids, date_last_data;
 
 raw_data = get_rawdata("normal_1h");
 values = raw_data.values;
@@ -1067,16 +835,15 @@ chart_type = raw_data.chart_type;
 unit = raw_data.unit;
 label = raw_data.label;
 data_normal = raw_data.data_array;
+date_last_data = data_normal[data_normal.length-1].x;
 
 raw_data = get_rawdata("smart_1h");
 data_smart = raw_data.data_array;
 
-var data_frigo_normal_smart = get_data_frigo_normal_smart(data_normal, data_smart);
-
 var config_frigo_normal_smart = {
     type: 'line',
-    data: data_frigo_normal_smart,
-    options: options_frigo_normal_smart("Frigo Normal vs. Smart"),
+    data: get_data_frigo_normal_smart(data_normal, data_smart),
+    options: options_frigo_normal_smart("Frigo Normal vs. Smart", unit, values_unit, date_last_data),
     plugins: [horizontalArbitraryLinePlugin]
 };
 
@@ -1085,32 +852,12 @@ new Chart(
     config_frigo_normal_smart
 );
 
-// // frigo_10h ===============================================
-
-// raw_data = get_rawdata("10h");
-
-// values = raw_data.values;
-// values_unit = raw_data.values_unit;
-// labels = raw_data.labels;
-// title = raw_data.title;
-// chart_type = raw_data.chart_type;
-// unit = raw_data.unit;
-// label = raw_data.label;
-// data_array = raw_data.data_array;
-
-// var config = myConfig2(title, values, values_unit, labels, chart_type, unit, label);
-
-// var ctx = document.getElementById("canvas_frigo_10h").getContext("2d");
-// var lineChart_frigo_10h = new Chart(ctx, config);
-
-// // allows to swipe up and down on smartPhone/touchScreen
-// lineChart_frigo_10h.canvas.style.touchAction = "pan-y";
-
 // frigo_24h ========================================================
 
 raw_data = get_rawdata("24h");
 
 values = raw_data.values;
+ids = raw_data.ids;
 values_unit = raw_data.values_unit;
 labels = raw_data.labels;
 title = raw_data.title;
@@ -1118,14 +865,18 @@ chart_type = raw_data.chart_type;
 unit = raw_data.unit;
 label = raw_data.label;
 data_array = raw_data.data_array;
+date_last_data = data_array[data_array.length-1].x;
 
-var config = myConfig2(title, values, values_unit, labels, chart_type, unit, label);
+var config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label, date_last_data);
 
 var ctx = document.getElementById("canvas_frigo_24h").getContext("2d");
 var lineChart_frigo_24h = new Chart(ctx, config);
 
 // allows to swipe up and down on smartPhone/touchScreen
 lineChart_frigo_24h.canvas.style.touchAction = "pan-y";
+
+var canvas_frigo_24h = document.getElementById("canvas_frigo_24h");
+enable_deletion(canvas_frigo_24h, lineChart_frigo_24h);
 
 
 // pool_ph ========================================================
@@ -1141,8 +892,9 @@ chart_type = raw_data.chart_type;
 unit = raw_data.unit;
 label = raw_data.label;
 data_array = raw_data.data_array;
+date_last_data = data_array[data_array.length-1].x;
 
-var config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label);
+var config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label, date_last_data);
 
 var ctx = document.getElementById("canvas_pool_ph").getContext("2d");
 var lineChart_pool_ph = new Chart(ctx, config);
@@ -1166,8 +918,9 @@ chart_type = raw_data.chart_type;
 unit = raw_data.unit;
 label = raw_data.label;
 data_array = raw_data.data_array;
+date_last_data = data_array[data_array.length-1].x;
 
-var config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label);
+var config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label, date_last_data);
 
 var ctx = document.getElementById("canvas_pool_cl").getContext("2d");
 var lineChart_pool_cl = new Chart(ctx, config);
@@ -1191,14 +944,15 @@ chart_type = raw_data.chart_type;
 unit = raw_data.unit;
 label = raw_data.label;
 var data_array_pool_ph = raw_data.data_array;
+var date_last_data_ph = data_array_pool_ph[data_array_pool_ph.length-1].x;
 
 for (let i = 0; i < data_array_pool_ph.length; i++) {
     data_array_pool_ph[i].y *= 100;
 }
 
-
 raw_data = get_rawdata("pool_cl");
 var data_array_pool_cl = raw_data.data_array;
+var date_last_data_cl = data_array_pool_cl[data_array_pool_cl.length-1].x;
 
 var data_pool_ph_cl = get_data_pool_ph_cl(data_array_pool_ph, data_array_pool_cl);
 
@@ -1232,8 +986,9 @@ chart_type = raw_data.chart_type;
 unit = raw_data.unit;
 label = raw_data.label;
 data_array = raw_data.data_array;
+date_last_data = data_array[data_array.length-1].x;
 
-var config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label);
+var config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label, date_last_data);
 
 var ctx = document.getElementById("canvas_power_day").getContext("2d");
 var lineChart_power_day = new Chart(ctx, config);
@@ -1257,8 +1012,9 @@ chart_type = raw_data.chart_type;
 unit = raw_data.unit;
 label = raw_data.label;
 data_array = raw_data.data_array;
+date_last_data = data_array[data_array.length-1].x;
 
-var config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label);
+var config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label, date_last_data);
 
 var ctx = document.getElementById("canvas_power_day_delta").getContext("2d");
 var lineChart_power_day_delta = new Chart(ctx, config);
@@ -1283,8 +1039,9 @@ chart_type = raw_data.chart_type;
 unit = raw_data.unit;
 label = raw_data.label;
 data_array = raw_data.data_array;
+date_last_data = data_array[data_array.length-1].x;
 
-var config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label);
+var config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label, date_last_data);
 
 var ctx = document.getElementById("canvas_power_night").getContext("2d");
 var lineChart_power_night = new Chart(ctx, config);
@@ -1309,8 +1066,9 @@ chart_type = raw_data.chart_type;
 unit = raw_data.unit;
 label = raw_data.label;
 data_array = raw_data.data_array;
+date_last_data = data_array[data_array.length-1].x;
 
-var config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label);
+var config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label, date_last_data);
 
 var ctx = document.getElementById("canvas_power_night_delta").getContext("2d");
 var lineChart_power_night_delta = new Chart(ctx, config);
@@ -1334,7 +1092,7 @@ chart_type = "{{ ps4_chart.chart_type|safe }}"
 unit = "{{ ps4_chart.unit|safe }}"
 label = "{{ ps4_chart.label|safe }}"
 
-var config = myConfig2(title, values, values_unit, labels, chart_type, unit, label);
+var config = myConfig2(title, values, values_unit, labels, chart_type, unit, label, date_last_data);
 
 var ctx = document.getElementById("canvas_ps4").getContext("2d");
 var lineChart = new Chart(ctx, config);
@@ -1351,7 +1109,7 @@ chart_type = "{{ ps4_2_chart.chart_type|safe }}"
 unit = "{{ ps4_chart.unit|safe }}"
 label = "{{ ps4_chart.label|safe }}"
 
-var config = myConfig2(title, values, values_unit, labels, chart_type, unit, label);
+var config = myConfig2(title, values, values_unit, labels, chart_type, unit, label, date_last_data);
 
 var ctx = document.getElementById("canvas_ps4_2").getContext("2d");
 var lineChart = new Chart(ctx, config);
@@ -1392,9 +1150,9 @@ var config_canvas_bar = {
                 // },
                 type: 'time',
                 offset: true,
-                scaleLabel: {
+                title: {
                     display: true,
-                    labelString: 'Year-Month'
+                    text: 'Year-Month'
                 },
                 time: {
                     // min: '2014-12-01' ,
@@ -1455,32 +1213,34 @@ canvas_bar.onclick = function (evt) {
     console.log("chart updated ?");
 };
 
-// canvas_bar =====================================================
 
-title = "{{ ps4_2_datasets_chart.title|safe }}"
-values1 = JSON.parse('{{ ps4_2_datasets_chart.values1 | tojson }}');
-labels1 = JSON.parse('{{ ps4_2_datasets_chart.labels1 | tojson }}');
-// labels1 = {{ ps4_2_datasets_chart.labels1 | safe }}
-// values1 = {{ ps4_2_datasets_chart.values1 | safe }}
-chart_type1 = "{{ ps4_2_datasets_chart.chart_type1|safe }}"
 
-values2 = JSON.parse('{{ ps4_2_datasets_chart.values2 | tojson }}');
-labels2 = JSON.parse('{{ ps4_2_datasets_chart.labels2 | tojson }}');
-// labels2 = {{ ps4_2_datasets_chart.labels2 | safe }}
-// values2 = {{ ps4_2_datasets_chart.values2 | safe }}
-chart_type2 = "{{ ps4_2_datasets_chart.chart_type2|safe }}"
+// ps4_2 =====================================================
 
-unit = "{{ ps4_2_datasets_chart.unit|safe }}"
+// title = "{{ ps4_2_datasets_chart.title|safe }}"
+// values1 = JSON.parse('{{ ps4_2_datasets_chart.values1 | tojson }}');
+// labels1 = JSON.parse('{{ ps4_2_datasets_chart.labels1 | tojson }}');
+// // labels1 = {{ ps4_2_datasets_chart.labels1 | safe }}
+// // values1 = {{ ps4_2_datasets_chart.values1 | safe }}
+// chart_type1 = "{{ ps4_2_datasets_chart.chart_type1|safe }}"
 
-var config = myConfig_2_datasets(
-    title,
-    labels1, values1, chart_type1,
-    labels2, values2, chart_type2,
-    unit);
-//console.log(config);
+// values2 = JSON.parse('{{ ps4_2_datasets_chart.values2 | tojson }}');
+// labels2 = JSON.parse('{{ ps4_2_datasets_chart.labels2 | tojson }}');
+// // labels2 = {{ ps4_2_datasets_chart.labels2 | safe }}
+// // values2 = {{ ps4_2_datasets_chart.values2 | safe }}
+// chart_type2 = "{{ ps4_2_datasets_chart.chart_type2|safe }}"
 
-var ctx = document.getElementById("canvas_ps4_2_datasets").getContext("2d");
-var lineChart = new Chart(ctx, config);
+// unit = "{{ ps4_2_datasets_chart.unit|safe }}"
+
+// var config = myConfig_2_datasets(
+//     title,
+//     labels1, values1, chart_type1,
+//     labels2, values2, chart_type2,
+//     unit);
+// //console.log(config);
+
+// var ctx = document.getElementById("canvas_ps4_2_datasets").getContext("2d");
+// var lineChart = new Chart(ctx, config);
 
 
 // canvas_bar2 - stocks =====================================================
@@ -1577,12 +1337,6 @@ var config_canvas_bar2 = {
         }
     },
 };
-
-var ctx = document.getElementById("canvas_bar2").getContext("2d");
-var myChart = new Chart(ctx, config_canvas_bar2);
-
-// allows to swipe up and down on smartPhone/touchScreen
-lineChart_frigo_10h.canvas.style.touchAction = "pan-y";
 
 
 // dailyStock2 =====================================================

@@ -260,6 +260,7 @@ def index():
     data = read_where("temperature", 60*24, "1900-01-01")
     events = data["events"]
     frigo_24h_values = [float(event["text"]) for event in events]
+    frigo_24h_ids = [event["id"] for event in events]
     frigo_24h_labels = [event["time"] for event in events]
 
     elaps.elapsed_time("frigo_24h")
@@ -442,8 +443,8 @@ def index():
         "line", "minute", "temperature")
     frigo_10h_chart = MyChartValues(
         "frigo_10h", frigo_10h_values, "°C", frigo_10h_labels, "line", "hour", "temperature")
-    frigo_24h_chart = MyChartValues(
-        "frigo_24h", frigo_24h_values, "°C", frigo_24h_labels, "line", "hour", "temperature")
+    frigo_24h_chart = MyChartValuesWithIDs(
+        "frigo_24h", frigo_24h_values, frigo_24h_ids, "°C", frigo_24h_labels, "line", "hour", "temperature")
     pool_ph_chart = MyChartValuesWithIDs(
         "pool_ph", pool_ph_values, pool_ph_ids, "pH", pool_ph_labels, "line", "hour", "pool pH")
     pool_cl_chart = MyChartValuesWithIDs(

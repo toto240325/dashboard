@@ -30,6 +30,11 @@
             width: "900";
             height: "100";
         }
+
+        .canvas_border {
+            border: 1px solid #d3d3d3;
+
+        }
     </style>
 
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
@@ -86,36 +91,54 @@
     <button type="button" onclick="alert('Hello world!')">Click Me!</button>
 
     <div class="chartBox">
-        <canvas id="canvas_frigo_with_smart" width="900" height="350" style="border:1px solid #d3d3d3;"></canvas>
+        <canvas id="canvas_frigo_with_smart" class="canvas_border" width="900" height="350"></canvas>
     </div>
 
-    <!-- <div class="chartBox">
-        <canvas id="canvas_frigo_10h" width="900" height="350"></canvas>
-    </div> -->
+    <div class="chartBox">
+        <canvas id="canvas_frigo_24h" class="canvas_border" width="900" height="350" ></canvas>
+    </div>
 
-    <canvas id="canvas_frigo_24h" width="900" height="250"></canvas>
+    <div class="chartBox">
+        <canvas id="canvas_pool_ph" class="canvas_border" width="900" height="350"></canvas>
+    </div>
 
-    <canvas id="canvas_pool_ph" width="900" height="300"></canvas>
+    <div class="chartBox">
+        <canvas id="canvas_pool_cl" class="canvas_border" width="900" height="350"></canvas>
+    </div>
 
-    <canvas id="canvas_pool_cl" width="900" height="300"></canvas>
+    <div class="chartBox">
+        <canvas id="canvas_pool_ph_cl" class="canvas_border" width="900" height="350"></canvas>
+    </div>
 
-    <canvas id="canvas_pool_ph_cl" width="900" height="300"></canvas>
+    <div class="chartBox">
+        <canvas id="canvas_power_day" class="canvas_border" width="900" height="350"></canvas>
+    </div>
 
-    <canvas id="canvas_power_day" width="900" height="300"></canvas>
+    <div class="chartBox">
+        <canvas id="canvas_power_night" class="canvas_border" width="900" height="350"></canvas>
+    </div>
 
-    <canvas id="canvas_power_night" width="900" height="300"></canvas>
+    <div class="chartBox">
+        <canvas id="canvas_power_day_delta" class="canvas_border" width="900" height="350"></canvas>
+    </div>
 
-    <canvas id="canvas_power_day_delta" width="900" height="300"></canvas>
+    <div class="chartBox">
+        <canvas id="canvas_power_night_delta" class="canvas_border" width="900" height="350"></canvas>
+    </div>
 
-    <canvas id="canvas_power_night_delta" width="900" height="300"></canvas>
+    <div class="chartBox">
+        <canvas id="canvas_ps4" class="canvas_border" width="900" height="350"></canvas>
+    </div>
 
-    <canvas id="canvas_ps4" width="900" height="300"></canvas>
+    <div class="chartBox">
+        <canvas id="canvas_ps4_2" class="canvas_border" width="900" height="350"></canvas>
+    </div>
 
-    <canvas id="canvas_ps4_2" width="900" height="300"></canvas>
+    <div class="chartBox">
+        <canvas id="canvas_bar" class="canvas_border" width="900" height="350"></canvas>
+    </div>
 
-    <canvas id="canvas_bar" width="900" height="300"></canvas>
-
-<script>
+    <!-- <script>
 
         var config_canvas_bar = {
             type: 'bar',
@@ -213,7 +236,7 @@
             console.log("chart updated ?");
         };
 
-    </script>
+    </script> -->
 
     <canvas id="canvas_bar2" width="900" height="300"></canvas>
     <!-- <script>
@@ -319,7 +342,9 @@
     </script>
  -->
 
-    <canvas id="canvas_bar3" width="900" height="300"></canvas>
+
+    <canvas id="canvas_bar3" width="900" height="300"></canvas> 
+ 
     <!-- <script>
         const dailyStock2 = [
             { x: "2017-08-02 10:00", y: 1 },
@@ -397,8 +422,8 @@
         });
     </script> -->
 
-
     <canvas id="canvas_ps4_2_datasets" width="900" height="300"></canvas>
+
     <!-- <script>
         title = "{{ ps4_2_datasets_chart.title|safe }}"
         values1 = JSON.parse('{{ ps4_2_datasets_chart.values1 | tojson }}');
