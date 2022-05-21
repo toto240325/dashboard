@@ -250,12 +250,13 @@ def index():
 
     elaps.elapsed_time("frigo_1h")
 
-    data = read_where("temperature", 60*10, "1900-01-01")
-    events = data["events"]
-    frigo_10h_values = [float(event["text"]) for event in events]
-    frigo_10h_labels = [event["time"] for event in events]
+    # data = read_where("temperature", 60*10, "1900-01-01")
+    # events = data["events"]
+    # frigo_10h_values = [float(event["text"]) for event in events]
+    # frigo_10h_ids = [event["id"] for event in events]
+    # frigo_10h_labels = [event["time"] for event in events]
 
-    elaps.elapsed_time("frigo_10h")
+    # elaps.elapsed_time("frigo_10h")
 
     data = read_where("temperature", 60*24, "1900-01-01")
     events = data["events"]
@@ -356,7 +357,9 @@ def index():
     delta = -2
     data = read_where("ps4", 100, today_delta_str(delta))
     events = data["events"]
+
     labels_ps4 = [event["time"] for event in events]
+    ids_ps4 = [event["id"] for event in events]
     values_ps4 = [1 for event in events]
 
     elaps.elapsed_time("ps4")
@@ -441,10 +444,12 @@ def index():
     frigo_1h_smart_chart = MyChartValues(
         "frigo_1h_smart", frigo_1h_smart_values, "°C", frigo_1h_smart_labels,
         "line", "minute", "temperature")
-    frigo_10h_chart = MyChartValues(
-        "frigo_10h", frigo_10h_values, "°C", frigo_10h_labels, "line", "hour", "temperature")
+    # frigo_10h_chart = MyChartValuesWithIDs(
+    #     "frigo_10h", frigo_10h_values, frigo_10h_ids, "°C", frigo_10h_labels, "line", "hour", 
+    # "temperature")
     frigo_24h_chart = MyChartValuesWithIDs(
-        "frigo_24h", frigo_24h_values, frigo_24h_ids, "°C", frigo_24h_labels, "line", "hour", "temperature")
+        "frigo_24h", frigo_24h_values, frigo_24h_ids, "°C", frigo_24h_labels, "line", "hour", 
+        "temperature")
     pool_ph_chart = MyChartValuesWithIDs(
         "pool_ph", pool_ph_values, pool_ph_ids, "pH", pool_ph_labels, "line", "hour", "pool pH")
     pool_cl_chart = MyChartValuesWithIDs(
@@ -469,8 +474,8 @@ def index():
     power_night_delta_chart = MyChartValues(
         "power_night_delta", power_night_delta_values, "kwH", power_night_delta_labels,
         "line", "hour", "KwH night Delta")
-    ps4_chart = MyChartValues(
-        "ps4", values_ps4, "ps4 on/off", labels_ps4, "bubble", "day", "PS4")
+    ps4_chart = MyChartValuesWithIDs(
+        "ps4", values_ps4, ids_ps4, "ps4 on/off", labels_ps4, "bubble", "day", "PS4")
     ps4_2_chart = MyChartValues(
         "ps4_2", values_ps4_2, "minutes", labels_ps4_2, "bar", "day", "PS4")
     ps4_2_datasets_chart = MyChartValues2Datasets(
@@ -482,7 +487,7 @@ def index():
     result = render_template("graph.html",
                              frigo_1h_chart=frigo_1h_chart,
                              frigo_1h_smart_chart=frigo_1h_smart_chart,
-                             frigo_10h_chart=frigo_10h_chart,
+                            #  frigo_10h_chart=frigo_10h_chart,
                              frigo_24h_chart=frigo_24h_chart,
                              pool_ph_chart=pool_ph_chart,
                              pool_cl_chart=pool_cl_chart,

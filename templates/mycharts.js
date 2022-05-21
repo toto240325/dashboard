@@ -110,29 +110,6 @@ function myConfig(labels, values, chart_type, unit, values_unit, date_last_data)
     }
     var data_array_1a = a;
 
-    // var xA = {
-    //     type: "time",
-    //     time: {
-    //         //     format: timeFormat,
-    //         //     // unit: 'day',
-    //         parser: 'yyyy-MM-dd H:m:s'
-    //         //     tooltipFormat: 'll'
-    //     },
-    //     title: {
-    //         display: true,
-    //         text: 'Date1'
-    //     }
-    // };
-    // var yA = {
-    //     title: {
-    //         display: true,
-    //         text: 'value'
-    //     }
-    // };
-    // var scales1 = {
-    //     xAxes: xA,
-    //     yAxes: yA
-    // };
 
     var options1 = {
         responsive: true,
@@ -646,15 +623,6 @@ function get_rawdata(kind) {
             unit = "{{ frigo_1h_smart_chart.unit|safe }}"
             label = "{{ frigo_1h_smart_chart.label|safe }}"
             break;
-        case "10h":
-            values = JSON.parse('{{ frigo_10h_chart.values | tojson }}');
-            values_unit = "{{ frigo_10h_chart.values_unit|safe }}"
-            labels = JSON.parse('{{ frigo_10h_chart.labels | tojson }}');
-            title = "{{ frigo_10h_chart.title|safe }}"
-            chart_type = "{{ frigo_10h_chart.chart_type|safe }}"
-            unit = "{{ frigo_10h_chart.unit|safe }}"
-            label = "{{ frigo_10h_chart.label|safe }}"
-            break;
         case "24h":
             values = JSON.parse('{{ frigo_24h_chart.values | tojson }}');
             ids = JSON.parse('{{ frigo_24h_chart.ids | tojson }}');
@@ -828,6 +796,7 @@ var raw_data, values, values_unit, labels, title, chart_type, unit, label, data_
 
 raw_data = get_rawdata("normal_1h");
 values = raw_data.values;
+ids = raw_data.ids;
 values_unit = raw_data.values_unit;
 labels = raw_data.labels;
 title = raw_data.title;
@@ -1083,6 +1052,7 @@ enable_deletion(canvas_power_night_delta, lineChart_power_night_delta);
 // ps4 =====================================================
 
 values = JSON.parse('{{ ps4_chart.values | tojson }}');
+ids = JSON.parse('{{ ps4_chart.ids | tojson }}');
 labels = JSON.parse('{{ ps4_chart.labels | tojson }}');
 // values = {{ ps4_chart.values | safe }}
 // labels = {{ ps4_chart.labels | safe }}
@@ -1092,7 +1062,7 @@ chart_type = "{{ ps4_chart.chart_type|safe }}"
 unit = "{{ ps4_chart.unit|safe }}"
 label = "{{ ps4_chart.label|safe }}"
 
-var config = myConfig2(title, values, values_unit, labels, chart_type, unit, label, date_last_data);
+var config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label, date_last_data);
 
 var ctx = document.getElementById("canvas_ps4").getContext("2d");
 var lineChart = new Chart(ctx, config);
