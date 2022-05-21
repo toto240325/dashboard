@@ -270,6 +270,99 @@ function myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type,
     return config1;
 }
 
+function myConfig3_with_ids(raw_data, nb_mins) {
+
+    var raw_data, values, values_unit, labels, title, chart_type, unit, label, data_normal, 
+    data_smart, data_array, ids, date_last_data;
+
+
+    values = raw_data.values;
+    ids = raw_data.ids;
+    values_unit = raw_data.values_unit;
+    labels = raw_data.labels;
+    title = raw_data.title;
+    chart_type = raw_data.chart_type;
+    unit = raw_data.unit;
+    label = raw_data.label;
+    data_array = raw_data.data_array;
+    date_last_data = data_array[data_array.length-1].x;
+    
+
+    // var timeFormat = 'yyyy/MM/dd H:mm:ss';
+    var timeFormat = 'yyyy/MM/dd';
+    // var timeFormat = 'H:mm';
+    var nowStr = (new Date()).toLocaleTimeString("fr-BE", { hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+
+    var a = [];
+    var b = [];
+    for (let i = 0; i < labels.length; i++) {
+        b = { x: labels[i], y: values[i] };
+        a.push(b);
+    }
+    var data_array_1a = a;
+
+    var a = [];
+    var b = [];
+    for (let i = 0; i < labels.length; i++) {
+        b = { x: labels[i], y: ids[i] };
+        a.push(b);
+    }
+    var data_array_2a = a;
+
+    // var nowStr = (new Date()).toLocaleTimeString("fr-BE", { hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+
+    var options1 = {
+        // responsive: true,
+        scales: get_scales1(unit, values_unit, date_last_data),
+        plugins: {
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top',
+                    align: 'center',
+                    // reverse: true
+                },
+                title: {
+                    text: title + " (" + date_last_data + ")",
+                    display: true
+                }
+            },
+            zoom: zoom_plugin()
+        }
+    };
+    var config1 = {
+        type: chart_type,
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: label,
+                    data: data_array_1a,
+                    fill: false,
+                    borderColor: "rgb(75, 192, 192)",
+                    lineTension: 0.1
+                },
+                {
+                    label: label,
+                    data: data_array_2a,
+                    fill: false,
+                    borderColor: "rgb(75, 192, 192)",
+                    hidden: true
+                }
+            ]
+        },
+        options: options1
+    };
+
+
+    if (is_older_than_mins(date_last_data, 30)) {
+        config1.data.datasets[0].borderColor = 'red';
+    }
+    
+
+    return config1;
+}
+
 function myConfig_2_datasets(
     title,
     labels1, values1, chart_type1,
@@ -715,7 +808,7 @@ function get_data_frigo_normal_smart(data_normal, data_smart) {
                 label: "Normal",
                 data: data_normal,
                 fill: false,
-                borderColor: 'red'
+                borderColor: 'green'
             },
             {
                 label: "Smart2",
@@ -789,6 +882,29 @@ function options_pool_ph_cl(title, unit, values_unit, date_last_data) {
     };
 }
 
+// returns true if date_str is older than mins minutes ago
+function is_older_than_mins(date_str, mins) {
+    var now=new Date();
+    // console.log("now: %s",now.toString());
+    
+    var date_dt = new Date(date_str);
+    // console.log("date_last: %s",date_last_data_dt.toString());
+    
+    // difference in milliseconds between now and the given date
+    var diffInMs = (now - date_dt);
+    // console.log("diff : %o",diffInMs);
+    
+    // var last_date_should_be_at_least = now - 1000*60*30;
+    // console.log("date_last_at_least: %s",last_date_should_be_at_least.toString());
+    
+    // console.log("diff in mins : %d", diffInMs/(1000*60))
+    // console.log("diff in secs : %d", diffInMs/(1000))
+    
+    // return true if delta in ms is bigger than the nb of milliseconds
+    return (diffInMs > 1000*60*mins);
+}
+
+
 // frigo_normal_smart ===============================================
 
 var raw_data, values, values_unit, labels, title, chart_type, unit, label, data_normal, 
@@ -816,6 +932,10 @@ var config_frigo_normal_smart = {
     plugins: [horizontalArbitraryLinePlugin]
 };
 
+if (is_older_than_mins(date_last_data, 5)) {
+    config_frigo_normal_smart.data.datasets[0].borderColor = 'orange';
+}
+
 new Chart(
     document.getElementById('canvas_frigo_with_smart'),
     config_frigo_normal_smart
@@ -825,18 +945,24 @@ new Chart(
 
 raw_data = get_rawdata("24h");
 
-values = raw_data.values;
-ids = raw_data.ids;
-values_unit = raw_data.values_unit;
-labels = raw_data.labels;
-title = raw_data.title;
-chart_type = raw_data.chart_type;
-unit = raw_data.unit;
-label = raw_data.label;
-data_array = raw_data.data_array;
-date_last_data = data_array[data_array.length-1].x;
+// values = raw_data.values;
+// ids = raw_data.ids;
+// values_unit = raw_data.values_unit;
+// labels = raw_data.labels;
+// title = raw_data.title;
+// chart_type = raw_data.chart_type;
+// unit = raw_data.unit;
+// label = raw_data.label;
+// data_array = raw_data.data_array;
+// date_last_data = data_array[data_array.length-1].x;
 
-var config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label, date_last_data);
+// var config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label, date_last_data);
+
+// if (is_older_than_mins(date_last_data, 5)) {
+//     config.data.datasets[0].borderColor = 'orange';
+// }
+
+var config = myConfig3_with_ids(raw_data, 10);
 
 var ctx = document.getElementById("canvas_frigo_24h").getContext("2d");
 var lineChart_frigo_24h = new Chart(ctx, config);
@@ -852,18 +978,25 @@ enable_deletion(canvas_frigo_24h, lineChart_frigo_24h);
 
 raw_data = get_rawdata("pool_ph");
 
-values = raw_data.values;
-ids = raw_data.ids;
-values_unit = raw_data.values_unit;
-labels = raw_data.labels;
-title = raw_data.title;
-chart_type = raw_data.chart_type;
-unit = raw_data.unit;
-label = raw_data.label;
-data_array = raw_data.data_array;
-date_last_data = data_array[data_array.length-1].x;
+// values = raw_data.values;
+// ids = raw_data.ids;
+// values_unit = raw_data.values_unit;
+// labels = raw_data.labels;
+// title = raw_data.title;
+// chart_type = raw_data.chart_type;
+// unit = raw_data.unit;
+// label = raw_data.label;
+// data_array = raw_data.data_array;
+// date_last_data = data_array[data_array.length-1].x;
 
-var config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label, date_last_data);
+// var config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label, date_last_data);
+
+var config = myConfig3_with_ids(raw_data, 30);
+
+
+// if (is_older_than_mins(date_last_data, 5)) {
+//     config.data.datasets[0].borderColor = 'orange';
+// }
 
 var ctx = document.getElementById("canvas_pool_ph").getContext("2d");
 var lineChart_pool_ph = new Chart(ctx, config);
@@ -878,18 +1011,27 @@ enable_deletion(canvas_pool_ph, lineChart_pool_ph);
 
 raw_data = get_rawdata("pool_cl");
 
-values = raw_data.values;
-ids = raw_data.ids;
-values_unit = raw_data.values_unit;
-labels = raw_data.labels;
-title = raw_data.title;
-chart_type = raw_data.chart_type;
-unit = raw_data.unit;
-label = raw_data.label;
-data_array = raw_data.data_array;
-date_last_data = data_array[data_array.length-1].x;
+// values = raw_data.values;
+// ids = raw_data.ids;
+// values_unit = raw_data.values_unit;
+// labels = raw_data.labels;
+// title = raw_data.title;
+// chart_type = raw_data.chart_type;
+// unit = raw_data.unit;
+// label = raw_data.label;
+// data_array = raw_data.data_array;
+// date_last_data = data_array[data_array.length-1].x;
 
-var config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label, date_last_data);
+// var config2 = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label, date_last_data);
+
+var config = myConfig3_with_ids(raw_data, 30);
+
+// var raw_data, values, values_unit, labels, title, chart_type, unit, label, data_normal, 
+//     data_smart, data_array, ids, date_last_data;
+
+// if (is_older_than_mins(date_last_data, 30)) {
+//     config.data.datasets[0].borderColor = 'orange';
+// }
 
 var ctx = document.getElementById("canvas_pool_cl").getContext("2d");
 var lineChart_pool_cl = new Chart(ctx, config);
@@ -946,18 +1088,24 @@ enable_deletion(canvas_pool_ph_cl, lineChart_pool_ph_cl);
 
 raw_data = get_rawdata("power_day");
 
-values = raw_data.values;
-ids = raw_data.ids;
-values_unit = raw_data.values_unit;
-labels = raw_data.labels;
-title = raw_data.title;
-chart_type = raw_data.chart_type;
-unit = raw_data.unit;
-label = raw_data.label;
-data_array = raw_data.data_array;
-date_last_data = data_array[data_array.length-1].x;
+// values = raw_data.values;
+// ids = raw_data.ids;
+// values_unit = raw_data.values_unit;
+// labels = raw_data.labels;
+// title = raw_data.title;
+// chart_type = raw_data.chart_type;
+// unit = raw_data.unit;
+// label = raw_data.label;
+// data_array = raw_data.data_array;
+// date_last_data = data_array[data_array.length-1].x;
 
-var config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label, date_last_data);
+// var config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label, date_last_data);
+
+// if (is_older_than_mins(date_last_data, 30)) {
+//     config.data.datasets[0].borderColor = 'orange';
+// }
+
+var config = myConfig3_with_ids(raw_data, 30);
 
 var ctx = document.getElementById("canvas_power_day").getContext("2d");
 var lineChart_power_day = new Chart(ctx, config);
@@ -972,18 +1120,20 @@ enable_deletion(canvas_power_day, lineChart_power_day);
 
 raw_data = get_rawdata("power_day_delta");
 
-values = raw_data.values;
-ids = raw_data.ids;
-values_unit = raw_data.values_unit;
-labels = raw_data.labels;
-title = raw_data.title;
-chart_type = raw_data.chart_type;
-unit = raw_data.unit;
-label = raw_data.label;
-data_array = raw_data.data_array;
-date_last_data = data_array[data_array.length-1].x;
+// values = raw_data.values;
+// ids = raw_data.ids;
+// values_unit = raw_data.values_unit;
+// labels = raw_data.labels;
+// title = raw_data.title;
+// chart_type = raw_data.chart_type;
+// unit = raw_data.unit;
+// label = raw_data.label;
+// data_array = raw_data.data_array;
+// date_last_data = data_array[data_array.length-1].x;
 
-var config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label, date_last_data);
+// var config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label, date_last_data);
+
+var config = myConfig3_with_ids(raw_data, 30);
 
 var ctx = document.getElementById("canvas_power_day_delta").getContext("2d");
 var lineChart_power_day_delta = new Chart(ctx, config);
@@ -999,18 +1149,24 @@ enable_deletion(canvas_power_day_delta, lineChart_power_day_delta);
 
 raw_data = get_rawdata("power_night");
 
-values = raw_data.values;
-ids = raw_data.ids;
-values_unit = raw_data.values_unit;
-labels = raw_data.labels;
-title = raw_data.title;
-chart_type = raw_data.chart_type;
-unit = raw_data.unit;
-label = raw_data.label;
-data_array = raw_data.data_array;
-date_last_data = data_array[data_array.length-1].x;
+// values = raw_data.values;
+// ids = raw_data.ids;
+// values_unit = raw_data.values_unit;
+// labels = raw_data.labels;
+// title = raw_data.title;
+// chart_type = raw_data.chart_type;
+// unit = raw_data.unit;
+// label = raw_data.label;
+// data_array = raw_data.data_array;
+// date_last_data = data_array[data_array.length-1].x;
 
-var config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label, date_last_data);
+// var config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label, date_last_data);
+
+// if (is_older_than_mins(date_last_data, 30)) {
+//     config.data.datasets[0].borderColor = 'orange';
+// }
+
+var config = myConfig3_with_ids(raw_data, 30);
 
 var ctx = document.getElementById("canvas_power_night").getContext("2d");
 var lineChart_power_night = new Chart(ctx, config);
@@ -1026,18 +1182,21 @@ enable_deletion(canvas_power_night, lineChart_power_night);
 
 raw_data = get_rawdata("power_night_delta");
 
-values = raw_data.values;
-ids = raw_data.ids;
-values_unit = raw_data.values_unit;
-labels = raw_data.labels;
-title = raw_data.title;
-chart_type = raw_data.chart_type;
-unit = raw_data.unit;
-label = raw_data.label;
-data_array = raw_data.data_array;
-date_last_data = data_array[data_array.length-1].x;
+// values = raw_data.values;
+// ids = raw_data.ids;
+// values_unit = raw_data.values_unit;
+// labels = raw_data.labels;
+// title = raw_data.title;
+// chart_type = raw_data.chart_type;
+// unit = raw_data.unit;
+// label = raw_data.label;
+// data_array = raw_data.data_array;
+// date_last_data = data_array[data_array.length-1].x;
 
-var config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label, date_last_data);
+// var config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label, date_last_data);
+
+var config = myConfig3_with_ids(raw_data, 30);
+
 
 var ctx = document.getElementById("canvas_power_night_delta").getContext("2d");
 var lineChart_power_night_delta = new Chart(ctx, config);
