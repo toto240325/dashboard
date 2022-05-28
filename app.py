@@ -7,6 +7,7 @@
 # ps -aux |grep "flask run"
 # kill <process>
 # echo $(ps -aux |grep "flask run --no-debugger" | awk '{print $2}'| head -n 1)
+# kill $(ps -aux |grep "flask run --no-debugger" | awk '{print $2}'| head -n 1)
 """
 test
 """
@@ -101,7 +102,7 @@ def timenow():
 
 def today_delta_str(delta):
     """
-    return today as a string like "2022-04-24
+    return today minus delta nb of days as a string like "2022-04-24"
     """
 
     date_time = datetime.date.today()
@@ -354,6 +355,7 @@ def index():
 
     elaps.elapsed_time("power_night_delta")
 
+    # the values of the ps4 dataset are 1 and the labels are the datetime at which ps4 was up
     delta = -2
     data = read_where("ps4", 100, today_delta_str(delta))
     events = data["events"]
@@ -364,12 +366,16 @@ def index():
 
     elaps.elapsed_time("ps4")
 
+    # the values of the ps4_2 dataset are the number of minutes ps4 was up per day
+    # the labels are those days where ps4 was up, forced at 12:00:00
+
     data = read_ps4(today_delta_str(delta))
     records = data["records"]
     labels_ps4_2 = [rec["date"].replace(
         "01:00:00", "12:00:00") for rec in records]
     values_ps4_2a = [rec["count"] for rec in records]
-    values_ps4_2 = [rec*5 for rec in values_ps4_2a]
+    # attention : the "rec*10" below should be parameterised with same parameter used in watchdog.py
+    values_ps4_2 = [rec*10 for rec in values_ps4_2a]
 
     class MyChartValues:
         """
@@ -445,10 +451,10 @@ def index():
         "frigo_1h_smart", frigo_1h_smart_values, "°C", frigo_1h_smart_labels,
         "line", "minute", "temperature")
     # frigo_10h_chart = MyChartValuesWithIDs(
-    #     "frigo_10h", frigo_10h_values, frigo_10h_ids, "°C", frigo_10h_labels, "line", "hour", 
+    #     "frigo_10h", frigo_10h_values, frigo_10h_ids, "°C", frigo_10h_labels, "line", "hour",
     # "temperature")
     frigo_24h_chart = MyChartValuesWithIDs(
-        "frigo_24h", frigo_24h_values, frigo_24h_ids, "°C", frigo_24h_labels, "line", "hour", 
+        "frigo_24h", frigo_24h_values, frigo_24h_ids, "°C", frigo_24h_labels, "line", "hour",
         "temperature")
     pool_ph_chart = MyChartValuesWithIDs(
         "pool_ph", pool_ph_values, pool_ph_ids, "pH", pool_ph_labels, "line", "hour", "pool pH")
@@ -476,8 +482,12 @@ def index():
         "line", "hour", "KwH night Delta")
     ps4_chart = MyChartValuesWithIDs(
         "ps4", values_ps4, ids_ps4, "ps4 on/off", labels_ps4, "bubble", "day", "PS4")
-    ps4_2_chart = MyChartValues(
-        "ps4_2", values_ps4_2, "minutes", labels_ps4_2, "bar", "day", "PS4")
+    ps4_2_chart = MyChartValuesWithIDs(
+        "ps4_2", values_ps4_2, [], "minutes", labels_ps4_2, "bar", "day", "PS4_2")
+
+
+    # ps4_2_chart = MyChartValues(
+    #     "ps4_2", values_ps4_2, "minutes", labels_ps4_2, "bar", "day", "PS4")
     ps4_2_datasets_chart = MyChartValues2Datasets(
         "ps4_2_datasets",
         values_ps4, labels_ps4, "bubble",
@@ -485,21 +495,21 @@ def index():
         "day")
 
     result = render_template("graph.html",
-                             frigo_1h_chart=frigo_1h_chart,
-                             frigo_1h_smart_chart=frigo_1h_smart_chart,
+                            frigo_1h_chart=frigo_1h_chart,
+                            frigo_1h_smart_chart=frigo_1h_smart_chart,
                             #  frigo_10h_chart=frigo_10h_chart,
-                             frigo_24h_chart=frigo_24h_chart,
-                             pool_ph_chart=pool_ph_chart,
-                             pool_cl_chart=pool_cl_chart,
-                             power_chart=power_chart,
-                             power_day_chart=power_day_chart,
-                             power_day_delta_chart=power_day_delta_chart,
-                             power_night_chart=power_night_chart,
-                             power_night_delta_chart=power_night_delta_chart,
-                             ps4_chart=ps4_chart,
-                             ps4_2_chart=ps4_2_chart,
-                             ps4_2_datasets_chart=ps4_2_datasets_chart
-                             )
+                            frigo_24h_chart=frigo_24h_chart,
+                            pool_ph_chart=pool_ph_chart,
+                            pool_cl_chart=pool_cl_chart,
+                            power_chart=power_chart,
+                            power_day_chart=power_day_chart,
+                            power_day_delta_chart=power_day_delta_chart,
+                            power_night_chart=power_night_chart,
+                            power_night_delta_chart=power_night_delta_chart,
+                            ps4_chart=ps4_chart,
+                            ps4_2_chart=ps4_2_chart,
+                            ps4_2_datasets_chart=ps4_2_datasets_chart
+                            )
     return result
 
     # return
