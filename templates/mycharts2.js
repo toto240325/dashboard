@@ -240,7 +240,11 @@ function myConfig(raw_data, nb_mins) {
     }
     var data_array_1a = a;
 
-    date_last_data = data_array_1a[data_array_1a.length - 1].x;
+    if (data_array_1a.length > 0) {
+        date_last_data = data_array_1a[data_array_1a.length - 1].x;
+    } else {
+        date_last_data = "1900-01-01";
+    }
 
 
     var a = [];
@@ -638,14 +642,15 @@ function get_scales_2_datasets(unit, values_unit, date_last_data) {
 const horizontalLinePlugin = {
     id: 'horizontalLinePlugin',
     // afterDraw: function (chartInstance) {
-    beforeDraw(chartInstance) {
-        alert("test2");
-        var yScale = chartInstance.scales["y"];
+    afterDraw(chartInstance) {
+        // alert("test in horizontalLinePlugin");
+        var yScale = chartInstance.scales["yAxes"];
         var canvas = chartInstance.canvas;
         var ctx = chartInstance.ctx;
         var index;
         var line;
         var style;
+        var yValue;
         if (chartInstance.options.horizontalLine) {
             for (index = 0; index < chartInstance.options.horizontalLine.length; index++) {
 
@@ -659,6 +664,7 @@ const horizontalLinePlugin = {
                     style = line.style;
                 }
                 if (line.y) {
+                    console.log("yScale : %o",yScale);
                     yValue = yScale.getPixelForValue(line.y);
                 } else {
                     yValue = 0;
@@ -847,7 +853,12 @@ function get_rawdata(kind) {
         let b = { x: labels[i], y: values[i] };
         data_array.push(b);
     }
-    var date_last_data = data_array[data_array.length - 1].x;
+
+    if (data_array.length > 0) {
+        var date_last_data = data_array[data_array.length - 1].x;
+    } else {
+        date_last_data = "1900-01-01";
+    }
 
     return { values, values_unit, labels, title, chart_type, unit, label, data_array, ids, date_last_data }
 }
@@ -1110,12 +1121,12 @@ function frigo_24h() {
 function pool_ph() {
     var raw_data = get_rawdata("pool_ph");
     var config = myConfig(raw_data, 30);
-    alert("pool");
+    // alert("pool");
     // if (is_older_than_mins(date_last_data, 5)) {
     //     config.data.datasets[0].borderColor = 'orange';
     // }
 
-    options_horizontalLine = [{
+    var options_horizontalLine = [{
         "y": 7.80,
         "style": "rgba(255, 0, 0, .4)",
         "text": "max"
