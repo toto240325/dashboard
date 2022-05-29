@@ -257,18 +257,18 @@ function myConfig(raw_data, nb_mins) {
         // responsive: true,
         scales: get_scales1(unit, values_unit, date_last_data),
         plugins: {
-                legend: {
-                    display: true,
-                    position: 'top',
-                    align: 'center',
-                    // reverse: true
-                },
-                title: {
-                    text: title + " (" + date_last_data + ")",
-                    display: true
-                },
-                zoom: zoom_plugin()
-            }
+            legend: {
+                display: true,
+                position: 'top',
+                align: 'center',
+                // reverse: true
+            },
+            title: {
+                text: title + " (" + date_last_data + ")",
+                display: true
+            },
+            zoom: zoom_plugin()
+        }
     };
     var config1 = {
         type: chart_type,
@@ -595,6 +595,93 @@ function get_scales1(unit, values_unit, date_last_data) {
     return scales1;
 }
 
+function get_scales_2_datasets(unit, values_unit, date_last_data) {
+    var timeFormat = 'yyyy-MM-dd hh:mm:ss';
+    var nowStr = (new Date()).toLocaleTimeString("fr-BE", { hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+    var datetime2 = "LastSync: " + date_last_data;
+
+    var scales1 = {
+        xAxes: {
+            type: "time",
+            time: {
+                // format: timeFormat,
+                displayFormats: {
+                    'millisecond': 'MMM dd',
+                    'second': 'MMM dd',
+                    'minute': 'H:mm',
+                    'hour': 'H:mm',
+                    'day': 'dd/MM',
+                    'week': 'MMM dd',
+                    'month': 'MMM dd',
+                    'quarter': 'MMM dd',
+                    'year': 'MMM dd',
+                },
+                unit: unit,
+                parser: 'yyyy-MM-dd H:m:s'
+            },
+            title: {
+                display: true,
+                text: datetime2
+            }
+        },
+        yAxes: {
+            title: {
+                display: true,
+                text: values_unit
+            }
+        }
+    };
+    return scales1;
+}
+
+// horizontalLinePlugin =======================================
+const horizontalLinePlugin = {
+    id: 'horizontalLinePlugin',
+    // afterDraw: function (chartInstance) {
+    beforeDraw(chartInstance) {
+        alert("test2");
+        var yScale = chartInstance.scales["y"];
+        var canvas = chartInstance.canvas;
+        var ctx = chartInstance.ctx;
+        var index;
+        var line;
+        var style;
+        if (chartInstance.options.horizontalLine) {
+            for (index = 0; index < chartInstance.options.horizontalLine.length; index++) {
+
+                line = chartInstance.options.horizontalLine[index];
+                console.log("line : %o", line);
+                console.log("line y : %o", line.y);
+
+                if (!line.style) {
+                    style = "rgba(169,169,169, .6)";
+                } else {
+                    style = line.style;
+                }
+                if (line.y) {
+                    yValue = yScale.getPixelForValue(line.y);
+                } else {
+                    yValue = 0;
+                }
+                ctx.lineWidth = 3;
+                if (yValue) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, yValue);
+                    ctx.lineTo(canvas.width, yValue);
+                    ctx.strokeStyle = style;
+                    ctx.stroke();
+                }
+                if (line.text) {
+                    ctx.fillStyle = style;
+                    ctx.fillText(line.text, 0, yValue + ctx.lineWidth);
+                }
+            }
+            return;
+        };
+    }
+};
+
+
 // horizontalArbitraryLinePlugin =======================================
 
 const horizontalArbitraryLinePlugin = {
@@ -638,9 +725,21 @@ function get_rawdata(kind) {
     var values, values_unit, labels, title, chart_type, unit, label, ids;
     ids = [];
     switch (kind) {
+        case "normal_1h":
+            values = JSON.parse('{{ frigo_1h_chart.values | tojson }}');
+            //console.log(values);
+            ids = JSON.parse('{{ frigo_1h_chart.ids | tojson }}');
+            values_unit = "{{ frigo_1h_chart.values_unit|safe }}"
+            labels = JSON.parse('{{ frigo_1h_chart.labels | tojson }}');
+            title = "{{ frigo_1h_chart.title|safe }}"
+            chart_type = "{{ frigo_1h_chart.chart_type|safe }}"
+            unit = "{{ frigo_1h_chart.unit|safe }}"
+            label = "{{ frigo_1h_chart.label|safe }}"
+            break;
         case "smart_1h":
             values = JSON.parse('{{ frigo_1h_smart_chart.values | tojson }}');
             //console.log(values);
+            ids = JSON.parse('{{ frigo_1h_chart.ids | tojson }}');
             values_unit = "{{ frigo_1h_smart_chart.values_unit|safe }}"
             labels = JSON.parse('{{ frigo_1h_smart_chart.labels | tojson }}');
             title = "{{ frigo_1h_smart_chart.title|safe }}"
@@ -700,6 +799,7 @@ function get_rawdata(kind) {
             break;
         case "power_day_delta":
             values = JSON.parse('{{ power_day_delta_chart.values | tojson }}');
+            ids = [];
             labels = JSON.parse('{{ power_day_delta_chart.labels | tojson }}');
             values_unit = "{{ power_day_delta_chart.values_unit | safe }}"
             title = "{{ power_day_delta_chart.title|safe }}"
@@ -709,6 +809,7 @@ function get_rawdata(kind) {
             break;
         case "power_night_delta":
             values = JSON.parse('{{ power_night_delta_chart.values | tojson }}');
+            ids = [];
             labels = JSON.parse('{{ power_night_delta_chart.labels | tojson }}');
             values_unit = "{{ power_night_delta_chart.values_unit | safe }}"
             title = "{{ power_night_delta_chart.title|safe }}"
@@ -795,9 +896,24 @@ function get_data_2_datasets(raw_data1, raw_data2) {
     return data;
 }
 
+function get_data_smart(raw_data1) {
+    var data = {
+        datasets: [
+            {
+                label: raw_data1.label,
+                data: raw_data1.data_array,
+                fill: false,
+                borderColor: 'green'
+            }
+        ]
+    };
+    // console.log(data3);
+    return data;
+}
+
 function options_frigo_normal_smart(title, unit, values_unit, date_last_data) {
     return options_frigo_normal_smart = {
-        scales: get_scales1(unit, values_unit, date_last_data),
+        // scales: get_scales1(unit, values_unit, date_last_data),
         plugins: {
             legend: {
                 display: true,
@@ -814,6 +930,25 @@ function options_frigo_normal_smart(title, unit, values_unit, date_last_data) {
 }
 
 function options_2_datasets(title, raw_data1, raw_data2) {
+    var options = {
+        scales: get_scales_2_datasets(raw_data1.unit, raw_data1.values_unit, raw_data1.date_last_data),
+        plugins: {
+            legend: {
+                display: true,
+                position: 'top',
+                align: 'center',
+                // reverse: true
+            },
+            title: {
+                text: title,
+                display: true
+            }
+        }
+    };
+    return options;
+}
+
+function options_smart(title, raw_data1) {
     var options = {
         scales: get_scales1(raw_data1.unit, raw_data1.values_unit, raw_data1.date_last_data),
         plugins: {
@@ -902,31 +1037,57 @@ function is_older_than_mins(date_str, mins) {
 }
 
 function myConfig_2_datasets(title, raw_data1, raw_data2) {
+    var options = options_2_datasets(title, raw_data1, raw_data2);
     var config = {
         type: 'line',
         data: get_data_2_datasets(raw_data1, raw_data2),
-        options: options_frigo_normal_smart(title, raw_data1, raw_data2),
+        options: options,
         plugins: [horizontalArbitraryLinePlugin]
     };
     return config;
 }
 
+function myConfig_smart(title, raw_data1) {
+    var options = options_smart(title, raw_data1);
+    var config = {
+        type: 'line',
+        data: get_data_smart(raw_data1),
+        options: options,
+        // plugins: [horizontalArbitraryLinePlugin]
+    };
+    console.log("options : %o", options);
+    return config;
+}
+
+
+function frigo_smart() {
+    var raw_data_smart_1h = get_rawdata("smart_1h");
+
+    var config_frigo_smart = myConfig_smart("Frigo Smart", raw_data_smart_1h);
+
+    var ctx = document.getElementById("canvas_frigo_smart").getContext("2d");
+    var lineChart_frigo_smart = new Chart(ctx, config_frigo_smart);
+
+    // // allows to swipe up and down on smartclone/touchScreen
+    // lineChart_frigo_normal_smart.canvas.style.touchAction = "pan-y";
+
+}
 
 function frigo_normal_smart() {
     var raw_data_normal_1h = get_rawdata("normal_1h");
     var raw_data_smart_1h = get_rawdata("smart_1h");
 
     var config_frigo_normal_smart = myConfig_2_datasets("Frigo Normal vs. Smart", raw_data_normal_1h, raw_data_smart_1h);
-        
-    if (is_older_than_mins(raw_data_normal_1h.date_last_data, 5)) {
-        config_frigo_normal_smart.data.datasets[0].borderColor = 'orange';
-    }
+    console.log("config : %o", config_frigo_normal_smart);
+    // if (is_older_than_mins(raw_data_normal_1h.date_last_data, 5)) {
+    //     config_frigo_normal_smart.data.datasets[0].borderColor = 'orange';
+    // }
 
     var ctx = document.getElementById("canvas_frigo_with_smart").getContext("2d");
     var lineChart_frigo_normal_smart = new Chart(ctx, config_frigo_normal_smart);
 
-    // allows to swipe up and down on smartclone/touchScreen
-    lineChart_frigo_normal_smart.canvas.style.touchAction = "pan-y";
+    // // allows to swipe up and down on smartclone/touchScreen
+    // lineChart_frigo_normal_smart.canvas.style.touchAction = "pan-y";
 
 }
 
@@ -949,10 +1110,26 @@ function frigo_24h() {
 function pool_ph() {
     var raw_data = get_rawdata("pool_ph");
     var config = myConfig(raw_data, 30);
-
+    alert("pool");
     // if (is_older_than_mins(date_last_data, 5)) {
     //     config.data.datasets[0].borderColor = 'orange';
     // }
+
+    options_horizontalLine = [{
+        "y": 7.80,
+        "style": "rgba(255, 0, 0, .4)",
+        "text": "max"
+    }, {
+        "y": 7.60,
+        "style": "#00ffff",
+    }, {
+        "y": 7.20,
+        "text": "min"
+    }];
+
+    config.options.horizontalLine = options_horizontalLine;
+    config.plugins = [horizontalLinePlugin];
+    console.log("config : %o",config);
 
     var ctx = document.getElementById("canvas_pool_ph").getContext("2d");
     var lineChart_pool_ph = new Chart(ctx, config);
@@ -1523,6 +1700,82 @@ function daily_stock2() {
 }
 
 
+
+function test() {
+    const dailyStock2 = [
+        { x: "2017-08-02 10:00", y: 1 },
+        { x: "2017-08-02 11:00", y: 3 },
+        { x: "2017-08-02 15:00", y: 7 },
+        { x: "2017-08-03 09:00", y: 0 },
+        { x: "2017-08-03 10:00", y: 3 },
+        { x: "2017-08-03 10:30", y: 2 },
+        { x: "2017-08-04 10:45", y: 1 },
+        { x: "2017-08-10 17:00", y: 0 },
+    ];
+
+    const monthlyTotal2 = [
+        { x: "2017-08-02", y: 1 },
+        { x: "2017-08-03", y: 10 },
+        { x: "2017-08-04", y: 5 },
+        { x: "2017-08-10", y: 5 },
+    ];
+
+    var config_test = {
+        type: "bar",
+        data: {
+            labels: ["2017-08-02", "2017-08-03", "2017-08-04", "2017-08-10"],
+            datasets: [
+                {
+                    barPercentage: .7,
+                    xAxisID: "bar",
+                    label: "sales",
+                    data: monthlyTotal2,
+                    backgroundColor: "green",
+                    borderColor: "black",
+                    borderWidth: 1,
+                    width: 55,
+                    order: 2,
+                },
+                {
+                    label: "stock",
+                    type: "line",
+                    data: dailyStock2,
+                    backgroundColor: "orange",
+                    borderColor: "orange",
+                    fill: false,
+                    order: 1,
+                },
+            ],
+        },
+        options: {
+            scales: {
+                xAxes: {
+                    id: "line",
+                    type: "time",
+                    time: {
+                        unit: "day",
+                        displayFormats: {
+                            month: "DD",
+                        },
+                    },
+                    distribution: "linear",
+                },
+                yAxes:
+                {
+                    ticks: {
+                        beginAtZero: true,
+                    },
+                },
+            },
+        },
+    };
+
+    var ctx2 = document.getElementById("canvas_test").getContext("2d");
+    var myChart_test = new Chart(ctx2, config_test);
+}
+
+
+// frigo_smart();
 frigo_normal_smart();
 frigo_24h();
 pool_ph();
@@ -1537,3 +1790,4 @@ ps4_2();
 canvas_bar();
 daily_stock();
 daily_stock2();
+test();

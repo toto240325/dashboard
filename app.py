@@ -216,6 +216,14 @@ def about():
     return render_template("about.html")
 
 
+@app.route('/horiz')
+def horizontal_plugin():
+    """
+    rendering the page
+    """
+    return render_template("horizontal_plugin.html")
+
+
 @app.route('/samples')
 def samples():
     """
@@ -229,7 +237,7 @@ def index():
     """
     rendering the index page
     """
-    # return "hello world !! (hello !)"
+    #return "hello world !! (hello !)"
 
     #data = test_read.eventRead("",60)
     # labels = [row[0] for row in data]
@@ -240,6 +248,7 @@ def index():
     data = read_where("temperature", 60, "1900-01-01")
     events = data["events"]
     frigo_1h_values = [float(event["text"]) for event in events]
+    frigo_1h_ids = [event["id"] for event in events]
     frigo_1h_labels = [event["time"] for event in events]
 
     elaps.elapsed_time("frigo_1h")
@@ -247,6 +256,7 @@ def index():
     data = read_where("smart_temperature", 60, "1900-01-01")
     events = data["events"]
     frigo_1h_smart_values = [float(event["text"]) for event in events]
+    frigo_1h_smart_ids = [event["id"] for event in events]
     frigo_1h_smart_labels = [event["time"] for event in events]
 
     elaps.elapsed_time("frigo_1h")
@@ -445,10 +455,11 @@ def index():
             self.chart_type2 = chart_type2
             self.unit = unit
 
-    frigo_1h_chart = MyChartValues(
-        "frigo_1h", frigo_1h_values, "°C", frigo_1h_labels, "line", "minute", "temperature")
-    frigo_1h_smart_chart = MyChartValues(
-        "frigo_1h_smart", frigo_1h_smart_values, "°C", frigo_1h_smart_labels,
+    frigo_1h_chart = MyChartValuesWithIDs(
+        "frigo_1h", frigo_1h_values, frigo_1h_ids, "°C", frigo_1h_labels, "line", "minute",
+        "temperature")
+    frigo_1h_smart_chart = MyChartValuesWithIDs(
+        "frigo_1h_smart", frigo_1h_smart_values, frigo_1h_smart_ids, "°C", frigo_1h_smart_labels,
         "line", "minute", "temperature")
     # frigo_10h_chart = MyChartValuesWithIDs(
     #     "frigo_10h", frigo_10h_values, frigo_10h_ids, "°C", frigo_10h_labels, "line", "hour",
