@@ -669,7 +669,7 @@ const horizontalLinePlugin = {
                 } else {
                     yValue = 0;
                 }
-                ctx.lineWidth = 3;
+                ctx.lineWidth = 1;
                 if (yValue) {
                     ctx.beginPath();
                     ctx.moveTo(0, yValue);
@@ -686,7 +686,6 @@ const horizontalLinePlugin = {
         };
     }
 };
-
 
 // horizontalArbitraryLinePlugin =======================================
 
@@ -1121,26 +1120,19 @@ function frigo_24h() {
 function pool_ph() {
     var raw_data = get_rawdata("pool_ph");
     var config = myConfig(raw_data, 30);
-    // alert("pool");
-    // if (is_older_than_mins(date_last_data, 5)) {
-    //     config.data.datasets[0].borderColor = 'orange';
-    // }
 
     var options_horizontalLine = [{
-        "y": 7.80,
-        "style": "rgba(255, 0, 0, .4)",
+        "y": 7.40,
+        "style" : "green",
+        // "style": "rgba(255, 0, 0, .4)",
         "text": "max"
     }, {
-        "y": 7.60,
-        "style": "#00ffff",
-    }, {
-        "y": 7.20,
-        "text": "min"
+        "y": 7.10,
+        "text": "min",
+        "style" : "green",
     }];
-
     config.options.horizontalLine = options_horizontalLine;
     config.plugins = [horizontalLinePlugin];
-    console.log("config : %o",config);
 
     var ctx = document.getElementById("canvas_pool_ph").getContext("2d");
     var lineChart_pool_ph = new Chart(ctx, config);
@@ -1157,9 +1149,20 @@ function pool_cl() {
     var raw_data = get_rawdata("pool_cl");
     var config = myConfig(raw_data, 30);
 
-    // if (is_older_than_mins(date_last_data, 30)) {
-    //     config.data.datasets[0].borderColor = 'orange';
-    // }
+    var options_horizontalLine = [{
+        "y": 750,
+        "style": "green",
+        // "style": "rgba(255, 0, 0, .4)",
+        "text": "max"
+    }, {
+        "y": 640,
+        "text": "min",
+        "style": "green",
+
+    }];
+    config.options.horizontalLine = options_horizontalLine;
+    config.plugins = [horizontalLinePlugin];
+
 
     var ctx = document.getElementById("canvas_pool_cl").getContext("2d");
     var lineChart_pool_cl = new Chart(ctx, config);
