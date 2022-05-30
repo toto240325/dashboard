@@ -655,8 +655,8 @@ const horizontalLinePlugin = {
             for (index = 0; index < chartInstance.options.horizontalLine.length; index++) {
 
                 line = chartInstance.options.horizontalLine[index];
-                console.log("line : %o", line);
-                console.log("line y : %o", line.y);
+                // console.log("line : %o", line);
+                // console.log("line y : %o", line.y);
 
                 if (!line.style) {
                     style = "rgba(169,169,169, .6)";
@@ -664,7 +664,7 @@ const horizontalLinePlugin = {
                     style = line.style;
                 }
                 if (line.y) {
-                    console.log("yScale : %o",yScale);
+                    // console.log("yScale : %o",yScale);
                     yValue = yScale.getPixelForValue(line.y);
                 } else {
                     yValue = 0;
@@ -689,35 +689,35 @@ const horizontalLinePlugin = {
 
 // horizontalArbitraryLinePlugin =======================================
 
-const horizontalArbitraryLinePlugin = {
-    id: 'horizontalArbitraryLinePlugin',
-    beforeDraw(chart, args, options) {
-        // console.log("in beforeDraw of %s", chart.canvas.id);
-        // console.log("chart: %o", chart)
-        // console.log("canvas: %s", chart.canvas.id)
-        const { ctx, chartArea: { top, right, bottom, left, width, height }, scales: { xAxes, yAxes } } = chart;
-        ctx.save();
+// const horizontalArbitraryLinePlugin2 = {
+//     id: 'horizontalArbitraryLinePlugin2',
+//     beforeDraw(chart, args, options) {
+//         // console.log("in beforeDraw of %s", chart.canvas.id);
+//         // console.log("chart: %o", chart)
+//         // console.log("canvas: %s", chart.canvas.id)
+//         const { ctx, chartArea: { top, right, bottom, left, width, height }, scales: { xAxes, yAxes } } = chart;
+//         ctx.save();
 
-        // console.log("yAxes : %o",yAxes)
+//         // console.log("yAxes : %o",yAxes)
 
-        var ypix = yAxes.getPixelForValue(3);
-        ctx.strokeStyle = 'green';
-        ctx.strokeRect(left, ypix, left + width, 0);
+//         var ypix = yAxes.getPixelForValue(3);
+//         ctx.strokeStyle = 'green';
+//         ctx.strokeRect(left, ypix, left + width, 0);
 
-        var ypix = yAxes.getPixelForValue(1.5);
-        ctx.strokeStyle = 'green';
-        ctx.strokeRect(left, ypix, left + width, 0);
+//         var ypix = yAxes.getPixelForValue(1.5);
+//         ctx.strokeStyle = 'green';
+//         ctx.strokeRect(left, ypix, left + width, 0);
 
-        // ctx.beginPath();
-        // ctx.moveTo(left, 100);
-        // ctx.lineTo(left+width, 100);
-        // ctx.strokeStyle = 'green';
-        // ctx.stroke();
-    },
-    // afterDraw(chart, args, options) {
-    //     console.log("in afterDraw of %s", chart.canvas.id);
-    // }
-}
+//         // ctx.beginPath();
+//         // ctx.moveTo(left, 100);
+//         // ctx.lineTo(left+width, 100);
+//         // ctx.strokeStyle = 'green';
+//         // ctx.stroke();
+//     },
+//     // afterDraw(chart, args, options) {
+//     //     console.log("in afterDraw of %s", chart.canvas.id);
+//     // }
+// }
 
 // this is to register this plugin for ALL chart, not only for one instance
 // Chart.register(horizontalArbitraryLinePlugin);
@@ -852,6 +852,8 @@ function get_rawdata(kind) {
         let b = { x: labels[i], y: values[i] };
         data_array.push(b);
     }
+
+    data_array.sort((a, b) => a.x.localeCompare(b.x));
 
     if (data_array.length > 0) {
         var date_last_data = data_array[data_array.length - 1].x;
@@ -1052,7 +1054,7 @@ function myConfig_2_datasets(title, raw_data1, raw_data2) {
         type: 'line',
         data: get_data_2_datasets(raw_data1, raw_data2),
         options: options,
-        plugins: [horizontalArbitraryLinePlugin]
+        // plugins: [horizontalgArbitraryLinePlugin]
     };
     return config;
 }
@@ -1087,14 +1089,29 @@ function frigo_normal_smart() {
     var raw_data_normal_1h = get_rawdata("normal_1h");
     var raw_data_smart_1h = get_rawdata("smart_1h");
 
-    var config_frigo_normal_smart = myConfig_2_datasets("Frigo Normal vs. Smart", raw_data_normal_1h, raw_data_smart_1h);
-    console.log("config : %o", config_frigo_normal_smart);
+    // console.log("data : %o", raw_data_normal_1h.data_array);
+
+    var config = myConfig_2_datasets("Frigo Normal vs. Smart", raw_data_normal_1h, raw_data_smart_1h);
+    // console.log("config : %o", config_frigo_normal_smart);
     // if (is_older_than_mins(raw_data_normal_1h.date_last_data, 5)) {
     //     config_frigo_normal_smart.data.datasets[0].borderColor = 'orange';
     // }
 
+    var options_horizontalLine = [{
+        "y": 3.5,
+        "style" : "green",
+        // "style": "rgba(255, 0, 0, .4)",
+        "text": "max"
+    }, {
+        "y": 1.5,
+        "text": "min",
+        "style" : "green",
+    }];
+    config.options.horizontalLine = options_horizontalLine;
+    config.plugins = [horizontalLinePlugin];
+
     var ctx = document.getElementById("canvas_frigo_with_smart").getContext("2d");
-    var lineChart_frigo_normal_smart = new Chart(ctx, config_frigo_normal_smart);
+    var lineChart_frigo_normal_smart = new Chart(ctx, config);
 
     // // allows to swipe up and down on smartclone/touchScreen
     // lineChart_frigo_normal_smart.canvas.style.touchAction = "pan-y";
