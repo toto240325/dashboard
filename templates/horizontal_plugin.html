@@ -109,9 +109,9 @@
                 }
             }
 
-            const verticalLineOnDaysPlugin = {
+            const verticalLineOnStepPlugin = {
 
-                id: 'verticalLineOnDaysPlugin',
+                id: 'verticalLineOnStepPlugin',
                 // afterDraw: function (chartInstance) {
                 afterDraw(chartInstance) {
 
@@ -137,9 +137,9 @@
                     const { _, chartArea: { top, right, bottom, left, width, height }, scales: { xAxes, yAxes } } = chartInstance;
                     // alert("vertical lines days");
 
-                    console.log("chartInstance : %o", chartInstance);
-                    console.log("xScale: %o", chartInstance.scales["x"]);
-                    console.log("len: ", xScale.ticks.length);
+                    // console.log("chartInstance : %o", chartInstance);
+                    // console.log("xScale: %o", chartInstance.scales["x"]);
+                    // console.log("len: ", xScale.ticks.length);
 
                     nb_ticks = xScale.ticks.length;
                     for (i = 0; i < nb_ticks; i++) {
@@ -150,18 +150,11 @@
                         }
                     }
 
-                    var minLabel = xScale.ticks[0].label;
-                    var maxLabel = xScale.ticks[nb_ticks - 1].label;
+                    // var minLabel = xScale.ticks[0].label;
+                    // var maxLabel = xScale.ticks[nb_ticks - 1].label;
 
-                    console.log("minLabel : ", minLabel);
-                    console.log("maxLabel : ", maxLabel);                   
-                    
                     var minValue = xScale.ticks[0].value;
                     var maxValue = xScale.ticks[nb_ticks - 1].value;
-
-                    console.log("minValue : ", minValue);
-                    console.log("maxValue : ", maxValue);                   
-                    
 
                     var day = 1000*60*60*24;
                     var hour = 1000*60*60;
@@ -177,48 +170,11 @@
                         verticalLine(ctx, xScale.getPixelForValue(i), bottom, top);
                     }
 
-
-
-                    millisecs = new Date("2022-05-20 12:00");
-                    var noon = xScale.getPixelForValue(millisecs);
-                    console.log("noon : ", noon);                   
+                    // millisecs = new Date("2022-05-20 12:00");
+                    // var noon = xScale.getPixelForValue(millisecs);
+                    // console.log("noon : ", noon);                   
                     
-                    verticalLine(ctx, noon, bottom, top);
-                    
-
-
-                    if (chartInstance.options.verticalLine) {
-                        for (index = 0; index < chartInstance.options.verticalLine.length; index++) {
-
-                            line = chartInstance.options.verticalLine[index];
-                            // console.log("line : %o", line);
-                            // console.log("line x : %o", line.x);
-
-                            if (!line.style) {
-                                style = "rgba(169,169,169, .6)";
-                            } else {
-                                style = line.style;
-                            }
-                            if (line.x) {
-                                xValue = xScale.getPixelForValue(line.x);
-                            } else {
-                                xValue = 0;
-                            }
-                            ctx.lineWidth = 2;
-                            if (xValue) {
-                                ctx.beginPath();
-                                ctx.moveTo(xValue, bottom);
-                                ctx.lineTo(xValue, top);
-                                ctx.strokeStyle = style;
-                                ctx.stroke();
-                            }
-                            if (line.text) {
-                                ctx.fillStyle = style;
-                                ctx.fillText(line.text, xValue + ctx.lineWidth, top + 10);
-                            }
-                        }
-                        return;
-                    }
+                    // verticalLine(ctx, noon, bottom, top);
                 }
             }
 
@@ -299,7 +255,7 @@
                 // config.plugins.push(verticalLinePlugin);
 
                 // if (config.plugins == null) { config.plugins = [] };
-                // config.plugins.push(verticalLineOnDaysPlugin);
+                // config.plugins.push(verticalLineOnStepPlugin);
                 return config;
             }
 
@@ -339,7 +295,7 @@
                 };
 
                 if (config.plugins == null) { config.plugins = [] };
-                config.plugins.push(verticalLineOnDaysPlugin);
+                config.plugins.push(verticalLineOnStepPlugin);
 
                 return config;
             }

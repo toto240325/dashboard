@@ -304,7 +304,7 @@ function myConfig(raw_data, nb_mins) {
 
     }
 
-    // config1.options.scales.xAxes.min="2022-05-26 22:00:00";
+    // config1.options.scales.x.min="2022-05-26 22:00:00";
 
     return config1;
 }
@@ -378,8 +378,8 @@ function myConfig(raw_data, nb_mins) {
 //     // }
 
 //     var scales1 = {
-//         xAxes: xA,
-//         yAxes: yA
+//         x: xA,
+//         y: yA
 //     };
 
 //     var options = {
@@ -486,8 +486,8 @@ function myConfig(raw_data, nb_mins) {
 //         }
 //     };
 //     var scales1 = {
-//         xAxes: xA,
-//         yAxes: yA
+//         x: xA,
+//         y: yA
 //     };
 
 //     var options = {
@@ -566,7 +566,7 @@ function get_scales1(unit, values_unit, date_last_data) {
     var datetime2 = "LastSync: " + date_last_data;
 
     var scales1 = {
-        xAxes: {
+        x: {
             type: "time",
             time: {
                 // format: timeFormat,
@@ -589,7 +589,7 @@ function get_scales1(unit, values_unit, date_last_data) {
                 text: datetime2
             }
         },
-        yAxes: {
+        y: {
             title: {
                 display: true,
                 text: values_unit
@@ -605,7 +605,7 @@ function get_scales_2_datasets(unit, values_unit, date_last_data) {
     var datetime2 = "LastSync: " + date_last_data;
 
     var scales1 = {
-        xAxes: {
+        x: {
             type: "time",
             time: {
                 // format: timeFormat,
@@ -628,7 +628,7 @@ function get_scales_2_datasets(unit, values_unit, date_last_data) {
                 text: datetime2
             }
         },
-        yAxes: {
+        y: {
             title: {
                 display: true,
                 text: values_unit
@@ -644,7 +644,7 @@ const horizontalLinePlugin = {
     // afterDraw: function (chartInstance) {
     afterDraw(chartInstance) {
         // alert("test in horizontalLinePlugin");
-        var yScale = chartInstance.scales["yAxes"];
+        var yScale = chartInstance.scales["y"];
         var canvas = chartInstance.canvas;
         var ctx = chartInstance.ctx;
         var index;
@@ -687,6 +687,77 @@ const horizontalLinePlugin = {
     }
 };
 
+
+const verticalLineOnStepPlugin = {
+
+    id: 'verticalLineOnStepPlugin',
+    // afterDraw: function (chartInstance) {
+    afterDraw(chartInstance) {
+
+        function verticalLine(ctx, xValue, bottom, top) {
+            ctx.lineWidth = 2;
+            style = "green";
+            if (xValue) {
+                ctx.beginPath();
+                ctx.moveTo(xValue, bottom);
+                ctx.lineTo(xValue, top);
+                ctx.strokeStyle = style;
+                ctx.stroke();
+            }
+        };
+
+        // alert("test2 vertical on days");
+        var xScale = chartInstance.scales["x"];
+        var canvas = chartInstance.canvas;
+        var ctx = chartInstance.ctx;
+        var index;
+        var line;
+        var style;
+        const { _, chartArea: { top, right, bottom, left, width, height }, scales: { x, y } } = chartInstance;
+        // alert("vertical lines days");
+
+        // console.log("chartInstance : %o", chartInstance);
+        // console.log("xScale: %o", chartInstance.scales["x"]);
+        // console.log("len: ", xScale.ticks.length);
+
+        var nb_ticks = xScale.ticks.length;
+        for (var i = 0; i < nb_ticks; i++) {
+            var label = xScale.ticks[i].label;
+            console.log(label);
+            if (label == "February") {
+                verticalLine(ctx, xScale.getPixelForValue(label) + 5, bottom, top);
+            }
+        }
+
+        // var minLabel = xScale.ticks[0].label;
+        // var maxLabel = xScale.ticks[nb_ticks - 1].label;
+
+        var minValue = xScale.ticks[0].value;
+        var maxValue = xScale.ticks[nb_ticks - 1].value;
+
+        var day = 1000*60*60*24;
+        var hour = 1000*60*60;
+        var step = hour;
+        var next_tick;
+        next_tick = minValue;
+        if (next_tick % step != 0) {
+            next_tick = (minValue + step) - (minValue + step) % step;
+        }
+        console.log("next tick : %o", next_tick);
+        for (i = next_tick; i < maxValue; i += step) {                        
+            console.log("next tick : %o", i);
+            verticalLine(ctx, xScale.getPixelForValue(i), bottom, top);
+        }
+
+        // millisecs = new Date("2022-05-20 12:00");
+        // var noon = xScale.getPixelForValue(millisecs);
+        // console.log("noon : ", noon);                   
+        
+        // verticalLine(ctx, noon, bottom, top);
+    }
+}
+
+
 // horizontalArbitraryLinePlugin =======================================
 
 // const horizontalArbitraryLinePlugin2 = {
@@ -695,16 +766,16 @@ const horizontalLinePlugin = {
 //         // console.log("in beforeDraw of %s", chart.canvas.id);
 //         // console.log("chart: %o", chart)
 //         // console.log("canvas: %s", chart.canvas.id)
-//         const { ctx, chartArea: { top, right, bottom, left, width, height }, scales: { xAxes, yAxes } } = chart;
+//         const { ctx, chartArea: { top, right, bottom, left, width, height }, scales: { x, y } } = chart;
 //         ctx.save();
 
-//         // console.log("yAxes : %o",yAxes)
+//         // console.log("y : %o",y)
 
-//         var ypix = yAxes.getPixelForValue(3);
+//         var ypix = y.getPixelForValue(3);
 //         ctx.strokeStyle = 'green';
 //         ctx.strokeRect(left, ypix, left + width, 0);
 
-//         var ypix = yAxes.getPixelForValue(1.5);
+//         var ypix = y.getPixelForValue(1.5);
 //         ctx.strokeStyle = 'green';
 //         ctx.strokeRect(left, ypix, left + width, 0);
 
@@ -1108,7 +1179,14 @@ function frigo_normal_smart() {
         "style" : "green",
     }];
     config.options.horizontalLine = options_horizontalLine;
-    config.plugins = [horizontalLinePlugin];
+
+    // config.plugins = [horizontalLinePlugin];
+    if (config.plugins == null) { config.plugins = [] };
+    config.plugins.push(horizontalLinePlugin);
+
+    if (config.plugins == null) { config.plugins = [] };
+    config.plugins.push(verticalLineOnStepPlugin);
+
 
     var ctx = document.getElementById("canvas_frigo_with_smart").getContext("2d");
     var lineChart_frigo_normal_smart = new Chart(ctx, config);
@@ -1333,7 +1411,7 @@ function canvas_bar() {
                 text: 'Chart.js Bar Chart'
             },
             scales: {
-                xAxes: {
+                x: {
                     // grid: {
                     //     color: (context) => {
                     //         console.log("context.tick : %o",context);
@@ -1365,7 +1443,7 @@ function canvas_bar() {
                     },
                     stacked: true
                 },
-                yAxes: {
+                y: {
                     ticks: {
                         beginAtZero: true
                     },
@@ -1409,8 +1487,8 @@ function canvas_bar() {
 
             // datasets[0].data.pop(index);
             console.log('after : datasets[0].data : %', my_bar_chart.data.datasets[0].data);
-            my_bar_chart.options.scales.xAxes.min = "2015-03-01"
-            my_bar_chart.options.scales.xAxes.max = "2015-06-30"
+            my_bar_chart.options.scales.x.min = "2015-03-01"
+            my_bar_chart.options.scales.x.max = "2015-06-30"
 
             my_bar_chart.update();
             console.log("chart updated ?");
@@ -1433,22 +1511,22 @@ function canvas_bar() {
                 var index = activePoints[0].index;
                 console.log("index of nearest point : %d", index);
 
-                // my_bar_chart.options.scales.xAxes.min = "2015-01-01"
-                // my_bar_chart.options.scales.xAxes.max = "2015-03-05"
+                // my_bar_chart.options.scales.x.min = "2015-01-01"
+                // my_bar_chart.options.scales.x.max = "2015-03-05"
                 // my_bar_chart.update(); 
 
-                const { ctx, chartArea: { top, right, bottom, left, width, height }, scales: { xAxes, yAxes } } = my_bar_chart;
+                const { ctx, chartArea: { top, right, bottom, left, width, height }, scales: { x, y } } = my_bar_chart;
                 console.log("top, right, bottom, left, width, height : %d %d %d %d %d %d", top, right, bottom, left, width, height)
-                // console.log("yAxes : %o",yAxes)
+                // console.log("y : %o",y)
 
-                var ypix = yAxes.getPixelForValue(1);
+                var ypix = y.getPixelForValue(1);
                 ctx.strokeStyle = 'green';
                 ctx.strokeRect(left, ypix, left + width, 0);
                 ctx.strokeRect(50, 50, 200, 5);
 
                 my_bar_chart.update();
 
-                // var ypix = yAxes.getPixelForValue('2015-02-01');
+                // var ypix = y.getPixelForValue('2015-02-01');
                 // ctx.strokeStyle = 'green';
                 // ctx.strokeRect(left, ypix, left + width, 0);
 
@@ -1458,13 +1536,13 @@ function canvas_bar() {
                 var value = mychart.data.datasets[0].data[index];
                 console.log("label, value : %o %o", label, value);
 
-                var x = mychart.scales.xAxes;
-                var y = mychart.scales.yAxes;
-                console.log("x : getpixelforValue %d : %d ", label, x.getPixelForValue(label));
-                console.log("y : getpixelforValue %d : %d", value, y.getPixelForValue(value));
-                console.log("x : %o", x);
-                console.log("getpixelforTick 1: %d", x.getPixelForTick(index))
-                console.log("getpixelforvalue : %d", x.getPixelForValue('2015-02-01'))
+                // var x = mychart.scales.x;
+                // var y = mychart.scales.y;
+                // console.log("x : getpixelforValue %d : %d ", label, x.getPixelForValue(label));
+                // console.log("y : getpixelforValue %d : %d", value, y.getPixelForValue(value));
+                // console.log("x : %o", x);
+                // console.log("getpixelforTick 1: %d", x.getPixelForTick(index))
+                // console.log("getpixelforvalue : %d", x.getPixelForValue('2015-02-01'))
             }
         }
         console.log("evt (x,y) : (%d,%d)", evt.offsetY, evt.offsetY);
@@ -1505,7 +1583,7 @@ function canvas_bar() {
 //                 text: 'Chart.js Bar Chart'
 //             },
 //             scales: {
-//                 xAxes: {
+//                 x: {
 //                     // grid: {
 //                     //     color: (context) => {
 //                     //         console.log("context.tick : %o",context);
@@ -1537,7 +1615,7 @@ function canvas_bar() {
 //                     },
 //                     stacked: true
 //                 },
-//                 yAxes: {
+//                 y: {
 //                     ticks: {
 //                         beginAtZero: true
 //                     },
@@ -1601,7 +1679,7 @@ function daily_stock() {
         },
         options: {
             scales: {
-                xAxes: {
+                x: {
                     grid: {
                         color: (context) => {
                             // console.log("context.tick : %o",context);
@@ -1635,7 +1713,7 @@ function daily_stock() {
                 //     type: "category",
                 //     distribution: "series",
                 // }
-                yAxes: {
+                y: {
                     ticks: {
                         beginAtZero: true,
                     },
@@ -1699,7 +1777,7 @@ function daily_stock2() {
         },
         options: {
             scales: {
-                xAxes: {
+                x: {
                     id: "line",
                     type: "time",
                     time: {
@@ -1716,7 +1794,7 @@ function daily_stock2() {
                 //     type: "category",
                 //     distribution: "series",
                 // }
-                yAxes:
+                y:
                 {
                     ticks: {
                         beginAtZero: true,
@@ -1780,7 +1858,7 @@ function test() {
         },
         options: {
             scales: {
-                xAxes: {
+                x: {
                     id: "line",
                     type: "time",
                     time: {
@@ -1791,7 +1869,7 @@ function test() {
                     },
                     distribution: "linear",
                 },
-                yAxes:
+                y:
                 {
                     ticks: {
                         beginAtZero: true,
