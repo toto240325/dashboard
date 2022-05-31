@@ -1,203 +1,374 @@
 <html>
 
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.3.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.3.js"></script>
 
-  <!-- <script type="text/javascript"
+    <!-- <script type="text/javascript"
     src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.bundle.min.js"></script> -->
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.8.0"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@2.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 
 
-<script type="text/javascript">
-    $(window).load(function () {//from  www  . j a  va  2 s  .  c  o  m
-      var canvas = document.getElementById("myChart");
-      var ctx = canvas.getContext("2d");
+    <script type="text/javascript">
+        $(window).load(function () {
 
-      const horizontalLinePlugin = {
-        id: 'horizontalLinePlugin',
-        // afterDraw: function (chartInstance) {
-        beforeDraw(chartInstance) {
-          // alert("test2");
-          var yScale = chartInstance.scales["y"];
-          var canvas = chartInstance.canvas;
-          var ctx = chartInstance.ctx;
-          var index;
-          var line;
-          var style;
-          if (chartInstance.options.horizontalLine) {
-            for (index = 0; index < chartInstance.options.horizontalLine.length; index++) {
+            const horizontalLinePlugin = {
+                id: 'horizontalLinePlugin',
+                // afterDraw: function (chartInstance) {
+                beforeDraw(chartInstance) {
+                    // alert("test2 horiz");
+                    var yScale = chartInstance.scales["y"];
+                    var canvas = chartInstance.canvas;
+                    var ctx = chartInstance.ctx;
+                    var index;
+                    var line;
+                    var style;
+                    const { _, chartArea: { top, right, bottom, left, width, height }, scales: { xAxes, yAxes } } = chartInstance;
+                    if (chartInstance.options.horizontalLine) {
+                        for (index = 0; index < chartInstance.options.horizontalLine.length; index++) {
 
-              line = chartInstance.options.horizontalLine[index];
-              console.log("line : %o", line);
-              console.log("line y : %o", line.y);
-              
-              if (!line.style) {
-                style = "rgba(169,169,169, .6)";
-              } else {
-                style = line.style;
-              }
-              if (line.y) {
-                yValue = yScale.getPixelForValue(line.y);
-              } else {
-                yValue = 0;
-              }
-              ctx.lineWidth = 3;
-              if (yValue) {
-                ctx.beginPath();
-                ctx.moveTo(0, yValue);
-                ctx.lineTo(canvas.width, yValue);
-                ctx.strokeStyle = style;
-                ctx.stroke();
-              }
-              if (line.text) {
-                ctx.fillStyle = style;
-                ctx.fillText(line.text, 0, yValue + ctx.lineWidth);
-              }
+                            line = chartInstance.options.horizontalLine[index];
+                            // console.log("line : %o", line);
+                            // console.log("line y : %o", line.y);
+
+                            if (!line.style) {
+                                style = "rgba(169,169,169, .6)";
+                            } else {
+                                style = line.style;
+                            }
+                            if (line.y) {
+                                yValue = yScale.getPixelForValue(line.y);
+                            } else {
+                                yValue = 0;
+                            }
+                            ctx.lineWidth = 3;
+                            if (yValue) {
+                                ctx.beginPath();
+                                ctx.moveTo(left, yValue);
+                                ctx.lineTo(right, yValue);
+                                ctx.strokeStyle = style;
+                                ctx.stroke();
+                            }
+                            if (line.text) {
+                                ctx.fillStyle = style;
+                                ctx.fillText(line.text, left, yValue - 8); //ctx.lineWidth);
+                            }
+                        }
+                        return;
+                    };
+                }
+            };
+
+            const verticalLinePlugin = {
+                id: 'verticalLinePlugin',
+                // afterDraw: function (chartInstance) {
+                afterDraw(chartInstance) {
+                    // alert("test2 vertical");
+                    var xScale = chartInstance.scales["x"];
+                    var canvas = chartInstance.canvas;
+                    var ctx = chartInstance.ctx;
+                    var index;
+                    var line;
+                    var style;
+                    const { _, chartArea: { top, right, bottom, left, width, height }, scales: { xAxes, yAxes } } = chartInstance;
+
+                    if (chartInstance.options.verticalLine) {
+                        for (index = 0; index < chartInstance.options.verticalLine.length; index++) {
+
+                            line = chartInstance.options.verticalLine[index];
+                            // console.log("line : %o", line);
+                            // console.log("line x : %o", line.x);
+
+                            if (!line.style) {
+                                style = "rgba(169,169,169, .6)";
+                            } else {
+                                style = line.style;
+                            }
+                            if (line.x) {
+                                xValue = xScale.getPixelForValue(line.x);
+                            } else {
+                                xValue = 0;
+                            }
+                            ctx.lineWidth = 2;
+                            if (xValue) {
+                                ctx.beginPath();
+                                ctx.moveTo(xValue, bottom);
+                                ctx.lineTo(xValue, top);
+                                ctx.strokeStyle = style;
+                                ctx.stroke();
+                            }
+                            if (line.text) {
+                                ctx.fillStyle = style;
+                                ctx.fillText(line.text, xValue + ctx.lineWidth, top + 10);
+                            }
+                        }
+                        return;
+                    }
+                }
             }
-            return;
-          };
-        }
-      };
 
-      const verticalLinePlugin = {
-        id: 'verticalLinePlugin',
-        // afterDraw: function (chartInstance) {
-        afterDraw(chartInstance) {
-          // alert("test2");
-          var xScale = chartInstance.scales["x"];
-          var canvas = chartInstance.canvas;
-          var ctx = chartInstance.ctx;
-          var index;
-          var line;
-          var style;
-          if (chartInstance.options.verticalLine) {
-            for (index = 0; index < chartInstance.options.verticalLine.length; index++) {
+            const verticalLineOnDaysPlugin = {
 
-              line = chartInstance.options.verticalLine[index];
-              console.log("line : %o", line);
-              console.log("line x : %o", line.x);
-              
-              if (!line.style) {
-                style = "rgba(169,169,169, .6)";
-              } else {
-                style = line.style;
-              }
-              if (line.x) {
-                xValue = xScale.getPixelForValue(line.x);
-              } else {
-                xValue = 0;
-              }
-              ctx.lineWidth = 2;
-              if (xValue) {
-                ctx.beginPath();
-                ctx.moveTo(xValue, 0);
-                ctx.lineTo(xValue, canvas.height);
-                ctx.strokeStyle = style;
-                ctx.stroke();
-              }
-              if (line.text) {
-                ctx.fillStyle = style;
-                ctx.fillText(line.text, xValue + ctx.lineWidth, 10);
-              }
+                id: 'verticalLineOnDaysPlugin',
+                // afterDraw: function (chartInstance) {
+                afterDraw(chartInstance) {
+
+                    function verticalLine(ctx, xValue, bottom, top) {
+                        ctx.lineWidth = 2;
+                        style = "green";
+                        if (xValue) {
+                            ctx.beginPath();
+                            ctx.moveTo(xValue, bottom);
+                            ctx.lineTo(xValue, top);
+                            ctx.strokeStyle = style;
+                            ctx.stroke();
+                        }
+                    };
+
+                    // alert("test2 vertical on days");
+                    var xScale = chartInstance.scales["x"];
+                    var canvas = chartInstance.canvas;
+                    var ctx = chartInstance.ctx;
+                    var index;
+                    var line;
+                    var style;
+                    const { _, chartArea: { top, right, bottom, left, width, height }, scales: { xAxes, yAxes } } = chartInstance;
+                    // alert("vertical lines days");
+
+                    console.log("chartInstance : %o", chartInstance);
+                    console.log("xScale: %o", chartInstance.scales["x"]);
+                    console.log("len: ", xScale.ticks.length);
+
+                    nb_ticks = xScale.ticks.length;
+                    for (i = 0; i < nb_ticks; i++) {
+                        label = xScale.ticks[i].label;
+                        console.log(label);
+                        if (label == "February") {
+                            verticalLine(ctx, xScale.getPixelForValue(label) + 5, bottom, top);
+                        }
+                    }
+
+                    var minLabel = xScale.ticks[0].label;
+                    var maxLabel = xScale.ticks[nb_ticks - 1].label;
+
+                    console.log("minLabel : ", minLabel);
+                    console.log("maxLabel : ", maxLabel);                   
+                    
+                    var minValue = xScale.ticks[0].value;
+                    var maxValue = xScale.ticks[nb_ticks - 1].value;
+
+                    console.log("minValue : ", minValue);
+                    console.log("maxValue : ", maxValue);                   
+                    
+
+                    var day = 1000*60*60*24;
+                    var hour = 1000*60*60;
+                    var step = hour;
+                    var next_tick;
+                    next_tick = minValue;
+                    if (next_tick % step != 0) {
+                        next_tick = (minValue + step) - (minValue + step) % step;
+                    }
+                    console.log("next tick : %o", next_tick);
+                    for (i = next_tick; i < maxValue; i += step) {                        
+                        console.log("next tick : %o", i);
+                        verticalLine(ctx, xScale.getPixelForValue(i), bottom, top);
+                    }
+
+
+
+                    millisecs = new Date("2022-05-20 12:00");
+                    var noon = xScale.getPixelForValue(millisecs);
+                    console.log("noon : ", noon);                   
+                    
+                    verticalLine(ctx, noon, bottom, top);
+                    
+
+
+                    if (chartInstance.options.verticalLine) {
+                        for (index = 0; index < chartInstance.options.verticalLine.length; index++) {
+
+                            line = chartInstance.options.verticalLine[index];
+                            // console.log("line : %o", line);
+                            // console.log("line x : %o", line.x);
+
+                            if (!line.style) {
+                                style = "rgba(169,169,169, .6)";
+                            } else {
+                                style = line.style;
+                            }
+                            if (line.x) {
+                                xValue = xScale.getPixelForValue(line.x);
+                            } else {
+                                xValue = 0;
+                            }
+                            ctx.lineWidth = 2;
+                            if (xValue) {
+                                ctx.beginPath();
+                                ctx.moveTo(xValue, bottom);
+                                ctx.lineTo(xValue, top);
+                                ctx.strokeStyle = style;
+                                ctx.stroke();
+                            }
+                            if (line.text) {
+                                ctx.fillStyle = style;
+                                ctx.fillText(line.text, xValue + ctx.lineWidth, top + 10);
+                            }
+                        }
+                        return;
+                    }
+                }
             }
-            return;
-          };
-        }
-      };
+
+            function get_config1() {
+                // Chart.pluginService.register(horizontalLinePlugin);
+                var data = {
+                    labels: ["January", "February", "March", "April", "May", "June", "July"],
+                    datasets: [{
+                        label: "My First dataset",
+                        fill: false,
+                        lineTension: 0.1,
+                        backgroundColor: "rgba(75,192,192,0.4)",
+                        borderColor: "rgba(75,192,192,1)",
+                        borderCapStyle: 'butt',
+                        borderDash: [],
+                        borderDashOffset: 0.0,
+                        borderJoinStyle: 'miter',
+                        pointBorderColor: "rgba(75,192,192,1)",
+                        pointBackgroundColor: "#fff",
+                        pointBorderWidth: 1,
+                        pointHoverRadius: 5,
+                        pointHoverBackgroundColor: "rgba(75,192,192,1)",
+                        pointHoverBorderColor: "rgba(220,220,220,1)",
+                        pointHoverBorderWidth: 2,
+                        pointRadius: 1,
+                        pointHitRadius: 10,
+                        data: [65, 59, 80, 81, 56, 55, 40],
+                    }]
+                };
+
+                var config = {
+                    type: 'line',
+                    data: data,
+                    options: {
+                        title: {
+                            text: "test 1",
+                            display: true
+                        },
+                    },
+                    // plugins: [horizontalLinePlugin]
+                    // plugins: [{
+                    //   id: 'pafter', afterInit: function (chart, args, options) {
+                    //     //..
+                    //     // alert("plugin afterInit !");
+                    //   }
+                    // }]
+                };
+
+                options_horizontalLine = [{
+                    "y": 82,
+                    "style": "rgba(255, 0, 0, .4)",
+                    "text": "max"
+                }, {
+                    "y": 60,
+                    "style": "#00ffff",
+                }, {
+                    "y": 44,
+                    "text": "min"
+                }];
+
+                options_verticalLine = [{
+                    "x": "April",
+                    "style": "rgba(255, 0, 0, .4)",
+                    "text": "max"
+                }, {
+                    "x": "May",
+                    "text": "min"
+                }];
+
+                config.options.horizontalLine = options_horizontalLine;
+                config.options.verticalLine = options_verticalLine;
+                // config.plugins = [horizontalLinePlugin];
+
+                // if (config.plugins == null) { config.plugins = [] };
+                // config.plugins.push(horizontalLinePlugin);
+
+                // if (config.plugins == null) { config.plugins = [] };
+                // config.plugins.push(verticalLinePlugin);
+
+                // if (config.plugins == null) { config.plugins = [] };
+                // config.plugins.push(verticalLineOnDaysPlugin);
+                return config;
+            }
+
+            function get_config2() {
+                var data = {
+                    labels: ["2022-05-20 10:00", "2022-05-20 11:00", "2022-05-20 15:00",
+                        "2022-05-20 16:00", "2022-05-20 17:00", "2022-05-20 19:00"],
+                    datasets: [{
+                        label: "My First dataset",
+                        fill: false,
+                        lineTension: 0.1,
+                        data: [65, 59, 80, 81, 56, 55, 40],
+                    }]
+                };
+
+                options = {
+                    scales: {
+                        x: {
+                            type: "time"
+                        },
+                        y: {
+                            ticks: {
+                                beginAtZero: true,
+                            }
+                        }
+                    },
+                    title: {
+                        text: "test 1",
+                        display: true
+                    },
+                };
+
+                var config = {
+                    type: 'line',
+                    data: data,
+                    options: options
+                };
+
+                if (config.plugins == null) { config.plugins = [] };
+                config.plugins.push(verticalLineOnDaysPlugin);
+
+                return config;
+            }
+
+            var canvas = document.getElementById("myChart");
+            var ctx = canvas.getContext("2d");
+            config = get_config1();
+            console.log("config : %o", config);
+            var myChart = new Chart(ctx, config);
 
 
-      // Chart.pluginService.register(horizontalLinePlugin);
-
-      // Chart.register({
-      //   // plugin implementation
-      //   id: 'pbefore', beforeInit: function (chart, args, options) {
-      //     //..
-      //     // alert("plugin beforeInit !");
-      //   }
-      // });
-
-      var data = {
-        labels: ["January", "February", "March", "April", "May", "June", "July"],
-        datasets: [{
-          label: "My First dataset",
-          fill: false,
-          lineTension: 0.1,
-          backgroundColor: "rgba(75,192,192,0.4)",
-          borderColor: "rgba(75,192,192,1)",
-          borderCapStyle: 'butt',
-          borderDash: [],
-          borderDashOffset: 0.0,
-          borderJoinStyle: 'miter',
-          pointBorderColor: "rgba(75,192,192,1)",
-          pointBackgroundColor: "#fff",
-          pointBorderWidth: 1,
-          pointHoverRadius: 5,
-          pointHoverBackgroundColor: "rgba(75,192,192,1)",
-          pointHoverBorderColor: "rgba(220,220,220,1)",
-          pointHoverBorderWidth: 2,
-          pointRadius: 1,
-          pointHitRadius: 10,
-          data: [65, 59, 80, 81, 56, 55, 40],
-        }]
-      };
-
-      var config = {
-        type: 'line',
-        data: data,
-        options: {
-          title: {
-            text: "test 1",
-            display: true
-          },
-        },
-        // plugins: [horizontalLinePlugin]
-        // plugins: [{
-        //   id: 'pafter', afterInit: function (chart, args, options) {
-        //     //..
-        //     // alert("plugin afterInit !");
-        //   }
-        // }]
-      };
-
-      options_horizontalLine = [{
-        "y": 82,
-        "style": "rgba(255, 0, 0, .4)",
-        "text": "max"
-      }, {
-        "y": 60,
-        "style": "#00ffff",
-      }, {
-        "y": 44,
-        "text": "min"
-      }];
-
-      options_verticalLine = [{
-        "x": "April",
-        "style": "rgba(255, 0, 0, .4)",
-        "text": "max"
-      }, {
-        "x": "May",
-        "text": "min"
-      }];
-
-      config.options.horizontalLine = options_horizontalLine;
-      config.options.verticalLine = options_verticalLine;
-      // config.plugins = [horizontalLinePlugin];
-      config.plugins = [verticalLinePlugin];
-
-      console.log("config : %o", config);
-      var myChart = new Chart(ctx, config);
-    });
+            var canvas2 = document.getElementById("myChart2");
+            var ctx = canvas2.getContext("2d");
+            config = get_config2();
+            console.log("config : %o", config);
+            var myChart2 = new Chart(ctx, config);
 
 
+        });
 
-  </script>
+    </script>
 </head>
 
 <body>
-  <canvas id="myChart" width="400" height="200"></canvas>
+    <canvas id="myChart" width="400" height="100"></canvas>
+</body>
+
+<body>
+    <canvas id="myChart2" width="400" height="100"></canvas>
 </body>
 
 </html>
