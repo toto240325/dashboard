@@ -708,26 +708,15 @@ const verticalLineOnStepPlugin = {
 
         // alert("test2 vertical on days");
         var xScale = chartInstance.scales["x"];
-        var canvas = chartInstance.canvas;
         var ctx = chartInstance.ctx;
-        var index;
-        var line;
         var style;
         const { _, chartArea: { top, right, bottom, left, width, height }, scales: { x, y } } = chartInstance;
-        // alert("vertical lines days");
-
         // console.log("chartInstance : %o", chartInstance);
         // console.log("xScale: %o", chartInstance.scales["x"]);
         // console.log("len: ", xScale.ticks.length);
 
         var nb_ticks = xScale.ticks.length;
-        for (var i = 0; i < nb_ticks; i++) {
-            var label = xScale.ticks[i].label;
-            console.log(label);
-            if (label == "February") {
-                verticalLine(ctx, xScale.getPixelForValue(label) + 5, bottom, top);
-            }
-        }
+        // for (var i = 0; i < nb_ticks; i
 
         // var minLabel = xScale.ticks[0].label;
         // var maxLabel = xScale.ticks[nb_ticks - 1].label;
@@ -735,17 +724,19 @@ const verticalLineOnStepPlugin = {
         var minValue = xScale.ticks[0].value;
         var maxValue = xScale.ticks[nb_ticks - 1].value;
 
-        var day = 1000*60*60*24;
-        var hour = 1000*60*60;
-        var step = hour;
+        var step = (chartInstance.options.verticalLineOnStep_step ? chartInstance.options.verticalLineOnStep_step : 'day');
+
+        // steps in milliseconds
+        var steps_mils = { 'day': 1000*60*60*24, '12hours': 1000*60*60*12, 'hour': 1000*60*60, '15minutes': 1000*60*15 , 'minute': 1000*60 }
+        var step_mils = steps_mils[step]
         var next_tick;
         next_tick = minValue;
-        if (next_tick % step != 0) {
-            next_tick = (minValue + step) - (minValue + step) % step;
+        if (next_tick % step_mils != 0) {
+            next_tick = (minValue + step_mils) - (minValue + step_mils) % step_mils;
         }
-        console.log("next tick : %o", next_tick);
-        for (i = next_tick; i < maxValue; i += step) {                        
-            console.log("next tick : %o", i);
+        // console.log("next tick : %o", next_tick);
+        for (let i = next_tick; i < maxValue; i += step_mils) {                        
+            // console.log("next tick : %o", i);
             verticalLine(ctx, xScale.getPixelForValue(i), bottom, top);
         }
 
@@ -758,45 +749,17 @@ const verticalLineOnStepPlugin = {
 }
 
 
-// horizontalArbitraryLinePlugin =======================================
+function add_plugin(config, plugin, step) {
+    if (config.plugins == null) { config.plugins = [] };
+    config.plugins.push(plugin);
+    if (plugin === verticalLineOnStepPlugin) config.options.verticalLineOnStep_step = step;
+}
 
-// const horizontalArbitraryLinePlugin2 = {
-//     id: 'horizontalArbitraryLinePlugin2',
-//     beforeDraw(chart, args, options) {
-//         // console.log("in beforeDraw of %s", chart.canvas.id);
-//         // console.log("chart: %o", chart)
-//         // console.log("canvas: %s", chart.canvas.id)
-//         const { ctx, chartArea: { top, right, bottom, left, width, height }, scales: { x, y } } = chart;
-//         ctx.save();
 
-//         // console.log("y : %o",y)
-
-//         var ypix = y.getPixelForValue(3);
-//         ctx.strokeStyle = 'green';
-//         ctx.strokeRect(left, ypix, left + width, 0);
-
-//         var ypix = y.getPixelForValue(1.5);
-//         ctx.strokeStyle = 'green';
-//         ctx.strokeRect(left, ypix, left + width, 0);
-
-//         // ctx.beginPath();
-//         // ctx.moveTo(left, 100);
-//         // ctx.lineTo(left+width, 100);
-//         // ctx.strokeStyle = 'green';
-//         // ctx.stroke();
-//     },
-//     // afterDraw(chart, args, options) {
-//     //     console.log("in afterDraw of %s", chart.canvas.id);
-//     // }
-// }
-
-// this is to register this plugin for ALL chart, not only for one instance
-// Chart.register(horizontalArbitraryLinePlugin);
-
-// get_rawdata ===================================================
-// kind can be {"normal_1h", "smart_1h", "10h", "24h", "pool_ph", "pool_cl", "power_day", "power_night"}
 
 function get_rawdata(kind) {
+    // get_rawdata ===================================================
+    // kind can be {"normal_1h", "smart_1h", "10h", "24h", "pool_ph", "pool_cl", "power_day", "power_night"}
 
     var values, values_unit, labels, title, chart_type, unit, label, ids;
     ids = [];
@@ -1092,6 +1055,7 @@ function options_pool_ph_cl(title, unit, values_unit, date_last_data) {
     };
 }
 
+
 // returns true if date_str is older than mins minutes ago
 function is_older_than_mins(date_str, mins) {
     var now = new Date();
@@ -1119,6 +1083,7 @@ function is_older_than_mins(date_str, mins) {
     return (diffInSecs > 60 * mins);
 }
 
+
 function myConfig_2_datasets(title, raw_data1, raw_data2) {
     var options = options_2_datasets(title, raw_data1, raw_data2);
     var config = {
@@ -1129,6 +1094,7 @@ function myConfig_2_datasets(title, raw_data1, raw_data2) {
     };
     return config;
 }
+
 
 function myConfig_smart(title, raw_data1) {
     var options = options_smart(title, raw_data1);
@@ -1183,9 +1149,13 @@ function frigo_normal_smart() {
     // config.plugins = [horizontalLinePlugin];
     if (config.plugins == null) { config.plugins = [] };
     config.plugins.push(horizontalLinePlugin);
+    add_plugin(config, horizontalLinePlugin);
 
-    if (config.plugins == null) { config.plugins = [] };
-    config.plugins.push(verticalLineOnStepPlugin);
+
+    // if (config.plugins == null) { config.plugins = [] };
+    // config.plugins.push(verticalLineOnStepPlugin);
+    // config.options.verticalLineOnStep_step = '15minutes';
+    add_plugin(config, verticalLineOnStepPlugin,'15minutes');
 
 
     var ctx = document.getElementById("canvas_frigo_with_smart").getContext("2d");
@@ -1229,6 +1199,8 @@ function pool_ph() {
     config.options.horizontalLine = options_horizontalLine;
     config.plugins = [horizontalLinePlugin];
 
+    add_plugin(config, verticalLineOnStepPlugin,'12hours');
+
     var ctx = document.getElementById("canvas_pool_ph").getContext("2d");
     var lineChart_pool_ph = new Chart(ctx, config);
 
@@ -1258,6 +1230,7 @@ function pool_cl() {
     config.options.horizontalLine = options_horizontalLine;
     config.plugins = [horizontalLinePlugin];
 
+    add_plugin(config, verticalLineOnStepPlugin,'12hours');
 
     var ctx = document.getElementById("canvas_pool_cl").getContext("2d");
     var lineChart_pool_cl = new Chart(ctx, config);
