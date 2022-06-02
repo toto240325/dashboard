@@ -644,6 +644,7 @@ const horizontalLinePlugin = {
     // afterDraw: function (chartInstance) {
     afterDraw(chartInstance) {
         // alert("test in horizontalLinePlugin");
+        const { _, chartArea: { top, right, bottom, left, width, height }, scales: { x, y } } = chartInstance;
         var yScale = chartInstance.scales["y"];
         var canvas = chartInstance.canvas;
         var ctx = chartInstance.ctx;
@@ -672,14 +673,14 @@ const horizontalLinePlugin = {
                 ctx.lineWidth = 1;
                 if (yValue) {
                     ctx.beginPath();
-                    ctx.moveTo(0, yValue);
-                    ctx.lineTo(canvas.width, yValue);
+                    ctx.moveTo(left, yValue);
+                    ctx.lineTo(right, yValue);
                     ctx.strokeStyle = style;
                     ctx.stroke();
                 }
                 if (line.text) {
                     ctx.fillStyle = style;
-                    ctx.fillText(line.text, 0, yValue + ctx.lineWidth);
+                    ctx.fillText(line.text, left, yValue - 8 );
                 }
             }
             return;
@@ -697,7 +698,7 @@ const verticalLineOnStepPlugin = {
         function verticalLine(ctx, xValue, bottom, top) {
             ctx.lineWidth = 2;
             style = "green";
-            if (xValue) {
+            if (xValue>=left && xValue<=right) {
                 ctx.beginPath();
                 ctx.moveTo(xValue, bottom);
                 ctx.lineTo(xValue, top);
@@ -721,8 +722,24 @@ const verticalLineOnStepPlugin = {
         // var minLabel = xScale.ticks[0].label;
         // var maxLabel = xScale.ticks[nb_ticks - 1].label;
 
+
         var minValue = xScale.ticks[0].value;
         var maxValue = xScale.ticks[nb_ticks - 1].value;
+
+        // javascript Date is expressed in milliseconds since 1970/01/01 GMT)
+        // we need to add the GMT offset to get the equivalent milliseconds our time zone
+        let now = new Date();
+        let GMTdiff =(now.getTimezoneOffset()) *60*1000; // minutes converted to milliseconds
+
+
+        var a = new Date(minValue);
+        console.log("before = %o", a);
+
+        minValue -= GMTdiff;
+        maxValue -= GMTdiff;
+        
+        var a = new Date(minValue);
+        console.log("after = %o", a);
 
         var step = (chartInstance.options.verticalLineOnStep_step ? chartInstance.options.verticalLineOnStep_step : 'day');
 
@@ -730,14 +747,14 @@ const verticalLineOnStepPlugin = {
         var steps_mils = { 'day': 1000*60*60*24, '12hours': 1000*60*60*12, 'hour': 1000*60*60, '15minutes': 1000*60*15 , 'minute': 1000*60 }
         var step_mils = steps_mils[step]
         var next_tick;
-        next_tick = minValue;
+        next_tick = minValue - step_mils;
         if (next_tick % step_mils != 0) {
             next_tick = (minValue + step_mils) - (minValue + step_mils) % step_mils;
         }
         // console.log("next tick : %o", next_tick);
-        for (let i = next_tick; i < maxValue; i += step_mils) {                        
+        for (let i = next_tick; i < maxValue+step_mils; i += step_mils) {                        
             // console.log("next tick : %o", i);
-            verticalLine(ctx, xScale.getPixelForValue(i), bottom, top);
+            verticalLine(ctx, xScale.getPixelForValue(i+GMTdiff), bottom, top);
         }
 
         // millisecs = new Date("2022-05-20 12:00");
@@ -1135,7 +1152,7 @@ function frigo_normal_smart() {
     // }
 
     var options_horizontalLine = [{
-        "y": 3.5,
+        "y": 3.0,
         "style" : "green",
         // "style": "rgba(255, 0, 0, .4)",
         "text": "max"
