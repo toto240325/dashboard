@@ -4,6 +4,18 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+        // {
+        //     "name": "Python: Current File",
+        //     "type": "python",
+        //     "request": "launch",
+        //     "program": "${file}",
+        //     //"args": [ "calib" ],
+        //     // # sshagent
+        //     // # scp params.py sd3:/tmp/params_pool.py; ssh -t sd3 "sudo cp /tmp/params_pool.py /opt/pool/params.py"
+
+        //     "console": "integratedTerminal",
+        //     "justMyCode": true
+        // }
         {
             "name": "Python: Flask",
             "type": "python",
@@ -23,5 +35,6 @@
            ],
             "jinja": true
         }
+
     ]
 }

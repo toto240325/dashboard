@@ -212,6 +212,17 @@ function zoom_plugin() {
 // }
 
 
+function myConfig_1_dataset(raw_data, nb_mins) {
+
+    var config = {
+        type: 'line',
+        data: get_data_1_dataset(raw_data, nb_mins),
+        options: options_1_dataset(raw_data),
+    };
+    return config;
+}
+
+
 function myConfig(raw_data, nb_mins) {
 
     var raw_data, values, values_unit, labels, title, chart_type, unit, label, data_normal,
@@ -245,7 +256,6 @@ function myConfig(raw_data, nb_mins) {
     } else {
         date_last_data = "1900-01-01";
     }
-
 
     var a = [];
     var b = [];
@@ -599,10 +609,55 @@ function get_scales1(unit, values_unit, date_last_data) {
     return scales1;
 }
 
-function get_scales_2_datasets(unit, values_unit, date_last_data) {
+// function get_scales_1_dataset(unit, values_unit, date_last_data) {
+function get_scales_1_dataset(raw_data) {
     var timeFormat = 'yyyy-MM-dd hh:mm:ss';
     var nowStr = (new Date()).toLocaleTimeString("fr-BE", { hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
-    var datetime2 = "LastSync: " + date_last_data;
+    var datetime2 = "LastSync: " + raw_data.date_last_data;
+
+    var scales = {
+        x: {
+            type: "time",
+            time: {
+                // format: timeFormat,
+                displayFormats: {
+                    'millisecond': 'MMM dd',
+                    'second': 'MMM dd',
+                    'minute': 'H:mm',
+                    'hour': 'H:mm',
+                    'day': 'dd/MM',
+                    'week': 'MMM dd',
+                    'month': 'MMM dd',
+                    'quarter': 'MMM dd',
+                    'year': 'MMM dd',
+                },
+                unit: raw_data.unit,
+                // unit: 'day',
+                // displayFormats: {
+                //     month: "MMM yy"
+                // }
+
+                parser: 'yyyy-MM-dd H:m:s'
+            },
+            title: {
+                display: true,
+                text: datetime2
+            }
+        },
+        y: {
+            display: true,
+            text: raw_data.values_unit,
+            position: 'left'
+        }
+    };
+    return scales;
+}
+
+// function get_scales_2_datasets(unit, values_unit, date_last_data) {
+function get_scales_2_datasets(raw_data1, raw_data2) {
+    var timeFormat = 'yyyy-MM-dd hh:mm:ss';
+    var nowStr = (new Date()).toLocaleTimeString("fr-BE", { hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+    var datetime2 = "LastSync: " + raw_data1.date_last_data + " - " + raw_data2.date_last_data;
 
     var scales1 = {
         x: {
@@ -620,7 +675,7 @@ function get_scales_2_datasets(unit, values_unit, date_last_data) {
                     'quarter': 'MMM dd',
                     'year': 'MMM dd',
                 },
-                unit: unit,
+                unit: raw_data1.unit,
                 parser: 'yyyy-MM-dd H:m:s'
             },
             title: {
@@ -629,10 +684,14 @@ function get_scales_2_datasets(unit, values_unit, date_last_data) {
             }
         },
         y: {
-            title: {
-                display: true,
-                text: values_unit
-            }
+            display: true,
+            text: raw_data1.values_unit,
+            position: 'left'
+        },
+        y2: {
+            display: true,
+            text: raw_data2.values_unit,
+            position: 'right'
         }
     };
     return scales1;
@@ -659,16 +718,11 @@ const horizontalLinePlugin = {
                 // console.log("line : %o", line);
                 // console.log("line y : %o", line.y);
 
+                yValue = yScale.getPixelForValue(line.y);
                 if (!line.style) {
                     style = "rgba(169,169,169, .6)";
                 } else {
                     style = line.style;
-                }
-                if (line.y) {
-                    // console.log("yScale : %o",yScale);
-                    yValue = yScale.getPixelForValue(line.y);
-                } else {
-                    yValue = 0;
                 }
                 ctx.lineWidth = 1;
                 if (yValue) {
@@ -680,7 +734,7 @@ const horizontalLinePlugin = {
                 }
                 if (line.text) {
                     ctx.fillStyle = style;
-                    ctx.fillText(line.text, left, yValue - 8 );
+                    ctx.fillText(line.text, left, yValue - 8);
                 }
             }
             return;
@@ -698,7 +752,7 @@ const verticalLineOnStepPlugin = {
         function verticalLine(ctx, xValue, bottom, top) {
             ctx.lineWidth = 2;
             style = "green";
-            if (xValue>=left && xValue<=right) {
+            if (xValue >= left && xValue <= right) {
                 ctx.beginPath();
                 ctx.moveTo(xValue, bottom);
                 ctx.lineTo(xValue, top);
@@ -729,22 +783,22 @@ const verticalLineOnStepPlugin = {
         // javascript Date is expressed in milliseconds since 1970/01/01 GMT)
         // we need to add the GMT offset to get the equivalent milliseconds our time zone
         let now = new Date();
-        let GMTdiff =(now.getTimezoneOffset()) *60*1000; // minutes converted to milliseconds
+        let GMTdiff = (now.getTimezoneOffset()) * 60 * 1000; // minutes converted to milliseconds
 
 
-        var a = new Date(minValue);
-        console.log("before = %o", a);
+        // var a = new Date(minValue);
+        // console.log("before = %o", a);
 
         minValue -= GMTdiff;
         maxValue -= GMTdiff;
-        
-        var a = new Date(minValue);
-        console.log("after = %o", a);
+
+        // var a = new Date(minValue);
+        // console.log("after = %o", a);
 
         var step = (chartInstance.options.verticalLineOnStep_step ? chartInstance.options.verticalLineOnStep_step : 'day');
 
         // steps in milliseconds
-        var steps_mils = { 'day': 1000*60*60*24, '12hours': 1000*60*60*12, 'hour': 1000*60*60, '15minutes': 1000*60*15 , 'minute': 1000*60 }
+        var steps_mils = { 'day': 1000 * 60 * 60 * 24, '12hours': 1000 * 60 * 60 * 12, 'hour': 1000 * 60 * 60, '15minutes': 1000 * 60 * 15, 'minute': 1000 * 60 }
         var step_mils = steps_mils[step]
         var next_tick;
         next_tick = minValue - step_mils;
@@ -752,15 +806,15 @@ const verticalLineOnStepPlugin = {
             next_tick = (minValue + step_mils) - (minValue + step_mils) % step_mils;
         }
         // console.log("next tick : %o", next_tick);
-        for (let i = next_tick; i < maxValue+step_mils; i += step_mils) {                        
+        for (let i = next_tick; i < maxValue + step_mils; i += step_mils) {
             // console.log("next tick : %o", i);
-            verticalLine(ctx, xScale.getPixelForValue(i+GMTdiff), bottom, top);
+            verticalLine(ctx, xScale.getPixelForValue(i + GMTdiff), bottom, top);
         }
 
         // millisecs = new Date("2022-05-20 12:00");
         // var noon = xScale.getPixelForValue(millisecs);
         // console.log("noon : ", noon);                   
-        
+
         // verticalLine(ctx, noon, bottom, top);
     }
 }
@@ -938,24 +992,60 @@ function get_rawdata(kind) {
 //     return data_frigo_normal_smart;
 // }
 
-function get_data_2_datasets(raw_data1, raw_data2) {
+function get_data_1_dataset(raw_data, nb_mins) {
+    var data = {
+        datasets: [
+            {
+                label: raw_data.label,
+                data: raw_data.data_array,
+                fill: false,
+                borderColor: 'green',
+                yAxisID: 'y'
+
+            }
+        ]
+    };
+    // console.log(data3);
+
+    if (is_older_than_mins(raw_data.date_last_data, nb_mins)) {
+        data.datasets[0].borderColor = 'red';
+    }
+
+
+    return data;
+}
+
+function get_data_2_datasets(raw_data1, raw_data2, nb_mins) {
     var data = {
         datasets: [
             {
                 label: raw_data1.label,
                 data: raw_data1.data_array,
                 fill: false,
-                borderColor: 'green'
+                borderColor: 'green',
+                yAxisID: 'y'
+
             },
             {
                 label: raw_data2.label,
                 data: raw_data2.data_array,
                 fill: false,
-                borderColor: 'blue'
+                borderColor: 'blue',
+                yAxisID: 'y2'
+
             }
         ]
     };
-    // console.log(data3);
+
+    if (is_older_than_mins(raw_data1.date_last_data, nb_mins)) {
+        data.datasets[0].borderColor = 'red';
+    }
+
+    if (is_older_than_mins(raw_data2.date_last_data, nb_mins)) {
+        data.datasets[1].borderColor = 'red';
+    }
+
+
     return data;
 }
 
@@ -992,9 +1082,33 @@ function options_frigo_normal_smart(title, unit, values_unit, date_last_data) {
     };
 }
 
+function options_1_dataset(raw_data) {
+    var options = {
+        // scales: get_scales_2_datasets(raw_data1.unit, raw_data1.values_unit, raw_data1.date_last_data),
+        scales: get_scales_1_dataset(raw_data),
+        plugins: {
+            legend: {
+                display: true,
+                position: 'top',
+                align: 'center',
+                // reverse: true
+            },
+            title: {
+                text: raw_data.title,
+                display: true
+            },
+            zoom: zoom_plugin()
+
+
+        }
+    };
+    return options;
+}
+
 function options_2_datasets(title, raw_data1, raw_data2) {
     var options = {
-        scales: get_scales_2_datasets(raw_data1.unit, raw_data1.values_unit, raw_data1.date_last_data),
+        // scales: get_scales_2_datasets(raw_data1.unit, raw_data1.values_unit, raw_data1.date_last_data),
+        scales: get_scales_2_datasets(raw_data1, raw_data2),
         plugins: {
             legend: {
                 display: true,
@@ -1052,6 +1166,7 @@ function get_data_pool_ph_cl(data_pool_ph, data_pool_cl) {
     // console.log(data3);
     return data_pool_ph_cl;
 }
+
 
 function options_pool_ph_cl(title, unit, values_unit, date_last_data) {
     return options_pool_ph_cl = {
@@ -1139,48 +1254,46 @@ function frigo_smart() {
 
 }
 
+function options_horizontalLine(y_list) {
+
+    var extended_options = []
+    for (let i in y_list) {
+        extended_options.push({
+            "y": y_list[i].y,
+            "style": "green",
+            // "style": "rgba(255, 0, 0, .4)",
+            "text": y_list[i].text
+        });
+    }
+    return extended_options;
+}
+
+
 function frigo_normal_smart() {
-    var raw_data_normal_1h = get_rawdata("normal_1h");
-    var raw_data_smart_1h = get_rawdata("smart_1h");
+    var raw_data1 = get_rawdata("normal_1h");
+    var raw_data2 = get_rawdata("smart_1h");
+    var title = "Frigo Normal vs. Smart";
 
-    // console.log("data : %o", raw_data_normal_1h.data_array);
+    var config = {
+        type: 'line',
+        data: get_data_2_datasets(raw_data1, raw_data2),
+        options: options_2_datasets(title, raw_data1, raw_data2),
+    };
 
-    var config = myConfig_2_datasets("Frigo Normal vs. Smart", raw_data_normal_1h, raw_data_smart_1h);
-    // console.log("config : %o", config_frigo_normal_smart);
-    // if (is_older_than_mins(raw_data_normal_1h.date_last_data, 5)) {
-    //     config_frigo_normal_smart.data.datasets[0].borderColor = 'orange';
-    // }
-
-    var options_horizontalLine = [{
-        "y": 3.0,
-        "style" : "green",
-        // "style": "rgba(255, 0, 0, .4)",
-        "text": "max"
-    }, {
-        "y": 1.5,
-        "text": "min",
-        "style" : "green",
-    }];
-    config.options.horizontalLine = options_horizontalLine;
-
-    // config.plugins = [horizontalLinePlugin];
-    if (config.plugins == null) { config.plugins = [] };
-    config.plugins.push(horizontalLinePlugin);
+    config.options.horizontalLine = options_horizontalLine([{ y: 1.5, text: "min" }, { y: 3, text: "max" }]);
     add_plugin(config, horizontalLinePlugin);
 
-
-    // if (config.plugins == null) { config.plugins = [] };
-    // config.plugins.push(verticalLineOnStepPlugin);
-    // config.options.verticalLineOnStep_step = '15minutes';
-    add_plugin(config, verticalLineOnStepPlugin,'15minutes');
-
+    add_plugin(config, verticalLineOnStepPlugin, '15minutes');
 
     var ctx = document.getElementById("canvas_frigo_with_smart").getContext("2d");
-    var lineChart_frigo_normal_smart = new Chart(ctx, config);
+    var myChart = new Chart(ctx, config);
 
     // // allows to swipe up and down on smartclone/touchScreen
-    // lineChart_frigo_normal_smart.canvas.style.touchAction = "pan-y";
+    // myChart.canvas.style.touchAction = "pan-y";
 
+    myChart.options.scales.x.min = '2022-06-05';
+    // myChart.options.scales.x.max = '2022-06-04 22:20';
+    myChart.update();
 }
 
 function frigo_24h() {
@@ -1196,58 +1309,82 @@ function frigo_24h() {
 
     var canvas_frigo_24h = document.getElementById("canvas_frigo_24h");
     enable_deletion(canvas_frigo_24h, lineChart_frigo_24h);
-
 }
 
 function pool_ph() {
     var raw_data = get_rawdata("pool_ph");
-    var config = myConfig(raw_data, 30);
 
-    var options_horizontalLine = [{
-        "y": 7.40,
-        "style" : "green",
-        // "style": "rgba(255, 0, 0, .4)",
-        "text": "max"
-    }, {
-        "y": 7.10,
-        "text": "min",
-        "style" : "green",
-    }];
-    config.options.horizontalLine = options_horizontalLine;
-    config.plugins = [horizontalLinePlugin];
+    // var config = myConfig(raw_data, 30);
+    var config = {
+        type: 'line',
+        data: get_data_1_dataset(raw_data, 30),
+        options: options_1_dataset(raw_data),
+    };
 
-    add_plugin(config, verticalLineOnStepPlugin,'12hours');
+    // var options_horizontalLine = [{
+    //     "y": 7.40,
+    //     "style": "green",
+    //     // "style": "rgba(255, 0, 0, .4)",
+    //     "text": "max"
+    // }, {
+    //     "y": 7.10,
+    //     "text": "min",
+    //     "style": "green",
+    // }];
+
+    add_plugin(config, horizontalLinePlugin);
+    config.options.horizontalLine = options_horizontalLine([{ y: 7.4, text: "max" }, { y: 7.1, text: "min" }]);
+
+
+    // config.options.horizontalLine = options_horizontalLine;
+    // config.plugins = [horizontalLinePlugin];
+
+    // add_plugin(config, horizontalLinePlugin, null);
+    add_plugin(config, verticalLineOnStepPlugin, '12hours');
 
     var ctx = document.getElementById("canvas_pool_ph").getContext("2d");
-    var lineChart_pool_ph = new Chart(ctx, config);
+    var my_chart = new Chart(ctx, config);
+
+    // my_chart.options.scales.x.min = "2022-06-01"
+    // my_chart.options.scales.x.max = "2022-06-03"
 
     // allows to swipe up and down on smartPhone/touchScreen
-    lineChart_pool_ph.canvas.style.touchAction = "pan-y";
+    my_chart.canvas.style.touchAction = "pan-y";
 
     var canvas_pool_ph = document.getElementById("canvas_pool_ph");
-    enable_deletion(canvas_pool_ph, lineChart_pool_ph);
+    enable_deletion(canvas_pool_ph, my_chart);
 
 }
 
 function pool_cl() {
     var raw_data = get_rawdata("pool_cl");
-    var config = myConfig(raw_data, 30);
+    // var config = myConfig(raw_data, 30);
 
-    var options_horizontalLine = [{
-        "y": 750,
-        "style": "green",
-        // "style": "rgba(255, 0, 0, .4)",
-        "text": "max"
-    }, {
-        "y": 640,
-        "text": "min",
-        "style": "green",
+    var config = {
+        type: 'line',
+        data: get_data_1_dataset(raw_data, 30),
+        options: options_1_dataset(raw_data),
+    };
 
-    }];
-    config.options.horizontalLine = options_horizontalLine;
-    config.plugins = [horizontalLinePlugin];
 
-    add_plugin(config, verticalLineOnStepPlugin,'12hours');
+    // var options_horizontalLine = [{
+    //     "y": 750,
+    //     "style": "green",
+    //     // "style": "rgba(255, 0, 0, .4)",
+    //     "text": "max"
+    // }, {
+    //     "y": 640,
+    //     "text": "min",
+    //     "style": "green",
+
+    // }];
+
+    add_plugin(config, horizontalLinePlugin);
+    config.options.horizontalLine = options_horizontalLine([{ y: 750, text: "max" }, { y: 640, text: "min" }]);
+
+
+    // add_plugin(config, horizontalLinePlugin, null);
+    add_plugin(config, verticalLineOnStepPlugin, '12hours');
 
     var ctx = document.getElementById("canvas_pool_cl").getContext("2d");
     var lineChart_pool_cl = new Chart(ctx, config);
@@ -1261,35 +1398,58 @@ function pool_cl() {
 
 function pool_ph_cl() {
 
-    var raw_data_ph = get_rawdata("pool_ph");
-    var raw_data_cl = get_rawdata("pool_cl");
+    var raw_data1 = get_rawdata("pool_ph");
+    var raw_data2 = get_rawdata("pool_cl");
+    var title = "Pool pH/Cl";
 
     // multiply ph by 100 to have it on the same scale as Cl;
     // to be replaced by a proper double independant scale for ph and cl
 
-    for (let i = 0; i < raw_data_ph.data_array.length; i++) {
-        raw_data_ph.data_array[i].y *= 100;
+    for (let i = 0; i < raw_data1.data_array.length; i++) {
+        raw_data1.data_array[i].y *= 100;
     }
 
-
-    var config_pool_ph_cl = {
+    var config = {
         type: 'line',
-        data: get_data_pool_ph_cl(raw_data_ph.data_array, raw_data_cl.data_array),
-        options: options_pool_ph_cl("Pool pH/Cl"),
-        // plugins: [horizontalArbitraryLinePlugin]
+        data: get_data_2_datasets(raw_data1, raw_data2),
+        options: options_2_datasets(title, raw_data1, raw_data2),
+        // data: get_data_pool_ph_cl(raw_data_ph.data_array, raw_data_cl.data_array),
+        // options: options_pool_ph_cl(title),
+        // // plugins: [horizontalArbitraryLinePlugin]
     };
 
+    add_plugin(config, verticalLineOnStepPlugin, 'day');
+
     var ctx = document.getElementById("canvas_pool_ph_cl").getContext("2d");
-    var lineChart_pool_ph_cl = new Chart(ctx, config_pool_ph_cl);
+    var myChart = new Chart(ctx, config);
 
     // allows to swipe up and down on smartclone/touchScreen
-    lineChart_pool_ph_cl.canvas.style.touchAction = "pan-y";
+    myChart.canvas.style.touchAction = "pan-y";
+
+    // myChart.options.scales.x.min = (new Date(myChart.options.scales.x.max) - 1000*60*60*24*3).toString();
+    console.log("min : %o", myChart.options.scales.x.min);
+    console.log("max : %o", myChart.options.scales.x.max);
+    myChart.options.scales.x.min = "2022-06-01";
+    var myOptions = JSON.parse(JSON.stringify(myChart.options));
+    console.log("myOptions : %o", myOptions);
+
+    // myChart.options.scales.x.min = new Date(new Date(myChart.options.scales.x.max) - 1000*60*60*24*3) ;
+    myChart.update();
+
 }
 
 function power_day() {
     var raw_data = get_rawdata("power_day");
 
-    var config = myConfig(raw_data, 30);
+    // var config = myConfig(raw_data, 30);
+
+    var config = {
+        type: 'line',
+        data: get_data_1_dataset(raw_data, 30),
+        options: options_1_dataset(raw_data),
+    };
+
+    add_plugin(config, verticalLineOnStepPlugin, 'day');
 
     var ctx = document.getElementById("canvas_power_day").getContext("2d");
     var lineChart_power_day = new Chart(ctx, config);
@@ -1304,7 +1464,15 @@ function power_day() {
 function power_day_delta() {
     var raw_data = get_rawdata("power_day_delta");
 
-    var config = myConfig(raw_data, 30);
+    // var config = myConfig(raw_data, 30);
+    var config = {
+        type: 'line',
+        data: get_data_1_dataset(raw_data, 30),
+        options: options_1_dataset(raw_data),
+    };
+
+    add_plugin(config, horizontalLinePlugin);
+    config.options.horizontalLine = options_horizontalLine([{ y: 0, text: "min2" }, { y: 1.5, text: "" }]);
 
     var ctx = document.getElementById("canvas_power_day_delta").getContext("2d");
     var lineChart_power_day_delta = new Chart(ctx, config);
@@ -1320,7 +1488,14 @@ function power_day_delta() {
 function power_night() {
     var raw_data = get_rawdata("power_night");
 
-    var config = myConfig(raw_data, 30);
+    // var config = myConfig(raw_data, 30);
+    var config = {
+        type: 'line',
+        data: get_data_1_dataset(raw_data, 30),
+        options: options_1_dataset(raw_data),
+    };
+
+    add_plugin(config, verticalLineOnStepPlugin, 'day');
 
     var ctx = document.getElementById("canvas_power_night").getContext("2d");
     var lineChart_power_night = new Chart(ctx, config);
@@ -1336,7 +1511,8 @@ function power_night_delta() {
 
     var raw_data = get_rawdata("power_night_delta");
 
-    var config = myConfig(raw_data, 30);
+    // var config = myConfig(raw_data, 30);
+    var config = myConfig_1_dataset(raw_data, 30);
 
     var ctx = document.getElementById("canvas_power_night_delta").getContext("2d");
     var lineChart_power_night_delta = new Chart(ctx, config);
@@ -1353,6 +1529,7 @@ function ps4() {
     var raw_data = get_rawdata("ps4");
 
     var config = myConfig(raw_data, 60 * 24 * 10);
+
     // var config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label, date_last_data);
 
     var ctx = document.getElementById("canvas_ps4").getContext("2d");
@@ -1446,6 +1623,19 @@ function canvas_bar() {
     var ctx = document.getElementById("canvas_bar").getContext("2d");
     var my_bar_chart = new Chart(ctx, config_canvas_bar);
 
+    my_bar_chart.options.scales.x.min = "2015-04-01"
+    my_bar_chart.options.scales.x.max = "2015-05-30"
+
+
+    var myOptions2 = JSON.parse(JSON.stringify(my_bar_chart.options));
+    console.log("myOptions2 bar_chart : %o", myOptions2);
+
+
+    var my_bar_chart3 = Object.create(my_bar_chart);
+    console.log("my_bar_chart3 : %o", my_bar_chart3);
+
+
+
     ctx.strokeStyle = 'red';
     ctx.strokeRect(50, 50, 200, 5);
     my_bar_chart.update();
@@ -1475,10 +1665,19 @@ function canvas_bar() {
             console.log("splicing");
             console.log("index : %o", index);
 
+            var myOptions = JSON.parse(JSON.stringify(my_bar_chart.options));
+            console.log("myOptions bar_chart : %o", myOptions);
+
             // datasets[0].data.pop(index);
             console.log('after : datasets[0].data : %', my_bar_chart.data.datasets[0].data);
             my_bar_chart.options.scales.x.min = "2015-03-01"
-            my_bar_chart.options.scales.x.max = "2015-06-30"
+            my_bar_chart.options.scales.x.max = "2015-05-30"
+
+            var myChart2 = Object.create(my_bar_chart);
+            console.log("myChart2 : %o", myChart2);
+
+            var myOptions2 = JSON.parse(JSON.stringify(my_bar_chart.options));
+            console.log("myOptions2 bar_chart : %o", myOptions);
 
             my_bar_chart.update();
             console.log("chart updated ?");
@@ -1710,12 +1909,17 @@ function daily_stock() {
                 },
             },
             plugins: {
-                zoom: zoom_plugin
+                zoom: zoom_plugin()
             }
         },
     };
     var ctx2 = document.getElementById("canvas_daily_stock").getContext("2d");
     var myChart2 = new Chart(ctx2, config_daily_stock);
+
+    // myChart2.options.scales.x.min = '2017-06-01';
+    // myChart2.options.scales.x.max = '2017-08-30';
+    // myChart2.update();
+
 }
 
 
@@ -1826,7 +2030,7 @@ function test() {
             datasets: [
                 {
                     barPercentage: .7,
-                    xAxisID: "bar",
+                    xAxisID: "bar_x",
                     label: "sales",
                     data: monthlyTotal2,
                     backgroundColor: "green",
@@ -1847,9 +2051,30 @@ function test() {
             ],
         },
         options: {
+            plugins: {
+                title: {
+                    text: "test config",
+                    display: true
+                }
+            },
             scales: {
                 x: {
                     id: "line",
+                    type: "time",
+                    time: {
+                        unit: "hour",
+                        displayFormats: {
+                            month: "DD",
+                        },
+                    },
+                    distribution: "linear",
+                    ticks : { color: 'yellow' },
+                    min: "2017-08-03",
+                    max: "2017-08-04",
+                    
+                },
+                bar: {
+                    id: "bar_x",
                     type: "time",
                     time: {
                         unit: "day",
@@ -1858,11 +2083,13 @@ function test() {
                         },
                     },
                     distribution: "linear",
+                    ticks : { color: 'red' }
                 },
                 y:
                 {
                     ticks: {
                         beginAtZero: true,
+                        color: 'blue'
                     },
                 },
             },

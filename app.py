@@ -15,6 +15,7 @@ import datetime
 import logging
 import time
 import sys
+from unittest import result
 
 from scipy.signal import savgol_filter
 
@@ -179,6 +180,139 @@ def average_events(events):
     return values, labels
 
 
+def dt_next_granularity(dt, time_granularity):
+    """
+    time : a datetime like datetime.datetime(2022,06,04) or datetime.datetime(2022, 06, 04, 22, 55)
+    time_granularity : in {'day', 'hour', 'minute'}
+    return the given datetime if has the expected granularity, or the datetime having the next
+    granularity otherwise
+    exemple :
+        dt = dt_next_granularity(datetime(2022,6,22,55))
+        print(a.strftime("%Y-%m-%d %H:%M:%S"))    # "2022-06-04 23:00:00"
+
+        dt = dt_next_granularity(datetime(2022,6,20,0))
+        print(a.strftime("%Y-%m-%d %H:%M:%S"))    # "2022-06-04 20:00:00"
+    """
+
+    if time_granularity == 'day':
+        # Rounds to nearest day by adding a timedelta day if hour >= 12
+        dt = dt.replace(microsecond=0, second=0, minute=0, hour=0, day=dt.day) + \
+            datetime.timedelta(days=(0 if dt.hour==0 else 1))
+    elif time_granularity == 'hour':
+        # Rounds to nearest hour by adding a timedelta hour if minute >= 30
+        dt = dt.replace(microsecond=0, second=0, minute=0, hour=dt.hour) + \
+            datetime.timedelta(hours=(0 if dt.minute==0 else 1))
+    elif time_granularity == 'minute':
+        # Rounds to nearest minute by adding a timedelta minute if second >= 30
+        dt = dt.replace(microsecond=0, second=0, minute=dt.minute) + \
+            datetime.timedelta(minutes=(0 if dt.second==0 else 1))
+    else:
+        print("!!!!!!!!!! unknown time_granularity : {time_granularity} !!!")
+        dt = None
+    return dt
+
+
+def dt_next_granularity_buggy(dt, time_granularity):
+    """
+    time : a datetime like datetime.datetime(2022,06,04) or datetime.datetime(2022, 06, 04, 22, 55)
+    time_granularity : in {'day', 'hour', 'minute'}
+    return the given datetime if has the expected granularity, or the datetime having the next
+    granularity otherwise
+    exemple :
+        dt = dt_next_granularity(datetime(2022,6,22,55))
+        print(a.strftime("%Y-%m-%d %H:%M:%S"))    # "2022-06-04 23:00:00"
+
+        dt = dt_next_granularity(datetime(2022,6,20,0))
+        print(a.strftime("%Y-%m-%d %H:%M:%S"))    # "2022-06-04 20:00:00"
+    """
+    # calculate granularity in nb of secs
+    if time_granularity == "day":
+        granularity_secs = 60 * 60 * 24
+    elif time_granularity == "hour":
+        granularity_secs = 60 * 60
+    elif time_granularity == "minute":
+        granularity_secs = 60
+    else:
+        print("!!!!!!!!!! unknown time_granularity : {time_granularity} !!!")
+
+    # convert time to nb of seconds (since Epoch ?)
+    dt_secs = datetime.datetime.timestamp(dt)
+    # if it's exactly the right granularity, add it to resulting events, else,
+    # create an event having
+    # exactly the next time granularity
+    if dt_secs % granularity_secs != 0:
+        next_one = dt_secs + granularity_secs
+        tmp_dt = datetime.datetime.fromtimestamp(next_one)
+        print("next_one : ", tmp_dt.strftime("%Y-%m-%d %H:%M:%S"))
+
+        modulo = dt_secs % granularity_secs
+        tmp_dt = datetime.datetime.fromtimestamp(modulo)
+        print("modulo : ", tmp_dt.strftime("%Y-%m-%d %H:%M:%S"))
+
+        dt_secs = next_one - modulo
+
+    next_dt = datetime.datetime.fromtimestamp(dt_secs)
+    return next_dt
+
+
+def sample_events(events, time_granularity):
+    """
+    reduce a fine-grained list of events to only those events having the requested granularity
+    if there is no event exactly at the requested granularity, take the event just before that one
+
+    timescale can be 'hour', 'day'
+
+    (events are assumed to be sorted on the time key)
+    (time are assumed in localtime)
+
+    events like
+        [{"time":"2022-06-04 09:55", "value":5},
+         {"time":"2022-06-04 10:05", "value":6},
+         {"time":"2022-06-04 10:25", "value":8},
+         {"time":"2022-06-04 10:50", "value":9},
+         {"time":"2022-06-04 11:10", "value":10},
+         {"time":"2022-06-04 11:50", "value":13},
+         {"time":"2022-06-04 12:01", "value":14},
+         {"time":"2022-06-04 12:55", "value":16}
+         ]
+    will be converted in
+        [{"2022-06-04 10:00",5},
+         {"2022-06-04 11:00",9},
+         {"2022-06-04 12:00",13},
+         {"2022-06-04 13:00",16}
+         ]
+    """
+
+    if len(events) > 0:
+        dt_array = []
+        value_array = []
+
+        for event in events:
+            time_str = event["time"]
+            value = float(event["text"])
+
+            # print(f'{time_str} {value}')
+
+            dt = datetime.datetime.strptime(time_str, '%Y-%m-%d %H:%M:%S')
+            next_granularity_dt = dt_next_granularity(dt, time_granularity)
+
+            # add it to resulting events if it doesn't yet exist there, or replace the value if
+            # an event with the same time already exists
+            if next_granularity_dt in dt_array:
+                value_index = dt_array.index(next_granularity_dt)
+                value_array[value_index] = value
+            else:
+                dt_array.append(next_granularity_dt)
+                value_array.append(value)
+
+
+    resulting_events = []
+    for i, dt in enumerate(dt_array):
+        resulting_events.append({"time":dt.strftime("%Y-%m-%d %H:%M:%S"), "text":str(value_array[i])})
+        
+    return resulting_events
+
+
 class ElapsedTime:
     """
     class to help manage elapsed time
@@ -237,7 +371,7 @@ def index():
     """
     rendering the index page
     """
-    #return "hello world !! (hello !)"
+    # return "hello world !! (hello !)"
 
     #data = test_read.eventRead("",60)
     # labels = [row[0] for row in data]
@@ -277,21 +411,21 @@ def index():
 
     elaps.elapsed_time("frigo_24h")
 
-    data = read_where("pool_pH", 60*10, "1900-01-01")
+    data = read_where("pool_ph", 60*10, "1900-01-01")
     events = data["events"]
     pool_ph_values = [float(event["text"]) for event in events]
     pool_ph_ids = [event["id"] for event in events]
     pool_ph_labels = [event["time"] for event in events]
 
-    elaps.elapsed_time("pool_pH")
+    elaps.elapsed_time("pool_ph")
 
-    data = read_where("pool_Cl", 60*10, "1900-01-01")
+    data = read_where("pool_cl", 60*10, "1900-01-01")
     events = data["events"]
     pool_cl_values = [float(event["text"]) for event in events]
     pool_cl_ids = [event["id"] for event in events]
     pool_cl_labels = [event["time"] for event in events]
 
-    elaps.elapsed_time("pool_Cl")
+    elaps.elapsed_time("pool_cl")
 
     data = read_where("power_day", 30*24*3, "1900-01-01")
     events = data["events"]
@@ -307,7 +441,7 @@ def index():
     data = read_where("power_day", 30*24*3, "1900-01-01")
     events = data["events"]
     events = remove_duplicates(events)
-
+    events = sample_events(events, "day")
     power_day_delta_values, power_day_delta_labels = average_events(events)
     power_day_delta_values = smoothen(power_day_delta_values)
 
@@ -324,6 +458,7 @@ def index():
     data = read_where("power_night", 30*24*3, "1900-01-01")
     events = data["events"]
     events = remove_duplicates(events)
+    events = sample_events(events, "day")
 
     # # power_night_delta_values = [float(event["text"]) for event in events]
     # # values = [float(event["text"]) for event in events]
@@ -468,9 +603,9 @@ def index():
         "frigo_24h", frigo_24h_values, frigo_24h_ids, "°C", frigo_24h_labels, "line", "hour",
         "temperature")
     pool_ph_chart = MyChartValuesWithIDs(
-        "pool_ph", pool_ph_values, pool_ph_ids, "pH", pool_ph_labels, "line", "hour", "pool pH")
+        "pool_ph", pool_ph_values, pool_ph_ids, "ph", pool_ph_labels, "line", "hour", "pool ph")
     pool_cl_chart = MyChartValuesWithIDs(
-        "pool_cl", pool_cl_values, pool_cl_ids, "Cl", pool_cl_labels, "line", "hour", "pool Cl")
+        "pool_cl", pool_cl_values, pool_cl_ids, "cl", pool_cl_labels, "line", "hour", "pool cl")
     power_chart = MyChartValues2Datasets(
         "power_2_datasets",
         power_day_values, power_day_labels, "line",
@@ -496,7 +631,6 @@ def index():
     ps4_2_chart = MyChartValuesWithIDs(
         "ps4_2", values_ps4_2, [], "minutes", labels_ps4_2, "bar", "day", "PS4_2")
 
-
     # ps4_2_chart = MyChartValues(
     #     "ps4_2", values_ps4_2, "minutes", labels_ps4_2, "bar", "day", "PS4")
     ps4_2_datasets_chart = MyChartValues2Datasets(
@@ -506,21 +640,21 @@ def index():
         "day")
 
     result = render_template("graph.html",
-                            frigo_1h_chart=frigo_1h_chart,
-                            frigo_1h_smart_chart=frigo_1h_smart_chart,
-                            #  frigo_10h_chart=frigo_10h_chart,
-                            frigo_24h_chart=frigo_24h_chart,
-                            pool_ph_chart=pool_ph_chart,
-                            pool_cl_chart=pool_cl_chart,
-                            power_chart=power_chart,
-                            power_day_chart=power_day_chart,
-                            power_day_delta_chart=power_day_delta_chart,
-                            power_night_chart=power_night_chart,
-                            power_night_delta_chart=power_night_delta_chart,
-                            ps4_chart=ps4_chart,
-                            ps4_2_chart=ps4_2_chart,
-                            ps4_2_datasets_chart=ps4_2_datasets_chart
-                            )
+                             frigo_1h_chart=frigo_1h_chart,
+                             frigo_1h_smart_chart=frigo_1h_smart_chart,
+                             #  frigo_10h_chart=frigo_10h_chart,
+                             frigo_24h_chart=frigo_24h_chart,
+                             pool_ph_chart=pool_ph_chart,
+                             pool_cl_chart=pool_cl_chart,
+                             power_chart=power_chart,
+                             power_day_chart=power_day_chart,
+                             power_day_delta_chart=power_day_delta_chart,
+                             power_night_chart=power_night_chart,
+                             power_night_delta_chart=power_night_delta_chart,
+                             ps4_chart=ps4_chart,
+                             ps4_2_chart=ps4_2_chart,
+                             ps4_2_datasets_chart=ps4_2_datasets_chart
+                             )
     return result
 
     # return
