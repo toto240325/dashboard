@@ -319,6 +319,173 @@ function myConfig(raw_data, nb_mins) {
     return config1;
 }
 
+
+
+// function myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label, date_last_data) {
+
+//     // var timeFormat = 'yyyy/MM/dd H:mm:ss';
+//     var timeFormat = 'yyyy/MM/dd';
+//     // var timeFormat = 'H:mm';
+//     var nowStr = (new Date()).toLocaleTimeString("fr-BE", { hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+
+//     var a = [];
+//     var b = [];
+//     for (let i = 0; i < labels.length; i++) {
+//         b = { x: labels[i], y: values[i] };
+//         a.push(b);
+//     }
+//     var data_array_1a = a;
+
+//     var a = [];
+//     var b = [];
+//     for (let i = 0; i < labels.length; i++) {
+//         b = { x: labels[i], y: ids[i] };
+//         a.push(b);
+//     }
+//     var data_array_2a = a;
+
+//     // var nowStr = (new Date()).toLocaleTimeString("fr-BE", { hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+
+//     var options1 = {
+//         // responsive: true,
+//         scales: get_scales1(unit, values_unit, date_last_data),
+//         plugins: {
+//             plugins: {
+//                 legend: {
+//                     display: true,
+//                     position: 'top',
+//                     align: 'center',
+//                     // reverse: true
+//                 },
+//                 title: {
+//                     text: title + " (" + date_last_data + ")",
+//                     display: true
+//                 }
+//             },
+//             zoom: zoom_plugin()
+//         }
+//     };
+//     var config1 = {
+//         type: chart_type,
+//         data: {
+//             labels: labels,
+//             datasets: [
+//                 {
+//                     label: label,
+//                     data: data_array_1a,
+//                     fill: false,
+//                     borderColor: "rgb(75, 192, 192)",
+//                     lineTension: 0.1
+//                 },
+//                 {
+//                     label: label,
+//                     data: data_array_2a,
+//                     fill: false,
+//                     borderColor: "rgb(75, 192, 192)",
+//                     hidden: true
+//                 }
+//             ]
+//         },
+//         options: options1
+//     };
+//     return config1;
+// }
+
+// function myConfig3_with_ids(raw_data, nb_mins) {
+
+//     var raw_data, values, values_unit, labels, title, chart_type, unit, label, data_normal, 
+//     data_smart, data_array, ids, date_last_data;
+
+
+//     values = raw_data.values;
+//     ids = raw_data.ids;
+//     values_unit = raw_data.values_unit;
+//     labels = raw_data.labels;
+//     title = raw_data.title;
+//     chart_type = raw_data.chart_type;
+//     unit = raw_data.unit;
+//     label = raw_data.label;
+//     data_array = raw_data.data_array;
+//     date_last_data = data_array[data_array.length-1].x;
+    
+
+//     // var timeFormat = 'yyyy/MM/dd H:mm:ss';
+//     var timeFormat = 'yyyy/MM/dd';
+//     // var timeFormat = 'H:mm';
+//     var nowStr = (new Date()).toLocaleTimeString("fr-BE", { hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+
+//     var a = [];
+//     var b = [];
+//     for (let i = 0; i < labels.length; i++) {
+//         b = { x: labels[i], y: values[i] };
+//         a.push(b);
+//     }
+//     var data_array_1a = a;
+
+//     var a = [];
+//     var b = [];
+//     for (let i = 0; i < labels.length; i++) {
+//         b = { x: labels[i], y: ids[i] };
+//         a.push(b);
+//     }
+//     var data_array_2a = a;
+
+//     // var nowStr = (new Date()).toLocaleTimeString("fr-BE", { hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+
+//     var options1 = {
+//         // responsive: true,
+//         scales: get_scales1(unit, values_unit, date_last_data),
+//         plugins: {
+//             plugins: {
+//                 legend: {
+//                     display: true,
+//                     position: 'top',
+//                     align: 'center',
+//                     // reverse: true
+//                 },
+//                 title: {
+//                     text: title + " (" + date_last_data + ")",
+//                     display: true
+//                 }
+//             },
+//             zoom: zoom_plugin()
+//         }
+//     };
+//     var config1 = {
+//         type: chart_type,
+//         data: {
+//             labels: labels,
+//             datasets: [
+//                 {
+//                     label: label,
+//                     data: data_array_1a,
+//                     fill: false,
+//                     borderColor: "rgb(75, 192, 192)",
+//                     lineTension: 0.1
+//                 },
+//                 {
+//                     label: label,
+//                     data: data_array_2a,
+//                     fill: false,
+//                     borderColor: "rgb(75, 192, 192)",
+//                     hidden: true
+//                 }
+//             ]
+//         },
+//         options: options1
+//     };
+
+
+//     if (is_older_than_mins(date_last_data, 30)) {
+//         config1.data.datasets[0].borderColor = 'red';
+//     }
+    
+
+//     return config1;
+// }
+
+
+
 // function myConfig_2_datasets(
 //     title,
 //     labels1, values1, chart_type1,
@@ -966,7 +1133,13 @@ function get_rawdata(kind) {
         date_last_data = "1900-01-01";
     }
 
-    return { values, values_unit, labels, title, chart_type, unit, label, data_array, ids, date_last_data }
+    var ids_array = [];
+    for (let i = 0; i < labels.length; i++) {
+        let b = { x: labels[i], y: ids[i] };
+        ids_array.push(b);
+    }
+
+    return { values, values_unit, labels, title, chart_type, unit, label, data_array, ids, ids_array, date_last_data }
 }
 
 // chart config for frigo_normal_smart ==============================
@@ -1011,6 +1184,36 @@ function get_data_1_dataset(raw_data, nb_mins) {
         data.datasets[0].borderColor = 'red';
     }
 
+    return data;
+}
+
+function get_data_1_dataset_with_ids(raw_data, nb_mins) {
+    var data = {
+        datasets: [
+            {
+                label: raw_data.label,
+                data: raw_data.data_array,
+                fill: false,
+                borderColor: 'green',
+                yAxisID: 'y'
+
+            },
+            {
+                label: raw_data.label,
+                data: raw_data.ids_array,
+                fill: false,
+                borderColor: 'green',
+                yAxisID: 'y',
+                hidden: true
+
+            }
+        ]
+    };
+    // console.log(data3);
+
+    if (is_older_than_mins(raw_data.date_last_data, nb_mins)) {
+        data.datasets[0].borderColor = 'red';
+    }
 
     return data;
 }
@@ -1317,7 +1520,7 @@ function pool_ph() {
     // var config = myConfig(raw_data, 30);
     var config = {
         type: 'line',
-        data: get_data_1_dataset(raw_data, 30),
+        data: get_data_1_dataset_with_ids(raw_data, 30),
         options: options_1_dataset(raw_data),
     };
 
@@ -1362,7 +1565,7 @@ function pool_cl() {
 
     var config = {
         type: 'line',
-        data: get_data_1_dataset(raw_data, 30),
+        data: get_data_1_dataset_with_ids(raw_data, 30),
         options: options_1_dataset(raw_data),
     };
 
@@ -1445,7 +1648,7 @@ function power_day() {
 
     var config = {
         type: 'line',
-        data: get_data_1_dataset(raw_data, 30),
+        data: get_data_1_dataset_with_ids(raw_data, 30),
         options: options_1_dataset(raw_data),
     };
 
@@ -1491,7 +1694,7 @@ function power_night() {
     // var config = myConfig(raw_data, 30);
     var config = {
         type: 'line',
-        data: get_data_1_dataset(raw_data, 30),
+        data: get_data_1_dataset_with_ids(raw_data, 30),
         options: options_1_dataset(raw_data),
     };
 
