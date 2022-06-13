@@ -12,3 +12,7 @@ requests
 python-dateutil
 autopep8
 scipy
+
+google-api-python-client
+google-auth-httplib2
+google-auth-oauthlib
