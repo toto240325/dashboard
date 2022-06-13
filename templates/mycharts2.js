@@ -32,7 +32,7 @@ function enable_deletion(mycanvas, mychart) {
             var chart = mychart.$context.chart;
             // console.log('chart: %o', chart);
             var datasets = chart.config._config.data.datasets;
-            // console.log('datasets: %o', datasets);
+            console.log('datasets: %o', datasets);
 
             var mydatetime = datasets[0].data[index].x;
             var value = datasets[0].data[index].y;
