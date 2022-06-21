@@ -104,6 +104,82 @@
       }
     }
 
+    
+    var displayPictPlugin = {
+      id: 'displayPictPlugin',
+      beforeDraw: function (chartInstance, args, options) {
+
+        const { ctx, chartArea: { top, right, bottom, left, width, height }, scales: { x, y } } = chartInstance;
+        ctx.save();
+
+        const text = "my button";
+        ctx.font = '12px Arial';
+        const textWidth = ctx.measureText(text).width;
+        console.log(textWidth);
+
+        ctx.textAlign = 'left';
+        ctx.fillStyle = '#666';
+        ctx.fillText(text, right - textWidth, 10)
+
+        //background
+        ctx.fillStyle = 'red';
+        ctx.fillRect(right - textWidth, 10, textWidth, 15)
+
+        // var yScale = chartInstance.scales["y"];
+
+        // // chartInstance.chart is undefined
+        // //var canvas = chartInstance.chart;
+        // // console.log(canvas);
+        // // var ctx = canvas.ctx;
+        // var index;
+        // var line;
+        // var style;
+
+        // // console.log("ctx : %o", ctx);
+        // ypix = y.getPixelForValue(16);
+        // console.log("y pixel : %f", ypix);
+        // ctx.strokeStyle = 'green';
+        // ctx.strokeRect(120, ypix, 200, 5);
+
+
+        // if (chartInstance.options.horizontalLine) {
+        //   for (index = 0; index < chartInstance.options.horizontalLine.length; index++) {
+        //     line = chartInstance.options.horizontalLine[index];
+
+        //     if (!line.style) {
+        //       style = "rgba(169,169,169, .6)";
+        //     } else {
+        //       style = line.style;
+        //     }
+
+        //     if (line.y) {
+        //       yValue = yScale.getPixelForValue(line.y);
+        //     } else {
+        //       yValue = 0;
+        //     }
+
+        //     ctx.lineWidth = 3;
+
+        //     if (yValue) {
+        //       ctx.beginPath();
+        //       ctx.moveTo(left, yValue);
+        //       ctx.lineTo(left + width, yValue);
+        //       ctx.strokeStyle = style;
+        //       ctx.stroke();
+        //     }
+
+        //     if (line.text) {
+        //       ctx.fillStyle = style;
+        //       ctx.fillText(line.text, left, yValue - ctx.lineWidth - 6);
+        //     }
+        //   }
+        //   // ctx.restore();
+        //   return;
+        // }
+      }
+    };
+
+
     var horizontalLinePlugin = {
       id: 'horizontalLine',
       afterDraw: function (chartInstance) {
@@ -121,7 +197,7 @@
         ctx.save();
         // console.log("ctx : %o", ctx);
         ypix = y.getPixelForValue(16);
-        console.log("y pixel : %f", ypix);
+        // console.log("y pixel : %f", ypix);
         ctx.strokeStyle = 'green';
         ctx.strokeRect(120, ypix, 200, 5);
 
@@ -205,7 +281,7 @@
           "text": "lower-limit"
         }],
       },
-      plugins: [horizontalLinePlugin]
+      plugins: [horizontalLinePlugin, displayPictPlugin]
 
     };
 

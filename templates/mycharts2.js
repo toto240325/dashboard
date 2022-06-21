@@ -1063,6 +1063,8 @@ function get_rawdata(kind) {
             chart_type = "{{ power_day_chart.chart_type|safe }}"
             unit = "{{ power_day_chart.unit|safe }}"
             label = "{{ power_day_chart.label|safe }}"
+            // console.log("labels : %o", labels);
+            // console.log("values : %o", values);
             break;
         case "power_night":
             values = JSON.parse('{{ power_night_chart.values | tojson }}');

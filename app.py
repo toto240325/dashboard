@@ -366,6 +366,14 @@ def samples():
     return render_template("samples.html")
 
 
+@app.route('/sample2')
+def sample2():
+    """
+    rendering the sample2 page
+    """
+    return render_template("sample2.html")
+
+
 @app.route('/', methods=['POST', 'GET'])
 def index():
     """
@@ -411,7 +419,7 @@ def index():
 
     elaps.elapsed_time("frigo_24h")
 
-    data = read_where("pool_ph", 60*10, "1900-01-01")
+    data = read_where("pool_ph", 5*10*4, "1900-01-01")
     events = data["events"]
     pool_ph_values = [float(event["text"]) for event in events]
     pool_ph_ids = [event["id"] for event in events]
@@ -419,7 +427,7 @@ def index():
 
     elaps.elapsed_time("pool_ph")
 
-    data = read_where("pool_cl", 60*10, "1900-01-01")
+    data = read_where("pool_cl", 5*10*4, "1900-01-01")
     events = data["events"]
     pool_cl_values = [float(event["text"]) for event in events]
     pool_cl_ids = [event["id"] for event in events]
@@ -427,9 +435,9 @@ def index():
 
     elaps.elapsed_time("pool_cl")
 
-    data = read_where("power_day", 30*24*3, "1900-01-01")
+    data = read_where("power_day", 30*24*5, "1900-01-01")
     events = data["events"]
-    events = remove_duplicates(events)
+    # events = remove_duplicates(events)
     power_day_values = [float(event["text"]) for event in events]
     power_day_ids = [float(event["id"]) for event in events]
     power_day_labels = [event["time"] for event in events]
@@ -438,16 +446,16 @@ def index():
 
     elaps.elapsed_time("power_day")
 
-    data = read_where("power_day", 30*24*3, "1900-01-01")
+    data = read_where("power_day", 30*24*5, "1900-01-01")
     events = data["events"]
-    events = remove_duplicates(events)
+    # events = remove_duplicates(events)
     events = sample_events(events, "day")
     power_day_delta_values, power_day_delta_labels = average_events(events)
     power_day_delta_values = smoothen(power_day_delta_values)
 
     elaps.elapsed_time("power_day_delta")
 
-    data = read_where("power_night", 30*24*3, "1900-01-01")
+    data = read_where("power_night", 30*24*5, "1900-01-01")
     events = data["events"]
     power_night_values = [float(event["text"]) for event in events]
     power_night_ids = [float(event["id"]) for event in events]
@@ -455,9 +463,9 @@ def index():
 
     elaps.elapsed_time("power_night")
 
-    data = read_where("power_night", 30*24*3, "1900-01-01")
+    data = read_where("power_night", 30*24*5, "1900-01-01")
     events = data["events"]
-    events = remove_duplicates(events)
+    # events = remove_duplicates(events)
     events = sample_events(events, "day")
 
     # # power_night_delta_values = [float(event["text"]) for event in events]
