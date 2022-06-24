@@ -1607,12 +1607,12 @@ function pool_ph_cl() {
     var raw_data2 = get_rawdata("pool_cl");
     var title = "Pool pH/Cl";
 
-    // multiply ph by 100 to have it on the same scale as Cl;
-    // to be replaced by a proper double independant scale for ph and cl
+    // // multiply ph by 100 to have it on the same scale as Cl;
+    // // to be replaced by a proper double independant scale for ph and cl
 
-    for (let i = 0; i < raw_data1.data_array.length; i++) {
-        raw_data1.data_array[i].y *= 100;
-    }
+    // for (let i = 0; i < raw_data1.data_array.length; i++) {
+    //     raw_data1.data_array[i].y *= 100;
+    // }
 
     var config = {
         type: 'line',
@@ -1679,6 +1679,9 @@ function power_day_delta() {
     add_plugin(config, horizontalLinePlugin);
     config.options.horizontalLine = options_horizontalLine([{ y: 0, text: "min2" }, { y: 1.5, text: "" }]);
 
+    // add_plugin(config, horizontalLinePlugin, null);
+    add_plugin(config, verticalLineOnStepPlugin, 'day');
+
     var ctx = document.getElementById("canvas_power_day_delta").getContext("2d");
     var lineChart_power_day_delta = new Chart(ctx, config);
 
@@ -1718,6 +1721,9 @@ function power_night_delta() {
 
     // var config = myConfig(raw_data, 30);
     var config = myConfig_1_dataset(raw_data, 30);
+
+    // add_plugin(config, horizontalLinePlugin, null);
+    add_plugin(config, verticalLineOnStepPlugin, 'day');
 
     var ctx = document.getElementById("canvas_power_night_delta").getContext("2d");
     var lineChart_power_night_delta = new Chart(ctx, config);
@@ -2306,6 +2312,8 @@ function test() {
 }
 
 
+var hostname = JSON.parse('{{ hostname | tojson }}');
+         
 // frigo_smart();
 frigo_normal_smart();
 frigo_24h();

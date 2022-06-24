@@ -15,6 +15,7 @@ import datetime
 import logging
 import time
 import sys
+import socket
 from unittest import result
 
 from scipy.signal import savgol_filter
@@ -182,7 +183,7 @@ def average_events(events):
 
 def dt_next_granularity(dt, time_granularity):
     """
-    time : a datetime like datetime.datetime(2022,06,04) or datetime.datetime(2022, 06, 04, 22, 55)
+    dt : a datetime like datetime.datetime(2022,6,04) or datetime.datetime(2022, 6, 4, 22, 55)
     time_granularity : in {'day', 'hour', 'minute'}
     return the given datetime if has the expected granularity, or the datetime having the next
     granularity otherwise
@@ -196,8 +197,7 @@ def dt_next_granularity(dt, time_granularity):
 
     if time_granularity == 'day':
         # Rounds to nearest day by adding a timedelta day if hour >= 12
-        dt = dt.replace(microsecond=0, second=0, minute=0, hour=0, day=dt.day) + \
-            datetime.timedelta(days=(0 if dt.hour==0 else 1))
+        dt = dt.replace(microsecond=0, second=0, minute=0, hour=0, day=dt.day) + datetime.timedelta(days=(0 if dt.hour==0 else 1))
     elif time_granularity == 'hour':
         # Rounds to nearest hour by adding a timedelta hour if minute >= 30
         dt = dt.replace(microsecond=0, second=0, minute=0, hour=dt.hour) + \
@@ -206,6 +206,15 @@ def dt_next_granularity(dt, time_granularity):
         # Rounds to nearest minute by adding a timedelta minute if second >= 30
         dt = dt.replace(microsecond=0, second=0, minute=dt.minute) + \
             datetime.timedelta(minutes=(0 if dt.second==0 else 1))
+    elif time_granularity == '4h':
+        granularity = 4
+        dt = dt.replace(microsecond=0, second=0, minute=0, hour=((dt.hour//granularity)*granularity), day=dt.day) + datetime.timedelta(hours=granularity)
+    elif time_granularity == '2h':
+        granularity = 2
+        dt = dt.replace(microsecond=0, second=0, minute=0, hour=((dt.hour//granularity)*granularity), day=dt.day) + datetime.timedelta(hours=granularity)
+    elif time_granularity == '1h':
+        granularity = 1
+        dt = dt.replace(microsecond=0, second=0, minute=0, hour=((dt.hour//granularity)*granularity), day=dt.day) + datetime.timedelta(hours=granularity)
     else:
         print("!!!!!!!!!! unknown time_granularity : {time_granularity} !!!")
         dt = None
@@ -385,6 +394,8 @@ def index():
     # labels = [row[0] for row in data]
     # values = [row[1] for row in data]
 
+    hostname = socket.gethostname()
+
     elaps = ElapsedTime()
 
     data = read_where("temperature", 60, "1900-01-01")
@@ -449,7 +460,7 @@ def index():
     data = read_where("power_day", 30*24*5, "1900-01-01")
     events = data["events"]
     # events = remove_duplicates(events)
-    events = sample_events(events, "day")
+    events = sample_events(events, "1h")
     power_day_delta_values, power_day_delta_labels = average_events(events)
     power_day_delta_values = smoothen(power_day_delta_values)
 
@@ -466,7 +477,7 @@ def index():
     data = read_where("power_night", 30*24*5, "1900-01-01")
     events = data["events"]
     # events = remove_duplicates(events)
-    events = sample_events(events, "day")
+    events = sample_events(events, "1h")
 
     # # power_night_delta_values = [float(event["text"]) for event in events]
     # # values = [float(event["text"]) for event in events]
@@ -648,6 +659,7 @@ def index():
         "day")
 
     result = render_template("graph.html",
+                             hostname = hostname,
                              frigo_1h_chart=frigo_1h_chart,
                              frigo_1h_smart_chart=frigo_1h_smart_chart,
                              #  frigo_10h_chart=frigo_10h_chart,
