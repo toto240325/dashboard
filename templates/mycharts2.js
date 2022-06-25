@@ -1303,8 +1303,6 @@ function options_1_dataset(raw_data) {
                 display: true
             },
             zoom: zoom_plugin()
-
-
         }
     };
     return options;
@@ -1324,7 +1322,8 @@ function options_2_datasets(title, raw_data1, raw_data2) {
             title: {
                 text: title,
                 display: true
-            }
+            },
+            zoom: zoom_plugin()
         }
     };
     return options;
@@ -1507,13 +1506,13 @@ function frigo_24h() {
     var config = myConfig(raw_data, 10);
 
     var ctx = document.getElementById("canvas_frigo_24h").getContext("2d");
-    var lineChart_frigo_24h = new Chart(ctx, config);
+    var myChart = new Chart(ctx, config);
 
     // allows to swipe up and down on smartPhone/touchScreen
-    lineChart_frigo_24h.canvas.style.touchAction = "pan-y";
+    myChart.canvas.style.touchAction = "pan-y";
 
     var canvas_frigo_24h = document.getElementById("canvas_frigo_24h");
-    enable_deletion(canvas_frigo_24h, lineChart_frigo_24h);
+    enable_deletion(canvas_frigo_24h, myChart);
 }
 
 function pool_ph() {
@@ -1526,39 +1525,23 @@ function pool_ph() {
         options: options_1_dataset(raw_data),
     };
 
-    // var options_horizontalLine = [{
-    //     "y": 7.40,
-    //     "style": "green",
-    //     // "style": "rgba(255, 0, 0, .4)",
-    //     "text": "max"
-    // }, {
-    //     "y": 7.10,
-    //     "text": "min",
-    //     "style": "green",
-    // }];
-
     add_plugin(config, horizontalLinePlugin);
-    config.options.horizontalLine = options_horizontalLine([{ y: 7.4, text: "max" }, { y: 7.1, text: "min" }]);
+    config.options.horizontalLine =
+        options_horizontalLine([{ y: 7.4, text: "max", style: "red" }, { y: 7.1, text: "min", style: "rgba(255, 0, 0, .4)" }]);
 
-
-    // config.options.horizontalLine = options_horizontalLine;
-    // config.plugins = [horizontalLinePlugin];
-
-    // add_plugin(config, horizontalLinePlugin, null);
     add_plugin(config, verticalLineOnStepPlugin, '12hours');
 
     var ctx = document.getElementById("canvas_pool_ph").getContext("2d");
-    var my_chart = new Chart(ctx, config);
+    var myChart = new Chart(ctx, config);
 
-    // my_chart.options.scales.x.min = "2022-06-01"
-    // my_chart.options.scales.x.max = "2022-06-03"
+    // myChart.options.scales.x.min = "2022-06-01"
+    // myChart.options.scales.x.max = "2022-06-03"
 
     // allows to swipe up and down on smartPhone/touchScreen
-    my_chart.canvas.style.touchAction = "pan-y";
+    myChart.canvas.style.touchAction = "pan-y";
 
     var canvas_pool_ph = document.getElementById("canvas_pool_ph");
-    enable_deletion(canvas_pool_ph, my_chart);
-
+    enable_deletion(canvas_pool_ph, myChart);
 }
 
 function pool_cl() {
@@ -1571,34 +1554,20 @@ function pool_cl() {
         options: options_1_dataset(raw_data),
     };
 
-
-    // var options_horizontalLine = [{
-    //     "y": 750,
-    //     "style": "green",
-    //     // "style": "rgba(255, 0, 0, .4)",
-    //     "text": "max"
-    // }, {
-    //     "y": 640,
-    //     "text": "min",
-    //     "style": "green",
-
-    // }];
-
     add_plugin(config, horizontalLinePlugin);
     config.options.horizontalLine = options_horizontalLine([{ y: 750, text: "max" }, { y: 640, text: "min" }]);
-
 
     // add_plugin(config, horizontalLinePlugin, null);
     add_plugin(config, verticalLineOnStepPlugin, '12hours');
 
     var ctx = document.getElementById("canvas_pool_cl").getContext("2d");
-    var lineChart_pool_cl = new Chart(ctx, config);
+    var myChart = new Chart(ctx, config);
 
     // allows to swipe up and down on smartclone/touchScreen
-    lineChart_pool_cl.canvas.style.touchAction = "pan-y";
+    myChart.canvas.style.touchAction = "pan-y";
 
     var canvas_pool_cl = document.getElementById("canvas_pool_cl");
-    enable_deletion(canvas_pool_cl, lineChart_pool_cl);
+    enable_deletion(canvas_pool_cl, myChart);
 }
 
 function pool_ph_cl() {
@@ -1607,20 +1576,10 @@ function pool_ph_cl() {
     var raw_data2 = get_rawdata("pool_cl");
     var title = "Pool pH/Cl";
 
-    // // multiply ph by 100 to have it on the same scale as Cl;
-    // // to be replaced by a proper double independant scale for ph and cl
-
-    // for (let i = 0; i < raw_data1.data_array.length; i++) {
-    //     raw_data1.data_array[i].y *= 100;
-    // }
-
     var config = {
         type: 'line',
         data: get_data_2_datasets(raw_data1, raw_data2),
         options: options_2_datasets(title, raw_data1, raw_data2),
-        // data: get_data_pool_ph_cl(raw_data_ph.data_array, raw_data_cl.data_array),
-        // options: options_pool_ph_cl(title),
-        // // plugins: [horizontalArbitraryLinePlugin]
     };
 
     add_plugin(config, verticalLineOnStepPlugin, 'day');
@@ -1640,7 +1599,6 @@ function pool_ph_cl() {
 
     // myChart.options.scales.x.min = new Date(new Date(myChart.options.scales.x.max) - 1000*60*60*24*3) ;
     myChart.update();
-
 }
 
 function power_day() {
@@ -1657,13 +1615,13 @@ function power_day() {
     add_plugin(config, verticalLineOnStepPlugin, 'day');
 
     var ctx = document.getElementById("canvas_power_day").getContext("2d");
-    var lineChart_power_day = new Chart(ctx, config);
+    var myChart = new Chart(ctx, config);
 
     // allows to swipe up and down on smartPhone/touchScreen
-    lineChart_power_day.canvas.style.touchAction = "pan-y";
+    myChart.canvas.style.touchAction = "pan-y";
 
     var canvas_power_day = document.getElementById("canvas_power_day");
-    enable_deletion(canvas_power_day, lineChart_power_day);
+    enable_deletion(canvas_power_day, myChart);
 }
 
 function power_day_delta() {
@@ -1683,13 +1641,13 @@ function power_day_delta() {
     add_plugin(config, verticalLineOnStepPlugin, 'day');
 
     var ctx = document.getElementById("canvas_power_day_delta").getContext("2d");
-    var lineChart_power_day_delta = new Chart(ctx, config);
+    var myChart = new Chart(ctx, config);
 
     // allows to swipe up and down on smartPhone/touchScreen
-    lineChart_power_day_delta.canvas.style.touchAction = "pan-y";
+    myChart.canvas.style.touchAction = "pan-y";
 
     var canvas_power_day_delta = document.getElementById("canvas_power_day_delta");
-    enable_deletion(canvas_power_day_delta, lineChart_power_day_delta);
+    enable_deletion(canvas_power_day_delta, myChart);
 }
 
 
@@ -1706,13 +1664,13 @@ function power_night() {
     add_plugin(config, verticalLineOnStepPlugin, 'day');
 
     var ctx = document.getElementById("canvas_power_night").getContext("2d");
-    var lineChart_power_night = new Chart(ctx, config);
+    var myChart = new Chart(ctx, config);
 
     // allows to swipe up and down on smartPhone/touchScreen
-    lineChart_power_night.canvas.style.touchAction = "pan-y";
+    myChart.canvas.style.touchAction = "pan-y";
 
     var canvas_power_night = document.getElementById("canvas_power_night");
-    enable_deletion(canvas_power_night, lineChart_power_night);
+    enable_deletion(canvas_power_night, myChart);
 }
 
 function power_night_delta() {
@@ -1726,13 +1684,13 @@ function power_night_delta() {
     add_plugin(config, verticalLineOnStepPlugin, 'day');
 
     var ctx = document.getElementById("canvas_power_night_delta").getContext("2d");
-    var lineChart_power_night_delta = new Chart(ctx, config);
+    var myChart = new Chart(ctx, config);
 
     // allows to swipe up and down on smartPhone/touchScreen
-    lineChart_power_night_delta.canvas.style.touchAction = "pan-y";
+    myChart.canvas.style.touchAction = "pan-y";
 
     var canvas_power_night_delta = document.getElementById("canvas_power_night_delta");
-    enable_deletion(canvas_power_night_delta, lineChart_power_night_delta);
+    enable_deletion(canvas_power_night_delta, myChart);
 }
 
 
@@ -1744,7 +1702,7 @@ function ps4() {
     // var config = myConfig2_with_ids(title, values, ids, values_unit, labels, chart_type, unit, label, date_last_data);
 
     var ctx = document.getElementById("canvas_ps4").getContext("2d");
-    var lineChart = new Chart(ctx, config);
+    var myChart = new Chart(ctx, config);
 }
 
 function ps4_2() {
@@ -1754,7 +1712,7 @@ function ps4_2() {
     var config = myConfig(raw_data, 60 * 24 * 10);
 
     var ctx = document.getElementById("canvas_ps4_2").getContext("2d");
-    var lineChart = new Chart(ctx, config);
+    var myChart = new Chart(ctx, config);
 }
 
 function canvas_bar() {
