@@ -1493,7 +1493,7 @@ function frigo_normal_smart() {
     var myChart = new Chart(ctx, config);
 
     // // allows to swipe up and down on smartclone/touchScreen
-    // myChart.canvas.style.touchAction = "pan-y";
+    myChart.canvas.style.touchAction = "pan-y";
 
     myChart.options.scales.x.min = '2022-06-05';
     // myChart.options.scales.x.max = '2022-06-04 22:20';
