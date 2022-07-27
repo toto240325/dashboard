@@ -79,6 +79,15 @@ function zoom_plugin() {
             mode: 'x',
             threshold: 10
         },
+        limits: {
+            // x: {min: 0, max: 100},
+            x: {
+                min: new Date('2022-07-26 14:10').valueOf(),
+                max: new Date('2022-07-28 14:10').valueOf(),
+                minrange: (new Date('2022-07-26 14:10').valueOf() - new Date('2022-07-25 14:10').valueOf())
+            },
+            y: {}
+        },
         zoom: {
             wheel: {
                 enabled: true,
@@ -407,7 +416,7 @@ function myConfig(raw_data, nb_mins) {
 //     label = raw_data.label;
 //     data_array = raw_data.data_array;
 //     date_last_data = data_array[data_array.length-1].x;
-    
+
 
 //     // var timeFormat = 'yyyy/MM/dd H:mm:ss';
 //     var timeFormat = 'yyyy/MM/dd';
@@ -479,7 +488,7 @@ function myConfig(raw_data, nb_mins) {
 //     if (is_older_than_mins(date_last_data, 30)) {
 //         config1.data.datasets[0].borderColor = 'red';
 //     }
-    
+
 
 //     return config1;
 // }
@@ -1495,8 +1504,34 @@ function frigo_normal_smart() {
     // // allows to swipe up and down on smartclone/touchScreen
     myChart.canvas.style.touchAction = "pan-y";
 
-    myChart.options.scales.x.min = '2022-06-05';
-    // myChart.options.scales.x.max = '2022-06-04 22:20';
+    // this works !
+    // myChart.options.scales.x.min = new Date('2022-07-27 14:10').valueOf()
+    // myChart.options.scales.x.max = new Date('2022-07-27 14:15').valueOf()
+
+
+    let txt = JSON.stringify(myChart.options);
+    // console.log("opt : %s", txt);
+
+
+    let obj = JSON.parse(txt);
+    console.log("opt : %o", obj);
+
+    var testX = myChart.options.plugins.zoom;
+
+
+    myChart.options.plugins.zoom.limits.x.test = "test";
+    myChart.options.plugins.zoom.limits.x.min = new Date('2022-07-26 14:10').valueOf();
+    myChart.options.plugins.zoom.limits.x.max = new Date('2022-07-28 14:10').valueOf();
+
+
+
+    // myChart.options.plugins.zoom.limits.x.min = myChart.scales.x.min.valueOf();
+    var testX = myChart.scales.x.min.valueOf();
+    console.log("testX : %o", testX);
+    var testX = myChart.options.plugins.zoom.limits;
+    console.log("testX : %o", testX);
+
+
     myChart.update();
 }
 
@@ -2237,10 +2272,10 @@ function test() {
                         },
                     },
                     distribution: "linear",
-                    ticks : { color: 'yellow' },
+                    ticks: { color: 'yellow' },
                     min: "2017-08-03",
                     max: "2017-08-04",
-                    
+
                 },
                 bar: {
                     id: "bar_x",
@@ -2252,7 +2287,7 @@ function test() {
                         },
                     },
                     distribution: "linear",
-                    ticks : { color: 'red' }
+                    ticks: { color: 'red' }
                 },
                 y:
                 {
@@ -2271,7 +2306,7 @@ function test() {
 
 
 var hostname = JSON.parse('{{ hostname | tojson }}');
-         
+
 // frigo_smart();
 frigo_normal_smart();
 frigo_24h();

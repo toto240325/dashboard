@@ -197,7 +197,8 @@ def dt_next_granularity(dt, time_granularity):
 
     if time_granularity == 'day':
         # Rounds to nearest day by adding a timedelta day if hour >= 12
-        dt = dt.replace(microsecond=0, second=0, minute=0, hour=0, day=dt.day) + datetime.timedelta(days=(0 if dt.hour==0 else 1))
+        dt = dt.replace(microsecond=0, second=0, minute=0, hour=0, day=dt.day) + \
+                datetime.timedelta(days=(0 if dt.hour==0 else 1))
     elif time_granularity == 'hour':
         # Rounds to nearest hour by adding a timedelta hour if minute >= 30
         dt = dt.replace(microsecond=0, second=0, minute=0, hour=dt.hour) + \
@@ -208,13 +209,17 @@ def dt_next_granularity(dt, time_granularity):
             datetime.timedelta(minutes=(0 if dt.second==0 else 1))
     elif time_granularity == '4h':
         granularity = 4
-        dt = dt.replace(microsecond=0, second=0, minute=0, hour=((dt.hour//granularity)*granularity), day=dt.day) + datetime.timedelta(hours=granularity)
+        dt = dt.replace(microsecond=0, second=0, minute=0, \
+            hour=((dt.hour//granularity)*granularity), day=dt.day) + \
+                datetime.timedelta(hours=granularity)
     elif time_granularity == '2h':
         granularity = 2
-        dt = dt.replace(microsecond=0, second=0, minute=0, hour=((dt.hour//granularity)*granularity), day=dt.day) + datetime.timedelta(hours=granularity)
+        dt = dt.replace(microsecond=0, second=0, minute=0, \
+            hour=((dt.hour//granularity)*granularity), day=dt.day) + datetime.timedelta(hours=granularity)
     elif time_granularity == '1h':
         granularity = 1
-        dt = dt.replace(microsecond=0, second=0, minute=0, hour=((dt.hour//granularity)*granularity), day=dt.day) + datetime.timedelta(hours=granularity)
+        dt = dt.replace(microsecond=0, second=0, minute=0, \
+            hour=((dt.hour//granularity)*granularity), day=dt.day) + datetime.timedelta(hours=granularity)
     else:
         print("!!!!!!!!!! unknown time_granularity : {time_granularity} !!!")
         dt = None
@@ -658,7 +663,7 @@ def index():
         values_ps4_2, labels_ps4_2, "bar",
         "day")
 
-    result = render_template("graph.html",
+    rendered_html = render_template("graph.html",
                              hostname = hostname,
                              frigo_1h_chart=frigo_1h_chart,
                              frigo_1h_smart_chart=frigo_1h_smart_chart,
@@ -675,7 +680,7 @@ def index():
                              ps4_2_chart=ps4_2_chart,
                              ps4_2_datasets_chart=ps4_2_datasets_chart
                              )
-    return result
+    return rendered_html
 
     # return
     # if request.method == 'POST':
