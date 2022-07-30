@@ -198,27 +198,27 @@ def dt_next_granularity(dt, time_granularity):
     if time_granularity == 'day':
         # Rounds to nearest day by adding a timedelta day if hour >= 12
         dt = dt.replace(microsecond=0, second=0, minute=0, hour=0, day=dt.day) + \
-                datetime.timedelta(days=(0 if dt.hour==0 else 1))
+            datetime.timedelta(days=(0 if dt.hour == 0 else 1))
     elif time_granularity == 'hour':
         # Rounds to nearest hour by adding a timedelta hour if minute >= 30
         dt = dt.replace(microsecond=0, second=0, minute=0, hour=dt.hour) + \
-            datetime.timedelta(hours=(0 if dt.minute==0 else 1))
+            datetime.timedelta(hours=(0 if dt.minute == 0 else 1))
     elif time_granularity == 'minute':
         # Rounds to nearest minute by adding a timedelta minute if second >= 30
         dt = dt.replace(microsecond=0, second=0, minute=dt.minute) + \
-            datetime.timedelta(minutes=(0 if dt.second==0 else 1))
+            datetime.timedelta(minutes=(0 if dt.second == 0 else 1))
     elif time_granularity == '4h':
         granularity = 4
-        dt = dt.replace(microsecond=0, second=0, minute=0, \
+        dt = dt.replace(microsecond=0, second=0, minute=0,
             hour=((dt.hour//granularity)*granularity), day=dt.day) + \
-                datetime.timedelta(hours=granularity)
+            datetime.timedelta(hours=granularity)
     elif time_granularity == '2h':
         granularity = 2
-        dt = dt.replace(microsecond=0, second=0, minute=0, \
+        dt = dt.replace(microsecond=0, second=0, minute=0,
             hour=((dt.hour//granularity)*granularity), day=dt.day) + datetime.timedelta(hours=granularity)
     elif time_granularity == '1h':
         granularity = 1
-        dt = dt.replace(microsecond=0, second=0, minute=0, \
+        dt = dt.replace(microsecond=0, second=0, minute=0,
             hour=((dt.hour//granularity)*granularity), day=dt.day) + datetime.timedelta(hours=granularity)
     else:
         print("!!!!!!!!!! unknown time_granularity : {time_granularity} !!!")
@@ -319,11 +319,11 @@ def sample_events(events, time_granularity):
                 dt_array.append(next_granularity_dt)
                 value_array.append(value)
 
-
     resulting_events = []
     for i, dt in enumerate(dt_array):
-        resulting_events.append({"time":dt.strftime("%Y-%m-%d %H:%M:%S"), "text":str(value_array[i])})
-        
+        resulting_events.append({"time": dt.strftime(
+            "%Y-%m-%d %H:%M:%S"), "text": str(value_array[i])})
+
     return resulting_events
 
 
@@ -354,6 +354,35 @@ def smoothen(myarray):
     """
     # myarray = savgol_filter(myarray, 10, 1).tolist()
     return myarray
+
+
+def normalise_pool_status(events, kind):
+    """
+    normalise the pool status events, i.e. convert from a string to a value, to facilite the graphic representation
+    for ph and cl status :
+        dosage  -> 1
+        ok      -> 0
+        other   -> -1
+    for pp :
+        pp      -> 1
+        other   -> -1
+
+    """
+    for event in events:
+        if kind in ['ph', 'cl']:
+            if event["text"] == "ok":
+                event["text"] = "0"
+            elif event["text"] == "dosage":
+                event["text"] = "1"
+            else:
+                event["text"] = "-1"
+        elif kind in ['pp']:
+            if event["text"] == "p":
+                event["text"] = "1"
+            else:
+                event["text"] = "-1"
+
+    return events
 
 
 @app.route('/about')
@@ -442,7 +471,7 @@ def index():
     pool_ph_labels = [event["time"] for event in events]
 
     elaps.elapsed_time("pool_ph")
-
+    # ------------------------------------------------------
     data = read_where("pool_cl", 5*10*4, "1900-01-01")
     events = data["events"]
     pool_cl_values = [float(event["text"]) for event in events]
@@ -450,7 +479,37 @@ def index():
     pool_cl_labels = [event["time"] for event in events]
 
     elaps.elapsed_time("pool_cl")
+    # ------------------------------------------------------
+    data = read_where("pool_status_ph", 5*10*4, "1900-01-01")
+    events = data["events"]
+    events = normalise_pool_status(events, "ph")
 
+    pool_status_ph_values = [float(event["text"]) for event in events]
+    pool_status_ph_ids = [event["id"] for event in events]
+    pool_status_ph_labels = [event["time"] for event in events]
+
+    elaps.elapsed_time("pool_status_ph")
+    # ------------------------------------------------------
+    data = read_where("pool_status_cl", 5*10*4, "1900-01-01")
+    events = data["events"]
+    events = normalise_pool_status(events, "cl")
+
+    pool_status_cl_values = [float(event["text"]) for event in events]
+    pool_status_cl_ids = [event["id"] for event in events]
+    pool_status_cl_labels = [event["time"] for event in events]
+
+    elaps.elapsed_time("pool_status_cl")
+    # ------------------------------------------------------
+    data = read_where("pool_status_pp", 5*10*4, "1900-01-01")
+    events = data["events"]
+    events = normalise_pool_status(events, "pp")
+
+    pool_status_pp_values = [float(event["text"]) for event in events]
+    pool_status_pp_ids = [event["id"] for event in events]
+    pool_status_pp_labels = [event["time"] for event in events]
+
+    elaps.elapsed_time("pool_status_pp")
+    # ------------------------------------------------------
     data = read_where("power_day", 30*24*5, "1900-01-01")
     events = data["events"]
     # events = remove_duplicates(events)
@@ -461,7 +520,7 @@ def index():
     power_day_values = smoothen(power_day_values)
 
     elaps.elapsed_time("power_day")
-
+    # ------------------------------------------------------
     data = read_where("power_day", 30*24*5, "1900-01-01")
     events = data["events"]
     # events = remove_duplicates(events)
@@ -470,7 +529,7 @@ def index():
     power_day_delta_values = smoothen(power_day_delta_values)
 
     elaps.elapsed_time("power_day_delta")
-
+    # ------------------------------------------------------
     data = read_where("power_night", 30*24*5, "1900-01-01")
     events = data["events"]
     power_night_values = [float(event["text"]) for event in events]
@@ -478,7 +537,7 @@ def index():
     power_night_labels = [event["time"] for event in events]
 
     elaps.elapsed_time("power_night")
-
+    # ------------------------------------------------------
     data = read_where("power_night", 30*24*5, "1900-01-01")
     events = data["events"]
     # events = remove_duplicates(events)
@@ -523,7 +582,7 @@ def index():
     power_night_delta_values, power_night_delta_labels = average_events(events)
 
     elaps.elapsed_time("power_night_delta")
-
+    # ------------------------------------------------------
     # the values of the ps4 dataset are 1 and the labels are the datetime at which ps4 was up
     delta = -2
     data = read_where("ps4", 100, today_delta_str(delta))
@@ -534,7 +593,7 @@ def index():
     values_ps4 = [1 for event in events]
 
     elaps.elapsed_time("ps4")
-
+    # ------------------------------------------------------
     # the values of the ps4_2 dataset are the number of minutes ps4 was up per day
     # the labels are those days where ps4 was up, forced at 12:00:00
 
@@ -545,6 +604,7 @@ def index():
     values_ps4_2a = [rec["count"] for rec in records]
     # attention : the "rec*10" below should be parameterised with same parameter used in watchdog.py
     values_ps4_2 = [rec*10 for rec in values_ps4_2a]
+    # ------------------------------------------------------
 
     class MyChartValues:
         """
@@ -626,10 +686,21 @@ def index():
     frigo_24h_chart = MyChartValuesWithIDs(
         "frigo_24h", frigo_24h_values, frigo_24h_ids, "°C", frigo_24h_labels, "line", "hour",
         "temperature")
+
     pool_ph_chart = MyChartValuesWithIDs(
         "pool_ph", pool_ph_values, pool_ph_ids, "ph", pool_ph_labels, "line", "hour", "pool ph")
+    pool_status_ph_chart = MyChartValuesWithIDs(
+        "pool_status_ph", pool_status_ph_values, pool_status_ph_ids, "ph", pool_status_ph_labels, "line", "hour", "pool ph")
     pool_cl_chart = MyChartValuesWithIDs(
         "pool_cl", pool_cl_values, pool_cl_ids, "cl", pool_cl_labels, "line", "hour", "pool cl")
+
+    pool_status_ph_chart = MyChartValuesWithIDs(
+        "pool_status_ph", pool_status_ph_values, pool_status_ph_ids, "ph", pool_status_ph_labels, "line", "hour", "pool ph")
+    pool_status_cl_chart = MyChartValuesWithIDs(
+        "pool_status_cl", pool_status_cl_values, pool_status_cl_ids, "cl", pool_status_cl_labels, "line", "hour", "pool cl")
+    pool_status_pp_chart = MyChartValuesWithIDs(
+        "pool_status_pp", pool_status_pp_values, pool_status_pp_ids, "pp", pool_status_pp_labels, "line", "hour", "pool pp")
+
     power_chart = MyChartValues2Datasets(
         "power_2_datasets",
         power_day_values, power_day_labels, "line",
@@ -663,23 +734,27 @@ def index():
         values_ps4_2, labels_ps4_2, "bar",
         "day")
 
-    rendered_html = render_template("graph.html",
-                             hostname = hostname,
-                             frigo_1h_chart=frigo_1h_chart,
-                             frigo_1h_smart_chart=frigo_1h_smart_chart,
-                             #  frigo_10h_chart=frigo_10h_chart,
-                             frigo_24h_chart=frigo_24h_chart,
-                             pool_ph_chart=pool_ph_chart,
-                             pool_cl_chart=pool_cl_chart,
-                             power_chart=power_chart,
-                             power_day_chart=power_day_chart,
-                             power_day_delta_chart=power_day_delta_chart,
-                             power_night_chart=power_night_chart,
-                             power_night_delta_chart=power_night_delta_chart,
-                             ps4_chart=ps4_chart,
-                             ps4_2_chart=ps4_2_chart,
-                             ps4_2_datasets_chart=ps4_2_datasets_chart
-                             )
+    rendered_html = render_template(
+        "graph.html",
+        hostname=hostname,
+        frigo_1h_chart=frigo_1h_chart,
+        frigo_1h_smart_chart=frigo_1h_smart_chart,
+        #  frigo_10h_chart=frigo_10h_chart,
+        frigo_24h_chart=frigo_24h_chart,
+        pool_ph_chart=pool_ph_chart,
+        pool_cl_chart=pool_cl_chart,
+        pool_status_ph_chart=pool_status_ph_chart,
+        pool_status_cl_chart=pool_status_cl_chart,
+        pool_status_pp_chart=pool_status_pp_chart,
+        power_chart=power_chart,
+        power_day_chart=power_day_chart,
+        power_day_delta_chart=power_day_delta_chart,
+        power_night_chart=power_night_chart,
+        power_night_delta_chart=power_night_delta_chart,
+        ps4_chart=ps4_chart,
+        ps4_2_chart=ps4_2_chart,
+        ps4_2_datasets_chart=ps4_2_datasets_chart
+    )
     return rendered_html
 
     # return

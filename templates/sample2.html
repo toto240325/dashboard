@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Getting Started with Chart JS with www.chartjs3.com</title>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+
+  <!-- <link rel='stylesheet' type='text/css' href='yourcssfile.css'> -->
+  <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">  -->
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+    }
+
+    .chartMenu {
+      width: 100vw;
+      height: 40px;
+      background: #1A1A1A;
+      color: rgba(255, 26, 104, 1);
+    }
+
+    .chartMenu p {
+      padding: 10px;
+      font-size: 20px;
+    }
+
+    .chartCard {
+      width: 100vw;
+      height: calc(100vh - 40px);
+      background: rgba(255, 26, 104, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .chartBox {
+      width: 700px;
+      padding: 20px;
+      border-radius: 20px;
+      border: solid 3px rgba(255, 26, 104, 1);
+      background: white;
+    }
+
+    #chartjs-tooltip {
+      opacity: 0;
+      position: absolute;
+      background: rgba(0, 0, 0, .7);
+      color: white;
+      padding: 3px;
+      border-radius: 3px;
+      -webkit-transition: all .1s ease;
+      transition: all .1s ease;
+      pointer-events: none;
+      -webkit-transform: translate(-50%, 0);
+      transform: translate(-50%, 0);
+    }
+
+    #chartjs-tooltip>img {
+      height: 1em;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="chartMenu">
+    <p>WWW.CHARTJS3.COM (Chart JS 3.7.1)</p>
+  </div>
+  <div class="chartCard">
+    <div class="chartBox">
+      <canvas id="myChart2"></canvas>
+    </div>
+  </div>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+
+    // setup 
+
+    const data2 = {
+      labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      datasets: [{
+        label: 'Weekly Sales',
+        data2: [18, 12, 6, 9, 12, 3, 9],
+        tension: 0.3,
+        backgroundColor: 'green',
+        borderColor: 'blue',
+        borderWidth: 1,
+        yAxisID: 'y'
+      },
+      {
+        label: 'percentage',
+        data2: [50, 55, 35, 63, 60, 70, 65],
+        backgroundColor: 'rgba(0, 26, 104, 0.2)',
+        borderColor: 'red',
+        borderWidth: 1,
+        tension: 0.3,
+        yAxisID: 'y2'
+      }]
+    };
+
+
+    const horizontalArbitraryLine_old = {
+      id: 'horizontalArbitraryLine',
+      beforeDraw(chart, args, options) {
+        console.log("in beforeDraw of %s", chart.canvas.id);
+        // console.log("chart: %o", chart)
+        // console.log("canvas: %s", chart.canvas.id)
+        const { ctx, chartArea: { top, right, bottom, left, width, height }, scales: { x, y } } = chart;
+        ctx.save();
+
+        // ctx.strokeStyle = 'green';
+        // ctx.strokeRect(120, 40, 200, 5);
+
+        ctx.beginPath();
+        ctx.moveTo(left, 100);
+        ctx.lineTo(left + width, 100);
+        ctx.strokeStyle = 'green';
+        ctx.stroke();
+
+      },
+      afterDraw(chart, args, options) {
+        console.log("in afterDraw of %s", chart.canvas.id);
+      }
+    }
+
+    var horizontalLinePlugin = {
+      id: 'horizontalLine',
+      afterDraw: function (chartInstance) {
+        var yScale = chartInstance.scales["y"];
+
+        // chartInstance.chart is undefined
+        //var canvas = chartInstance.chart;
+        // console.log(canvas);
+        // var ctx = canvas.ctx;
+        var index;
+        var line;
+        var style;
+
+        const { ctx, chartArea: { top, right, bottom, left, width, height }, scales: { x, y } } = chartInstance;
+        ctx.save();
+        // console.log("ctx : %o", ctx);
+        ypix = y.getPixelForValue(16);
+        console.log("y pixel : %f", ypix);
+        ctx.strokeStyle = 'green';
+        ctx.strokeRect(120, ypix, 200, 5);
+
+
+        if (chartInstance.options.horizontalLine) {
+          for (index = 0; index < chartInstance.options.horizontalLine.length; index++) {
+            line = chartInstance.options.horizontalLine[index];
+
+            if (!line.style) {
+              style = "rgba(169,169,169, .6)";
+            } else {
+              style = line.style;
+            }
+
+            if (line.y) {
+              yValue = yScale.getPixelForValue(line.y);
+            } else {
+              yValue = 0;
+            }
+
+            ctx.lineWidth = 3;
+
+            if (yValue) {
+              ctx.beginPath();
+              ctx.moveTo(left, yValue);
+              ctx.lineTo(left + width, yValue);
+              ctx.strokeStyle = style;
+              ctx.stroke();
+            }
+
+            if (line.text) {
+              ctx.fillStyle = style;
+              ctx.fillText(line.text, left, yValue - ctx.lineWidth - 6);
+            }
+          }
+          // ctx.restore();
+          return;
+        }
+      }
+    };
+
+    // Chart.register(horizontalArbitraryLine);
+
+
+    // config 
+    const config = {
+      type: 'line',
+      data2,
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true,
+            type: 'linear',
+            position: 'left'
+          },
+          y2: {
+            //beginAtZero: true,
+            type: 'linear',
+            position: 'right',
+            grid: {
+              drawOnChartArea: false
+            },
+            ticks: {
+              callback: function (value, index, values) {
+                return `${value}%`;
+              }
+            }
+          }
+        },
+        "horizontalLine": [{
+          "y": 12,
+          "style": "#ff0000",
+          "text": "upper-limit"
+        }, {
+          "y": 10,
+          "style": "#00ff00",
+          "text": "avg"
+        }, {
+          "y": 5,
+          "style": "#0000ff",
+          "text": "lower-limit"
+        }],
+      },
+      plugins: [horizontalLinePlugin]
+
+    };
+
+    // render init block
+    const myChart2 = new Chart(
+      document.getElementById('myChart2'),
+      config
+    );
+  </script>
+
+<!-- 
+
+  <canvas id="myChart" width="400" height="200"></canvas>
+  <div id="chartjs-tooltip"></div>
+
+  <script>
+    var ctx = $("#myChart").get(0).getContext("2d");
+
+    var data = {
+      labels: ["January", "February", "March", "April", "May", "June", "July"],
+      datasets: [{
+        label: "My First dataset",
+        fillColor: "rgba(220,220,220,0.2)",
+        strokeColor: "rgba(220,220,220,1)",
+        pointColor: "rgba(220,220,220,1)",
+        pointStrokeColor: "#fff",
+        pointHighlightFill: "#fff",
+        pointHighlightStroke: "rgba(220,220,220,1)",
+        data: [65, 59, 80, 81, 56, 55, 40]
+      }]
+    }; -->
+
+    // var myLineChart = new Chart(ctx).Line(data, {
+    //   customTooltips: function (tooltip) {
+    //     var tooltipEl = $('#chartjs-tooltip');
+
+    //     if (!tooltip) {
+    //       tooltipEl.css({
+    //         opacity: 0
+    //       });
+    //       return;
+    //     }
+
+    //     tooltipEl.removeClass('above below');
+    //     tooltipEl.addClass(tooltip.yAlign);
+
+    //     // split out the label and value and make your own tooltip here
+    //     var parts = tooltip.text.split(":");
+    //     var innerHtml = '<img src="http://jsfiddle.net/img/logo.png"> <span>' + parts[0].trim() + '</span> : <span><b>' + parts[1].trim() + '</b></span>';
+    //     tooltipEl.html(innerHtml);
+
+    //     tooltipEl.css({
+    //       opacity: 1,
+    //       left: tooltip.chart.canvas.offsetLeft + tooltip.x + 'px',
+    //       top: tooltip.chart.canvas.offsetTop + tooltip.y + 'px',
+    //       fontFamily: tooltip.fontFamily,
+    //       fontSize: tooltip.fontSize,
+    //       fontStyle: tooltip.fontStyle,
+    //     });
+    //   }
+    // });
+  </script>
+
+</body>
+
+</html>

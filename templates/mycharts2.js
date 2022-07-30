@@ -82,9 +82,9 @@ function zoom_plugin() {
         limits: {
             // x: {min: 0, max: 100},
             x: {
-                min: new Date('2022-07-26 14:10').valueOf(),
-                max: new Date('2022-07-28 14:10').valueOf(),
-                minrange: (new Date('2022-07-26 14:10').valueOf() - new Date('2022-07-25 14:10').valueOf())
+                // min: new Date('2022-07-26 14:10').valueOf(),
+                // max: new Date('2022-07-28 14:10').valueOf(),
+                minrange: (new Date('2000-01-03 00:00').valueOf() - new Date('2000-01-01 00:00').valueOf())
             },
             y: {}
         },
@@ -1063,6 +1063,36 @@ function get_rawdata(kind) {
             unit = "{{ pool_cl_chart.unit|safe }}"
             label = "{{ pool_cl_chart.label|safe }}"
             break;
+        case "pool_status_ph":
+            values = JSON.parse('{{ pool_status_ph_chart.values | tojson }}');
+            ids = JSON.parse('{{ pool_status_ph_chart.ids | tojson }}');
+            labels = JSON.parse('{{ pool_status_ph_chart.labels | tojson }}');
+            values_unit = "{{ pool_status_ph_chart.values_unit | safe }}"
+            title = "{{ pool_status_ph_chart.title|safe }}"
+            chart_type = "{{ pool_status_ph_chart.chart_type|safe }}"
+            unit = "{{ pool_status_ph_chart.unit|safe }}"
+            label = "{{ pool_status_ph_chart.label|safe }}"
+            break;
+        case "pool_status_cl":
+            values = JSON.parse('{{ pool_status_cl_chart.values | tojson }}');
+            ids = JSON.parse('{{ pool_status_cl_chart.ids | tojson }}');
+            labels = JSON.parse('{{ pool_status_cl_chart.labels | tojson }}');
+            values_unit = "{{ pool_status_cl_chart.values_unit | safe }}"
+            title = "{{ pool_status_cl_chart.title|safe }}"
+            chart_type = "{{ pool_status_cl_chart.chart_type|safe }}"
+            unit = "{{ pool_status_cl_chart.unit|safe }}"
+            label = "{{ pool_status_cl_chart.label|safe }}"
+            break;
+        case "pool_status_pp":
+            values = JSON.parse('{{ pool_status_pp_chart.values | tojson }}');
+            ids = JSON.parse('{{ pool_status_pp_chart.ids | tojson }}');
+            labels = JSON.parse('{{ pool_status_pp_chart.labels | tojson }}');
+            values_unit = "{{ pool_status_pp_chart.values_unit | safe }}"
+            title = "{{ pool_status_pp_chart.title|safe }}"
+            chart_type = "{{ pool_status_pp_chart.chart_type|safe }}"
+            unit = "{{ pool_status_pp_chart.unit|safe }}"
+            label = "{{ pool_status_pp_chart.label|safe }}"
+            break;
         case "power_day":
             values = JSON.parse('{{ power_day_chart.values | tojson }}');
             ids = JSON.parse('{{ power_day_chart.ids | tojson }}');
@@ -1579,6 +1609,7 @@ function pool_ph() {
     enable_deletion(canvas_pool_ph, myChart);
 }
 
+
 function pool_cl() {
     var raw_data = get_rawdata("pool_cl");
     // var config = myConfig(raw_data, 30);
@@ -1590,7 +1621,7 @@ function pool_cl() {
     };
 
     add_plugin(config, horizontalLinePlugin);
-    config.options.horizontalLine = options_horizontalLine([{ y: 750, text: "max" }, { y: 640, text: "min" }]);
+    config.options.horizontalLine = options_horizontalLine([{ y: 750, text: "max" }, { y: 660, text: "min" }]);
 
     // add_plugin(config, horizontalLinePlugin, null);
     add_plugin(config, verticalLineOnStepPlugin, '12hours');
@@ -1604,6 +1635,96 @@ function pool_cl() {
     var canvas_pool_cl = document.getElementById("canvas_pool_cl");
     enable_deletion(canvas_pool_cl, myChart);
 }
+
+
+function pool_status_ph() {
+    var raw_data = get_rawdata("pool_status_ph");
+
+    // var config = myConfig(raw_data, 30);
+    var config = {
+        type: 'line',
+        data: get_data_1_dataset_with_ids(raw_data, 30),
+        options: options_1_dataset(raw_data),
+    };
+
+    // add_plugin(config, horizontalLinePlugin);
+    // config.options.horizontalLine =
+    //     options_horizontalLine([{ y: 7.4, text: "max", style: "red" }, { y: 7.1, text: "min", style: "rgba(255, 0, 0, .4)" }]);
+
+    add_plugin(config, verticalLineOnStepPlugin, '12hours');
+
+    var ctx = document.getElementById("canvas_pool_status_ph").getContext("2d");
+    var myChart = new Chart(ctx, config);
+
+    // myChart.options.scales.x.min = "2022-06-01"
+    // myChart.options.scales.x.max = "2022-06-03"
+
+    // allows to swipe up and down on smartPhone/touchScreen
+    myChart.canvas.style.touchAction = "pan-y";
+
+    var canvas_pool_status_ph = document.getElementById("canvas_pool_status_ph");
+    enable_deletion(canvas_pool_status_ph, myChart);
+}
+
+
+function pool_status_cl() {
+    var raw_data = get_rawdata("pool_status_cl");
+
+    // var config = myConfig(raw_data, 30);
+    var config = {
+        type: 'line',
+        data: get_data_1_dataset_with_ids(raw_data, 30),
+        options: options_1_dataset(raw_data),
+    };
+
+    // add_plugin(config, horizontalLinePlugin);
+    // config.options.horizontalLine =
+    //     options_horizontalLine([{ y: 7.4, text: "max", style: "red" }, { y: 7.1, text: "min", style: "rgba(255, 0, 0, .4)" }]);
+
+    add_plugin(config, verticalLineOnStepPlugin, '12hours');
+
+    var ctx = document.getElementById("canvas_pool_status_cl").getContext("2d");
+    var myChart = new Chart(ctx, config);
+
+    // myChart.options.scales.x.min = "2022-06-01"
+    // myChart.options.scales.x.max = "2022-06-03"
+
+    // allows to swipe up and down on smartPhone/touchScreen
+    myChart.canvas.style.touchAction = "pan-y";
+
+    var canvas_pool_status_cl = document.getElementById("canvas_pool_status_cl");
+    enable_deletion(canvas_pool_status_cl, myChart);
+}
+
+function pool_status_pp() {
+    var raw_data = get_rawdata("pool_status_pp");
+
+    // var config = myConfig(raw_data, 30);
+    var config = {
+        type: 'line',
+        data: get_data_1_dataset_with_ids(raw_data, 30),
+        options: options_1_dataset(raw_data),
+    };
+
+    // add_plugin(config, horizontalLinePlugin);
+    // config.options.horizontalLine =
+    //     options_horizontalLine([{ y: 7.4, text: "max", style: "red" }, { y: 7.1, text: "min", style: "rgba(255, 0, 0, .4)" }]);
+
+    add_plugin(config, verticalLineOnStepPlugin, '12hours');
+
+    var ctx = document.getElementById("canvas_pool_status_pp").getContext("2d");
+    var myChart = new Chart(ctx, config);
+
+    // myChart.options.scales.x.min = "2022-06-01"
+    // myChart.options.scales.x.max = "2022-06-03"
+
+    // allows to swipe up and down on smartPhone/touchScreen
+    myChart.canvas.style.touchAction = "pan-y";
+
+    var canvas_pool_status_pp = document.getElementById("canvas_pool_status_pp");
+    enable_deletion(canvas_pool_status_pp, myChart);
+}
+
 
 function pool_ph_cl() {
 
@@ -2312,6 +2433,9 @@ frigo_normal_smart();
 frigo_24h();
 pool_ph();
 pool_cl();
+pool_status_ph();
+pool_status_cl();
+pool_status_pp();
 pool_ph_cl();
 power_day();
 power_day_delta();
