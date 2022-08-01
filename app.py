@@ -374,6 +374,8 @@ def normalise_pool_status(events, kind):
                 event["text"] = "0"
             elif event["text"] == "dosage":
                 event["text"] = "1"
+            elif event["text"] == "arret dose":
+                event["text"] = "2"
             else:
                 event["text"] = "-1"
         elif kind in ['pp']:
